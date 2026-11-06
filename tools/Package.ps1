@@ -46,6 +46,10 @@ INSTALLATION (une seule fois)
  3. Clique  RÉPARER / INSTALLER  puis attends  « SYSTÈME PRÊT ».
  4. Clique  JOUER.  (Le 1er lancement genere des fichiers, 2-5 min, c'est normal.)
 
+METTRE A JOUR (quand une nouvelle version sort)
+ - Lance le launcher -> clique  METTRE A JOUR.
+   (Telecharge et remplace le plugin automatiquement depuis GitHub. Pas besoin de re-telecharger ce zip.)
+
 JOUER EN CO-OP
  - Charge / continue une partie, puis appuie sur  F6  (menu co-op).
    * Hote    : « HÉBERGER UNE PARTIE » -> partage le code Lobby affiche,
