@@ -69,8 +69,11 @@ namespace CarMecaSim.Mp.Sync
         public static void ApplyGarage(List<(int, string)> entries)
         {
             if (!Active || S.IsHost) return;   // only clients mirror the host
+            // Car-load is a coroutine; it stalls while the game is frozen (F6 open). Defer until unfrozen
+            // — the host's 3s garage heartbeat re-applies it then.
+            if (Time.timeScale == 0f) return;
             var loaders = Loaders();
-            if (loaders == null) return;
+            if (loaders == null) { CarMecaPlugin.Logger?.LogWarning("[garage] no CarLoadersInScene"); return; }
             Applying = true;
             try
             {

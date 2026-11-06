@@ -209,10 +209,13 @@ namespace CarMecaSim.Mp.Core
                     case PacketType.Economy:
                     {
                         var kind = r.Byte();
-                        if (kind == 0) // absolute (host -> all): mirror it
+                        if (kind == 0) // absolute (host -> all): mirror it, only touch what changed
                         {
                             int m = r.Int(), x = r.Int(), s = r.Int(), lvl = r.Int();
-                            GameState.Money = m; GameState.Exp = x; GameState.Scraps = s; GameState.Level = lvl;
+                            if (GameState.Money != m) GameState.Money = m;      // avoid redundant gain animation
+                            if (GameState.Scraps != s) GameState.Scraps = s;
+                            if (GameState.Exp != x) GameState.Exp = x;
+                            if (GameState.Level != lvl) GameState.Level = lvl;
                             _lastMoney = m; _lastExp = x; _lastScraps = s; _ecoInit = true;
                         }
                         else if (kind == 1 && IsHost) // delta (client -> host): apply to the pool via game methods
@@ -333,8 +336,9 @@ namespace CarMecaSim.Mp.Core
 
             if (IsHost)
             {
-                // Broadcast on change, and a heartbeat every ~2s so clients always mirror the host.
-                if (changed || Time.unscaledTime - _ecoHeartbeat > 2f) BroadcastEcoAbsolute();
+                // Broadcast ONLY on a real change (no periodic heartbeat — it retriggered the
+                // money-gain animation on clients). Initial sync is handled on-join + on ping.
+                if (changed) BroadcastEcoAbsolute();
             }
             else if (changed)
             {
