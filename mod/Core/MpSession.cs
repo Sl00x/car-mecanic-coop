@@ -130,6 +130,21 @@ namespace CarMecaSim.Mp.Core
             AddChat($"{Config.DisplayName}: {text}");
         }
 
+        /// <summary>Add a line to the local chat log only (no network) — for system notices.</summary>
+        public void LocalChat(string line) => AddChat(line);
+
+        // Stable per-player id derived from SteamID (unique enough for a small lobby).
+        public byte LocalPlayerId => (byte)(Net.LocalId.m_SteamID % 250 + 1);
+        public byte PlayerIdOf(CSteamID id) => (byte)(id.m_SteamID % 250 + 1);
+
+        public void SendPartAction(byte action, string key, int boltIdx)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.PartAction);
+            w.Byte(action).Str(key).Int(boltIdx);
+            Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
         // ---- receiving ----
         private void OnData(CSteamID sender, byte[] data, int channel)
         {
@@ -162,6 +177,31 @@ namespace CarMecaSim.Mp.Core
                         AddChat($"{name}: {text}");
                         break;
                     }
+                    case PacketType.Economy:
+                    {
+                        var kind = r.Byte();
+                        if (kind == 0) // absolute (host -> all): mirror it
+                        {
+                            int m = r.Int(), x = r.Int(), s = r.Int(), lvl = r.Int();
+                            GameState.Money = m; GameState.Exp = x; GameState.Scraps = s; GameState.Level = lvl;
+                            _lastMoney = m; _lastExp = x; _lastScraps = s; _ecoInit = true;
+                        }
+                        else if (kind == 1 && IsHost) // delta (client -> host): apply to the pool
+                        {
+                            int dm = r.Int(), dx = r.Int(), ds = r.Int();
+                            GameState.Money = GameState.Money + dm;
+                            GameState.Exp = GameState.Exp + dx;
+                            GameState.Scraps = GameState.Scraps + ds;
+                            // host's next EconomyTick detects the change and broadcasts the new absolute.
+                        }
+                        break;
+                    }
+                    case PacketType.PartAction:
+                    {
+                        var action = r.Byte(); var key = r.Str(); var idx = r.Int();
+                        Sync.PartSync.ApplyRemote(PlayerIdOf(sender), action, key, idx);
+                        break;
+                    }
                     case PacketType.Bye:
                         OnPeerLeft(sender);
                         break;
@@ -174,12 +214,45 @@ namespace CarMecaSim.Mp.Core
         public void Update(float dt)
         {
             Net.Pump();
-            bool show = GameRefs.InGarage;
+            bool show = GameRefs.InGameSession;
             foreach (var p in _peers.Values)
             {
                 p.SetVisible(show);
                 p.Update(dt);
             }
+
+            // economy sync, ~3 Hz
+            _ecoAccum += dt;
+            if (_ecoAccum >= 0.33f) { _ecoAccum = 0f; EconomyTick(); }
+
+            Sync.PartSync.Tick();   // release stale part locks
+        }
+
+        // ---- economy (shared pool, host-authoritative) ----
+        private int _lastMoney = -1, _lastExp = -1, _lastScraps = -1;
+        private bool _ecoInit;
+        private float _ecoAccum;
+
+        private void EconomyTick()
+        {
+            if (!InLobby || !GameRefs.InGameSession || !GameState.Available) return;
+            int m = GameState.Money, x = GameState.Exp, s = GameState.Scraps, lvl = GameState.Level;
+            if (!_ecoInit) { _lastMoney = m; _lastExp = x; _lastScraps = s; _ecoInit = true; return; }
+            if (m == _lastMoney && x == _lastExp && s == _lastScraps) return;
+
+            if (IsHost)
+            {
+                using var w = new PacketWriter(PacketType.Economy);
+                w.Byte(0).Int(m).Int(x).Int(s).Int(lvl);                 // 0 = absolute
+                Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+            }
+            else
+            {
+                using var w = new PacketWriter(PacketType.Economy);
+                w.Byte(1).Int(m - _lastMoney).Int(x - _lastExp).Int(s - _lastScraps); // 1 = delta
+                Net.Send(Net.LobbyOwner, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+            }
+            _lastMoney = m; _lastExp = x; _lastScraps = s;
         }
 
         private void AddChat(string line)

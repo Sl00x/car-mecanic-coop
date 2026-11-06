@@ -37,6 +37,15 @@ namespace CarMecaSim.Mp
             GameObject.DontDestroyOnLoad(go);
             go.AddComponent<MpBehaviour>();
 
+            // Harmony patches for car/part sync + per-part locking.
+            try
+            {
+                var harmony = new HarmonyLib.Harmony("com.alexu.carmecasim.mp");
+                harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+                Log.LogInfo("Harmony patches applied (part sync).");
+            }
+            catch (Exception e) { Log.LogError("Harmony patch failed: " + e); }
+
             Log.LogInfo($"Ready. role={Cfg.Role} name={Cfg.DisplayName} lobby={Cfg.LobbyId}");
         }
 

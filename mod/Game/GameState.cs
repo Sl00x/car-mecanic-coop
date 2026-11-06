@@ -45,11 +45,17 @@ namespace CarMecaSim.Mp.Game
             return v;
         }
 
+        private static void WriteInt(IntPtr field, int v)
+        {
+            if (field == IntPtr.Zero) return;
+            try { IL2CPP.il2cpp_field_static_set_value(field, &v); } catch { }
+        }
+
         public static bool Available { get { Resolve(); return _cls != IntPtr.Zero && _money != IntPtr.Zero; } }
-        public static int Money  { get { Resolve(); return ReadInt(_money); } }
-        public static int Exp    { get { Resolve(); return ReadInt(_exp); } }
-        public static int Scraps { get { Resolve(); return ReadInt(_scraps); } }
-        public static int Level  { get { Resolve(); return ReadInt(_level); } }
+        public static int Money  { get { Resolve(); return ReadInt(_money); } set { Resolve(); WriteInt(_money, value); } }
+        public static int Exp    { get { Resolve(); return ReadInt(_exp); }   set { Resolve(); WriteInt(_exp, value); } }
+        public static int Scraps { get { Resolve(); return ReadInt(_scraps); } set { Resolve(); WriteInt(_scraps, value); } }
+        public static int Level  { get { Resolve(); return ReadInt(_level); } set { Resolve(); WriteInt(_level, value); } }
         public static int Jobs   { get { Resolve(); return ReadInt(_jobs); } }
     }
 }

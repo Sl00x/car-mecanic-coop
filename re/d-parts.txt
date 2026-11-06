@@ -1,0 +1,1459 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== PartScript  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_devRepair
+    private static IntPtr NativeFieldInfoPtr_devBroke
+    private static IntPtr NativeFieldInfoPtr_On
+    private static IntPtr NativeFieldInfoPtr_alwaysPosX
+    private static IntPtr NativeFieldInfoPtr_id
+    private static IntPtr NativeFieldInfoPtr_tunedID
+    private static IntPtr NativeFieldInfoPtr_shadersBackup
+    private static IntPtr NativeFieldInfoPtr_IsUnmounted
+    private static IntPtr NativeFieldInfoPtr_Condition
+    private static IntPtr NativeFieldInfoPtr_Quality
+    private static IntPtr NativeFieldInfoPtr_IsExamined
+    private static IntPtr NativeFieldInfoPtr_MountAnimationCompleted
+    private static IntPtr NativeFieldInfoPtr_Dust
+    private static IntPtr NativeFieldInfoPtr_oneClickUnmount
+    private static IntPtr NativeFieldInfoPtr_MountObjects
+    private static IntPtr NativeFieldInfoPtr_unblockOnUnmount
+    private static IntPtr NativeFieldInfoPtr_unblockOnUnmountName
+    private static IntPtr NativeFieldInfoPtr_wasAutomatic
+    private static IntPtr NativeFieldInfoPtr_canBeUnmount
+    private static IntPtr NativeFieldInfoPtr_enableOnUnmount
+    private static IntPtr NativeFieldInfoPtr_disableOnUnmount
+    private static IntPtr NativeFieldInfoPtr_bakPos
+    private static IntPtr NativeFieldInfoPtr_bakRot
+    private static IntPtr NativeFieldInfoPtr_partProperty
+    private static IntPtr NativeFieldInfoPtr_vol
+    private static IntPtr NativeFieldInfoPtr_unmountVector
+    private static IntPtr NativeFieldInfoPtr_unmountDirection
+    private static IntPtr NativeFieldInfoPtr_bonusMoveDirection
+    private static IntPtr NativeFieldInfoPtr_unmountSpinning
+    private static IntPtr NativeFieldInfoPtr_spinClockwise
+    private static IntPtr NativeFieldInfoPtr_sendMessage
+    private static IntPtr NativeFieldInfoPtr_sendMessageOnHide
+    private static IntPtr NativeFieldInfoPtr_checkSendMessageInEngine
+    private static IntPtr NativeFieldInfoPtr_FluidRefillLockType
+    private static IntPtr NativeFieldInfoPtr_canUpdate
+    private static IntPtr NativeFieldInfoPtr_markRed
+    private static IntPtr NativeFieldInfoPtr_markImportantPart
+    private static IntPtr NativeFieldInfoPtr_mountWasCanceled
+    private static IntPtr NativeFieldInfoPtr_markedRed
+    private static IntPtr NativeFieldInfoPtr_blockedBy
+    private static IntPtr NativeFieldInfoPtr_tuningBonus
+    private static IntPtr NativeFieldInfoPtr_blockedNo
+    private static IntPtr NativeFieldInfoPtr_ho
+    private static IntPtr NativeFieldInfoPtr_MouseOver
+    private static IntPtr NativeFieldInfoPtr_mountMode
+    private static IntPtr NativeFieldInfoPtr_replacedShader
+    private static IntPtr NativeFieldInfoPtr_customPivotForUnmount
+    private static IntPtr NativeFieldInfoPtr_hideWhenUnmontingMounting
+    private static IntPtr NativeFieldInfoPtr_forInventory
+    private static IntPtr NativeFieldInfoPtr_canMountUnmountOnlyOnCarLoader
+    private static IntPtr NativeFieldInfoPtr_canUnmountSingle
+    private static IntPtr NativeFieldInfoPtr_unmountWith
+    private static IntPtr NativeFieldInfoPtr_unmountWithMainObject
+    private static IntPtr NativeFieldInfoPtr_unmountWithSeparate
+    private static IntPtr NativeFieldInfoPtr_forcePartGroupFromParent
+    private static IntPtr NativeFieldInfoPtr_ForcePartGroup
+    private static IntPtr NativeFieldInfoPtr_cullLevel
+    private static IntPtr NativeFieldInfoPtr_GameMode
+    private static IntPtr NativeFieldInfoPtr_GameScript
+    private static IntPtr NativeFieldInfoPtr_GameInventory
+    private static IntPtr NativeFieldInfoPtr_UIManager
+    private static IntPtr NativeFieldInfoPtr_SoundManager
+    private static IntPtr NativeFieldInfoPtr_Cursor3D
+    private static IntPtr NativeFieldInfoPtr_CameraManager
+    private static IntPtr NativeFieldInfoPtr_ToolsManager
+    private static IntPtr NativeFieldInfoPtr_gamepadMountObject
+    private static IntPtr NativeFieldInfoPtr_currentColor
+    private static IntPtr NativeFieldInfoPtr_IsPainted
+    private static IntPtr NativeFieldInfoPtr_CurrentPaintType
+    private static IntPtr NativeFieldInfoPtr_CurrentPaintData
+    private static IntPtr NativeFieldInfoPtr_isFluidContainer
+    private static IntPtr NativeFieldInfoPtr_flashing
+    private static IntPtr NativeFieldInfoPtr_OnHidePart
+    private static IntPtr NativeFieldInfoPtr_OnHidePartFinished
+    private static IntPtr NativeFieldInfoPtr_OnMountFinished
+    private static IntPtr NativeFieldInfoPtr_OnSelectToUnMount
+    private static IntPtr NativeFieldInfoPtr_OnShow
+    private static IntPtr NativeMethodInfoPtr_get_TuningBonus_Public_get_Single_0
+    private static IntPtr NativeMethodInfoPtr_set_TuningBonus_Public_set_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_IsBlocked_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetMouseOver_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetHideWhenUnmontingMounting_Public_Il2CppReferenceArray_1_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_SetForInventory_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetCanUnmountSingle_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCanUnmountSingle_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_AddToUnmountWith_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetUnmountWith_Public_List_1_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_AddUnmountWithMainObject_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetUnmountWithMainObject_Public_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_IsFromObject_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetUnmountWithSeparate_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsUnmountWithSeparate_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsOnCarLoader_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShouldUnmountWith_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetIDWithTuned_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetID_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetTunedID_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_SetTunedID_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_IsTuned_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetID_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_GetColor_Public_Color_0
+    private static IntPtr NativeMethodInfoPtr_SetColor_Public_Void_Color_0
+    private static IntPtr NativeMethodInfoPtr_SetAllowedColor_Public_Void_AllowedColor_0
+    private static IntPtr NativeMethodInfoPtr_SetDefaultColor_Private_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_IsRepaired_Public_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetShowCondition_Private_Single_0
+    private static IntPtr NativeMethodInfoPtr_LookForPart_Public_PartScript_String_0
+    private static IntPtr NativeMethodInfoPtr_Clone_Public_Void_PartData_0
+    private static IntPtr NativeMethodInfoPtr_UpdateDust_Public_Void_Single_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetMountObjectData_Public_Void_MountObjectData_0
+    private static IntPtr NativeMethodInfoPtr_GetMountObjectDataForSave_Public_MountObjectData_0
+    private static IntPtr NativeMethodInfoPtr_UnblockBlockParts_Private_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ActionAutomatic_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_CancelUnmountAnim_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_UnMountByGroup_Public_IEnumerator_Boolean_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_MountByGroup_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowPreviewToMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowGroupPreview_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowPreview_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_HidePreview_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_HideBySavegame_Public_Void_Boolean_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_ShowBySaveGame_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetLayerRecursively_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetNextMountObject_Public_Transform_0
+    private static IntPtr NativeMethodInfoPtr_AddToBlockedBy_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetUnmountDir_Private_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_CalcUnmountDir_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_UndoMounting_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UndoUnMounting_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UnBlockPart_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_BlockPart_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetConditionNormal_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetCondition_Public_Void_Single_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_UpdateShaderParams_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SwitchSolidColor_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_FlashRed_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetMouseOver_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_MouseOverGroup_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SwitchActive_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Start_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_CustomStart_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_NullInPart_Private_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_AddHO_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ResizeWheel_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ChangeOnTunePartIfShould_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_TunePart_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_TunePart_Public_Boolean_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ChangeTireType_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_FastUnmount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Examine_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_FastMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDestroy_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ActionUnMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CheckSendMessage_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_EnableGamepadMountObject_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ActionMount_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_DoMount_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_ShowMountAnimation_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ReplaceShader_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_DeleteShaderBackup_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowMounted_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_Alpha1_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Alpha0_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Show_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Hide_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_GetFluidId_Private_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CheckOnSendMessage_Private_Boolean_FluidRefillLockType_byref_String_0
+    private static IntPtr NativeMethodInfoPtr_CheckMessageOnHide_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_HideTest_Private_Void_PartScript_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_CheckIsFluidContainer_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_IsFluidContainer_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CanDrainFluid_Public_Boolean_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_ZeroFluid_Public_Boolean_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_OnDisable_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDrawGizmosSelected_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetGameObjectPath_Private_String_0
+    private static IntPtr NativeMethodInfoPtr_GetGameObjectPathWithoutRoot_Public_String_StringBuilder_0
+    private static IntPtr NativeMethodInfoPtr_Flashing_Public_Void_Boolean_Nullable_1_Color_0
+    private static IntPtr NativeMethodInfoPtr_ResizeWheel_Public_Void_CarLoader_Wheel_0
+    private static IntPtr NativeMethodInfoPtr_GetUniqueIDFromPartName_Public_Int32_String_String_0
+    private static IntPtr NativeMethodInfoPtr_GetUniqueID_Public_Int32_String_String_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr__ShowMountAnimation_b__152_0_Private_Void_Object_0
+  -- Properties --
+    Boolean devRepair { get;set; }
+    Boolean devBroke { get;set; }
+    Boolean On { get;set; }
+    Boolean alwaysPosX { get;set; }
+    String id { get;set; }
+    String tunedID { get;set; }
+    ShadersBackup shadersBackup { get;set; }
+    Boolean IsUnmounted { get;set; }
+    Single Condition { get;set; }
+    Int32 Quality { get;set; }
+    Boolean IsExamined { get;set; }
+    Boolean MountAnimationCompleted { get;set; }
+    Single Dust { get;set; }
+    Boolean oneClickUnmount { get;set; }
+    Il2CppReferenceArray<MountObject> MountObjects { get;set; }
+    Il2CppReferenceArray<PartScript> unblockOnUnmount { get;set; }
+    Il2CppStringArray unblockOnUnmountName { get;set; }
+    Boolean wasAutomatic { get;set; }
+    Boolean canBeUnmount { get;set; }
+    Il2CppReferenceArray<GameObject> enableOnUnmount { get;set; }
+    Il2CppReferenceArray<GameObject> disableOnUnmount { get;set; }
+    Vector3 bakPos { get;set; }
+    Quaternion bakRot { get;set; }
+    PartProperty partProperty { get;set; }
+    Single vol { get;set; }
+    Vector3 unmountVector { get;set; }
+    direction unmountDirection { get;set; }
+    direction bonusMoveDirection { get;set; }
+    Boolean unmountSpinning { get;set; }
+    Boolean spinClockwise { get;set; }
+    String sendMessage { get;set; }
+    String sendMessageOnHide { get;set; }
+    Boolean checkSendMessageInEngine { get;set; }
+    FluidRefillLockType FluidRefillLockType { get;set; }
+    Boolean canUpdate { get;set; }
+    Boolean markRed { get;set; }
+    Boolean markImportantPart { get;set; }
+    Boolean mountWasCanceled { get;set; }
+    Boolean markedRed { get;set; }
+    List<PartScript> blockedBy { get;set; }
+    Single tuningBonus { get;set; }
+    Int32 blockedNo { get;set; }
+    Highlighter ho { get;set; }
+    Boolean MouseOver { get;set; }
+    Boolean mountMode { get;set; }
+    Boolean replacedShader { get;set; }
+    Transform customPivotForUnmount { get;set; }
+    Il2CppReferenceArray<GameObject> hideWhenUnmontingMounting { get;set; }
+    Boolean forInventory { get;set; }
+    Boolean canMountUnmountOnlyOnCarLoader { get;set; }
+    Boolean canUnmountSingle { get;set; }
+    List<PartScript> unmountWith { get;set; }
+    PartScript unmountWithMainObject { get;set; }
+    Boolean unmountWithSeparate { get;set; }
+    PartScript forcePartGroupFromParent { get;set; }
+    Int32 ForcePartGroup { get;set; }
+    Int32 cullLevel { get;set; }
+    GameMode GameMode { get;set; }
+    GameScript GameScript { get;set; }
+    GameInventory GameInventory { get;set; }
+    UIManager UIManager { get;set; }
+    SoundManager SoundManager { get;set; }
+    Cursor3D Cursor3D { get;set; }
+    CameraManager CameraManager { get;set; }
+    ToolsManager ToolsManager { get;set; }
+    GamepadMountObject gamepadMountObject { get;set; }
+    Color currentColor { get;set; }
+    Boolean IsPainted { get;set; }
+    PaintType CurrentPaintType { get;set; }
+    PaintData CurrentPaintData { get;set; }
+    Boolean isFluidContainer { get;set; }
+    Boolean flashing { get;set; }
+    Action OnHidePart { get;set; }
+    Action OnHidePartFinished { get;set; }
+    Action OnMountFinished { get;set; }
+    Action OnSelectToUnMount { get;set; }
+    Action OnShow { get;set; }
+    Single TuningBonus { get;set; }
+  -- Methods --
+    Boolean IsBlocked()
+    Void SetMouseOver(Boolean b)
+    Il2CppReferenceArray<GameObject> GetHideWhenUnmontingMounting()
+    Void SetForInventory(Boolean b)
+    Void SetCanUnmountSingle(Boolean b)
+    Boolean GetCanUnmountSingle()
+    Void AddToUnmountWith(PartScript p)
+    List<PartScript> GetUnmountWith()
+    Void AddUnmountWithMainObject(PartScript p)
+    PartScript GetUnmountWithMainObject()
+    Boolean IsFromObject()
+    Void SetUnmountWithSeparate(Boolean b)
+    Boolean IsUnmountWithSeparate()
+    Boolean IsOnCarLoader()
+    Boolean ShouldUnmountWith()
+    String GetIDWithTuned()
+    String GetID()
+    String GetTunedID()
+    Void SetTunedID(String newTunedID)
+    Boolean IsTuned()
+    Void SetID(String no)
+    Color GetColor()
+    Void SetColor(Color newColor)
+    Void SetAllowedColor(AllowedColor allowedColor)
+    Void SetDefaultColor(String partId)
+    Boolean IsRepaired(Single minCondition)
+    Single GetShowCondition()
+    PartScript LookForPart(String _name)
+    Void Clone(PartData partData)
+    Void UpdateDust(Single newDust, Boolean forceSet)
+    Void SetMountObjectData(MountObjectData data)
+    MountObjectData GetMountObjectDataForSave()
+    Void UnblockBlockParts(Boolean unblock)
+    IEnumerator ActionAutomatic()
+    Void CancelUnmountAnim()
+    IEnumerator UnMountByGroup(Boolean b, Boolean instant, Single delay)
+    Void MountByGroup(Boolean instantSet)
+    Void ShowPreviewToMount()
+    Void ShowGroupPreview()
+    Void ShowPreview()
+    Void HidePreview()
+    Void HideBySavegame(Boolean withUnmountWith, CarLoader carLoader)
+    Void ShowBySaveGame()
+    Void SetLayerRecursively(Int32 newLayer)
+    Transform GetNextMountObject()
+    Void AddToBlockedBy(PartScript obj)
+    Vector3 GetUnmountDir()
+    Void CalcUnmountDir()
+    Void UndoMounting()
+    Void UndoUnMounting()
+    Void UnBlockPart()
+    Void BlockPart()
+    Void SetConditionNormal(Single newCondition)
+    Void SetCondition(Single newCondition, Boolean updateSolidValue)
+    Void UpdateShaderParams(Boolean updateSolidValue)
+    Void SwitchSolidColor(Boolean b)
+    Void FlashRed(Boolean b)
+    Void SetMouseOver()
+    Void MouseOverGroup()
+    Void SwitchActive(Boolean b)
+    Void Awake()
+    Void Start()
+    Void CustomStart()
+    Void NullInPart(String msg)
+    Void AddHO()
+    Void ResizeWheel()
+    Void ChangeOnTunePartIfShould()
+    Boolean TunePart(String tunePart)
+    Boolean TunePart(String tunePart, Boolean shouldResizeWheel)
+    Void ChangeTireType(String tireName)
+    Void FastUnmount()
+    Void Examine(Boolean instant)
+    Void FastMount()
+    Void OnDestroy()
+    Void ActionUnMount()
+    Boolean CheckSendMessage()
+    Void EnableGamepadMountObject(Boolean enable)
+    Void ActionMount(Boolean showMenu)
+    IEnumerator DoMount()
+    Void ShowMountAnimation()
+    Void ReplaceShader(Boolean unactive)
+    Void DeleteShaderBackup()
+    IEnumerator ShowMounted()
+    Void Alpha1()
+    Void Alpha0()
+    Void Show()
+    IEnumerator Hide()
+    Int32 GetFluidId()
+    Boolean CheckOnSendMessage(FluidRefillLockType fluidToCheck, String& missingPart)
+    Void CheckMessageOnHide()
+    Void HideTest(PartScript part, PartScript from)
+    Void Update()
+    Void CheckIsFluidContainer()
+    Boolean IsFluidContainer()
+    Boolean CanDrainFluid(CarLoader carLoader)
+    Boolean ZeroFluid(CarLoader carLoader)
+    Void OnDisable()
+    Void OnDrawGizmosSelected()
+    String GetGameObjectPath()
+    String GetGameObjectPathWithoutRoot(StringBuilder stringBuilder)
+    Void Flashing(Boolean on, Nullable<Color> color)
+    Void ResizeWheel(CarLoader carLoader, Wheel wheel)
+    Int32 GetUniqueIDFromPartName(String carName, String engineName)
+    Int32 GetUniqueID(String carName, String engineName)
+    Void _ShowMountAnimation_b__152_0(Object x)
+
+==== MountObject  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_canBeUnmount
+    private static IntPtr NativeFieldInfoPtr_mountState
+    private static IntPtr NativeFieldInfoPtr_Condition
+    private static IntPtr NativeFieldInfoPtr_oldPos
+    private static IntPtr NativeFieldInfoPtr_posUnMount
+    private static IntPtr NativeFieldInfoPtr_oldRot
+    private static IntPtr NativeFieldInfoPtr_length
+    private static IntPtr NativeFieldInfoPtr_oldPosChild
+    private static IntPtr NativeFieldInfoPtr_oldRotChild
+    private static IntPtr NativeFieldInfoPtr_childPosUnMount
+    private static IntPtr NativeFieldInfoPtr_alternativeSFX
+    private static IntPtr NativeFieldInfoPtr_renderers
+    private static IntPtr NativeFieldInfoPtr_ho
+    private static IntPtr NativeFieldInfoPtr_unmounted
+    private static IntPtr NativeFieldInfoPtr_reverseMode
+    private static IntPtr NativeFieldInfoPtr_mouseOver
+    private static IntPtr NativeFieldInfoPtr_canAction
+    private static IntPtr NativeFieldInfoPtr_IsStuck
+    private static IntPtr NativeFieldInfoPtr_child
+    private static IntPtr NativeFieldInfoPtr_boxCollider
+    private static IntPtr NativeFieldInfoPtr_PlayingStuckAnim
+    private static IntPtr NativeFieldInfoPtr_canUpdate
+    private static IntPtr NativeMethodInfoPtr_IsPlayingStuckAnim_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_UpdateCondition_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_ShowRenderers_Private_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetMouseOver_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetAlternativeSFX_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsAlternativeSFX_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetAlive_Private_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetCanAction_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCanAction_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetCanBeUnmount_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCanBeUnmount_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetMountState_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_IsUnmounted_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ActionFinish_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetFullUnmountPosition_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetFullMountPosition_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_PlayStuckAnimation_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_CalcUnmountPos_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CalcUnmountPos_Public_Void_Transform_0
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Action_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_PrepareToMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetPosition_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Update_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDrawGizmosSelected_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Boolean canBeUnmount { get;set; }
+    Single mountState { get;set; }
+    Single Condition { get;set; }
+    Vector3 oldPos { get;set; }
+    Vector3 posUnMount { get;set; }
+    Quaternion oldRot { get;set; }
+    Single length { get;set; }
+    Vector3 oldPosChild { get;set; }
+    Quaternion oldRotChild { get;set; }
+    Vector3 childPosUnMount { get;set; }
+    Boolean alternativeSFX { get;set; }
+    Il2CppReferenceArray<Renderer> renderers { get;set; }
+    Highlighter ho { get;set; }
+    Boolean unmounted { get;set; }
+    Boolean reverseMode { get;set; }
+    Boolean mouseOver { get;set; }
+    Boolean canAction { get;set; }
+    Boolean IsStuck { get;set; }
+    Transform child { get;set; }
+    BoxCollider boxCollider { get;set; }
+    Boolean PlayingStuckAnim { get;set; }
+    Boolean canUpdate { get;set; }
+  -- Methods --
+    Boolean IsPlayingStuckAnim()
+    Void UpdateCondition(Single newCondition)
+    Void ShowRenderers(Boolean b)
+    Void SetMouseOver(Boolean b)
+    Void SetAlternativeSFX(Boolean b)
+    Boolean IsAlternativeSFX()
+    Void SetAlive(Boolean b)
+    Void SetCanAction(Boolean b)
+    Boolean GetCanAction()
+    Void SetCanBeUnmount(Boolean b)
+    Boolean GetCanBeUnmount()
+    Single GetMountState()
+    Boolean IsUnmounted()
+    Boolean ActionFinish()
+    Void SetFullUnmountPosition()
+    Void SetFullMountPosition()
+    IEnumerator PlayStuckAnimation()
+    Void CalcUnmountPos()
+    Void CalcUnmountPos(Transform t)
+    Void Awake()
+    Void Action()
+    Void PrepareToMount()
+    Void SetPosition()
+    Void Update()
+    Void OnDrawGizmosSelected()
+
+==== CarLoader  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_carToLoad
+    private static IntPtr NativeFieldInfoPtr_ConfigVersion
+    private static IntPtr NativeFieldInfoPtr_placeNo
+    private static IntPtr NativeFieldInfoPtr_liveUpdate
+    private static IntPtr NativeFieldInfoPtr_livePlaceOnPosition
+    private static IntPtr NativeFieldInfoPtr_loadOnStart
+    private static IntPtr NativeFieldInfoPtr_randomColor
+    private static IntPtr NativeFieldInfoPtr_loadOnlyWheels
+    private static IntPtr NativeFieldInfoPtr_keepNoninstancedMaterials
+    private static IntPtr NativeFieldInfoPtr_isFatalException
+    private static IntPtr NativeFieldInfoPtr_customerCar
+    private static IntPtr NativeFieldInfoPtr_currentLiveryIndex
+    private static IntPtr NativeFieldInfoPtr_rustMap
+    private static IntPtr NativeFieldInfoPtr_rustMapTuning
+    private static IntPtr NativeFieldInfoPtr_rawRustmap
+    private static IntPtr NativeFieldInfoPtr_SaveComplete
+    private static IntPtr NativeFieldInfoPtr_orderConnection
+    private static IntPtr NativeFieldInfoPtr_LicensePlatesData
+    private static IntPtr NativeFieldInfoPtr_cachedName
+    private static IntPtr NativeFieldInfoPtr_partScriptCache
+    private static IntPtr NativeFieldInfoPtr_partScriptsCached
+    private static IntPtr NativeFieldInfoPtr_inGarage
+    private static IntPtr NativeFieldInfoPtr_guid
+    private static IntPtr NativeFieldInfoPtr_ToolsData
+    private static IntPtr NativeFieldInfoPtr_FluidsData
+    private static IntPtr NativeFieldInfoPtr_CurrentUsedFluidId
+    private static IntPtr NativeFieldInfoPtr_CurrentUsedFluid
+    private static IntPtr NativeFieldInfoPtr_CarInfoData
+    private static IntPtr NativeFieldInfoPtr_SalonCarData
+    private static IntPtr NativeFieldInfoPtr_HeadlampLeftAlignment
+    private static IntPtr NativeFieldInfoPtr_HeadlampRightAlignment
+    private static IntPtr NativeFieldInfoPtr_WheelsAlignment
+    private static IntPtr NativeFieldInfoPtr_CarSupportData
+    private static IntPtr NativeFieldInfoPtr_MeasuredDragIndex
+    private static IntPtr NativeFieldInfoPtr_root
+    private static IntPtr NativeFieldInfoPtr_model
+    private static IntPtr NativeFieldInfoPtr_bodyHidden
+    private static IntPtr NativeFieldInfoPtr_ShowConditions
+    private static IntPtr NativeFieldInfoPtr_updateColorLive
+    private static IntPtr NativeFieldInfoPtr_factoryColor
+    private static IntPtr NativeFieldInfoPtr_factoryPaintType
+    private static IntPtr NativeFieldInfoPtr_color
+    private static IntPtr NativeFieldInfoPtr_lastColor
+    private static IntPtr NativeFieldInfoPtr_paintData
+    private static IntPtr NativeFieldInfoPtr_IsCustomPaintType
+    private static IntPtr NativeFieldInfoPtr_specialState
+    private static IntPtr NativeFieldInfoPtr_additionalCarRot
+    private static IntPtr NativeFieldInfoPtr_negotationMod
+    private static IntPtr NativeFieldInfoPtr_carParts
+    private static IntPtr NativeFieldInfoPtr_bonusParts
+    private static IntPtr NativeFieldInfoPtr_carLightParts
+    private static IntPtr NativeFieldInfoPtr_groundRotation
+    private static IntPtr NativeFieldInfoPtr_groundPosition
+    private static IntPtr NativeFieldInfoPtr_CarBonusPartsData
+    private static IntPtr NativeFieldInfoPtr_SuspensionParams
+    private static IntPtr NativeFieldInfoPtr_CarLightBasic
+    private static IntPtr NativeFieldInfoPtr_m_model
+    private static IntPtr NativeFieldInfoPtr_m_rustTex
+    private static IntPtr NativeFieldInfoPtr_m_rotation
+    private static IntPtr NativeFieldInfoPtr_m_scale
+    private static IntPtr NativeFieldInfoPtr_m_carBrand
+    private static IntPtr NativeFieldInfoPtr_OtherData
+    private static IntPtr NativeFieldInfoPtr_DialData
+    private static IntPtr NativeFieldInfoPtr_AllowedColors
+    private static IntPtr NativeFieldInfoPtr_ThumbnailColor
+    private static IntPtr NativeFieldInfoPtr_s_frontCenter_h
+    private static IntPtr NativeFieldInfoPtr_s_rearCenter_h
+    private static IntPtr NativeFieldInfoPtr_s_frontRight_h
+    private static IntPtr NativeFieldInfoPtr_s_frontLeft_h
+    private static IntPtr NativeFieldInfoPtr_s_rearRight_h
+    private static IntPtr NativeFieldInfoPtr_s_rearLeft_h
+    private static IntPtr NativeFieldInfoPtr_czapkaRightOldPos
+    private static IntPtr NativeFieldInfoPtr_sprezynaRightOldPos
+    private static IntPtr NativeFieldInfoPtr_palakWAmorkuRightOldPos
+    private static IntPtr NativeFieldInfoPtr_czapkaLeftOldPos
+    private static IntPtr NativeFieldInfoPtr_sprezynaLeftOldPos
+    private static IntPtr NativeFieldInfoPtr_palakWAmorkuLeftOldPos
+    private static IntPtr NativeFieldInfoPtr_i_seat1_h
+    private static IntPtr NativeFieldInfoPtr_i_seat2_h
+    private static IntPtr NativeFieldInfoPtr_i_wheel_h
+    private static IntPtr NativeFieldInfoPtr_i_bench_h
+    private static IntPtr NativeFieldInfoPtr_i_bench_front_h
+    private static IntPtr NativeFieldInfoPtr_InteriorParams
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateFront_h
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateFront
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateFrontPos
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateFrontRot
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateFrontScale
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateRear_h
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateRear
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateRearPos
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateRearRot
+    private static IntPtr NativeFieldInfoPtr_ex_licensePlateRearScale
+    private static IntPtr NativeFieldInfoPtr_EngineParams
+    private static IntPtr NativeFieldInfoPtr_e_engine_h
+    private static IntPtr NativeFieldInfoPtr_EngineData
+    private static IntPtr NativeFieldInfoPtr_DriveshaftParams
+    private static IntPtr NativeFieldInfoPtr_ds_h
+    private static IntPtr NativeFieldInfoPtr_Parts
+    private static IntPtr NativeFieldInfoPtr_WheelsData
+    private static IntPtr NativeFieldInfoPtr_w_frontRightWheel_h
+    private static IntPtr NativeFieldInfoPtr_w_frontLeftWheel_h
+    private static IntPtr NativeFieldInfoPtr_w_rearRightWheel_h
+    private static IntPtr NativeFieldInfoPtr_w_rearLeftWheel_h
+    private static IntPtr NativeFieldInfoPtr_w_frontWheelMaxSize
+    private static IntPtr NativeFieldInfoPtr_w_rearWheelMaxSize
+    private static IntPtr NativeFieldInfoPtr_rimOneSize
+    private static IntPtr NativeFieldInfoPtr_l_globalCondition
+    private static IntPtr NativeFieldInfoPtr_l_partsConditions
+    private static IntPtr NativeFieldInfoPtr_l_panelsConditions
+    private static IntPtr NativeFieldInfoPtr_l_uniqueMod
+    private static IntPtr NativeFieldInfoPtr_l_blockOBD
+    private static IntPtr NativeFieldInfoPtr_setupFileText
+    private static IntPtr NativeFieldInfoPtr_modelLoaded
+    private static IntPtr NativeFieldInfoPtr_done
+    private static IntPtr NativeFieldInfoPtr_loadedFromFile
+    private static IntPtr NativeFieldInfoPtr_addInteractiveObject
+    private static IntPtr NativeFieldInfoPtr_rotateWheels
+    private static IntPtr NativeFieldInfoPtr_moveCarWithWheels
+    private static IntPtr NativeFieldInfoPtr_isExploding
+    private static IntPtr NativeFieldInfoPtr_lifter
+    private static IntPtr NativeFieldInfoPtr_shadersBackup
+    private static IntPtr NativeFieldInfoPtr_LightsOn
+    private static IntPtr NativeFieldInfoPtr_rustIsSwitched
+    private static IntPtr NativeFieldInfoPtr_CanMountUnmountBodyParts
+    private static IntPtr NativeFieldInfoPtr_OnSwitchCarPart
+    private static IntPtr NativeFieldInfoPtr_cachedCondition
+    private static IntPtr NativeFieldInfoPtr_haveCachedCondition
+    private static IntPtr NativeFieldInfoPtr_checkCarPartsBoltsMissingPartID
+    private static IntPtr NativeFieldInfoPtr_CheckCarBodyMissingPartID
+    private static IntPtr NativeMethodInfoPtr_GetWelderCost_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetInteriorDetailingCost_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CachePartScripts_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetPartScriptCache_Public_Il2CppReferenceArray_1_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_ClearPartScriptCache_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetNewLicensePlateNumber_Public_Void_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCustomerCar_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetGUID_Public_Guid_0
+    private static IntPtr NativeMethodInfoPtr_IsBodyHidden_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetFactoryColor_Public_Void_Color_0
+    private static IntPtr NativeMethodInfoPtr_GetFactoryColor_Public_Color_0
+    private static IntPtr NativeMethodInfoPtr_CarIsInFactoryColor_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CheckFactoryColorOnCarParts_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetFactoryPaintType_Public_Void_PaintType_0
+    private static IntPtr NativeMethodInfoPtr_GetFactoryPaintType_Public_PaintType_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomMileage_Public_Void_SceneType_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomMileage_Public_Void_AuctionType_0
+    private static IntPtr NativeMethodInfoPtr_GetPaintData_Public_PaintData_0
+    private static IntPtr NativeMethodInfoPtr_SetCarPaintType_Public_Boolean_CarPart_PaintType_0
+    private static IntPtr NativeMethodInfoPtr_SetCarColorAndPaintType_Private_Void_CarPart_Color_PaintType_0
+    private static IntPtr NativeMethodInfoPtr_SetCustomCarPaintType_Public_Void_PaintData_0
+    private static IntPtr NativeMethodInfoPtr_SetLastCustomCarPaintType_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetCustomCarPaintType_Public_Void_CarPart_PaintData_0
+    private static IntPtr NativeMethodInfoPtr_GetColorWithoutAlpha_Public_Color_0
+    private static IntPtr NativeMethodInfoPtr_GetNegotationPriceMod_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetNegotiationPriceMod_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetCarPart_Public_CarPart_String_0
+    private static IntPtr NativeMethodInfoPtr_GetPart_Public_Boolean_String_byref_Part_0
+    private static IntPtr NativeMethodInfoPtr_IsDefault_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_GetDefaultName_Public_String_String_0
+    private static IntPtr NativeMethodInfoPtr_IsMountUnmoutWith_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_set_CarBrand_Public_set_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_get_CarBrand_Public_get_String_0
+    private static IntPtr NativeMethodInfoPtr_GetAllowedPlace_Public_Boolean_AllowedPlaces_0
+    private static IntPtr NativeMethodInfoPtr_GetAllowedPlace_Public_Boolean_AllowedPlaces_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetAllowedPlaces_Public_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_GetAllowedPlacesForEditor_Public_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_GetFrontCenterSusp_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetRearCenterSusp_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetFrontLeftSusp_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetFrontRightSusp_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetRearLeftSusp_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetRearRightSusp_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetLeftSeatHandle_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetRightSeatHandle_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetSteeringWheelHandle_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetEngine_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetDriveshaft_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetFrontWheelMaxSize_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetRearWheelMaxSize_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetWheels_Public_Il2CppReferenceArray_1_Wheel_0
+    private static IntPtr NativeMethodInfoPtr_SetET_Public_Void_WheelType_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetEngineName_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_ResetET_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetET_Public_Int32_WheelType_0
+    private static IntPtr NativeMethodInfoPtr_GetWheelFLHandle_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetWheelFRHandle_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetWheelRLHandle_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetWheelRRHandle_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_get_IsExploding_Public_get_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_set_IsExploding_Private_set_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ResetCarLifter_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetConnectedLifter_Public_CarLifter_0
+    private static IntPtr NativeMethodInfoPtr_GetParts_Public_List_1_Part_0
+    private static IntPtr NativeMethodInfoPtr_GetCarParts_Public_List_1_CarPart_0
+    private static IntPtr NativeMethodInfoPtr_EnablePartScripts_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_EnablePartScript_Public_Void_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_EnableInteractiveObjects_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_EnableInteractiveObject_Public_Void_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CopyPartsParameters_Public_Void_List_1_CarPart_List_1_BonusPart_Color_0
+    private static IntPtr NativeMethodInfoPtr_GetCarPart_Public_CarPart_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetName_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_HaveTunedParts_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetNameWithSufix_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetRootPosition_Public_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_GetRoot_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetModel_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetRootTransform_Public_Transform_0
+    private static IntPtr NativeMethodInfoPtr_IsCarLoaded_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsLoadedFromFile_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetState_Public_CarLifterState_0
+    private static IntPtr NativeMethodInfoPtr_IsCarOnLifter_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetPlaceNo_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_DeleteCar_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_OnDestroy_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_DeleteCar_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetupLoadPlace_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Start_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Init_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_ChangeCarVersion_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_LoadCar_Public_IEnumerator_String_0
+    private static IntPtr NativeMethodInfoPtr_PreparePartScriptCuller_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_PreparePartScriptCullerForBackgroundCars_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_PrepareCollider_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetModelScale_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetRimRadius_Public_Single_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetTireWidth_Public_Single_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetWheelRadius_Public_Single_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetFrontTireSize_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetFrontRimType_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetWheel_Public_Wheel_WheelType_0
+    private static IntPtr NativeMethodInfoPtr_GetGreaterWheelPoint_Public_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_GetLowestWheelPoint_Public_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_GetLowestWheelPoint_Public_Vector3_WheelType_0
+    private static IntPtr NativeMethodInfoPtr_GetGreaterWheelRadius_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetGreaterWheel_Public_WheelType_0
+    private static IntPtr NativeMethodInfoPtr_GetFrontWheelRadius_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetRearWheelRadius_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetMinRimSize_Public_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetAngleOfSuspension_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetRearWheelPoint_Public_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_IsInPlace_Public_Boolean_CarPlace_0
+    private static IntPtr NativeMethodInfoPtr_PlaceAtPosition_Public_Void_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetupCarSupport_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ClearCarSupport_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetAdditionalCarRot_Private_Void_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_CheckIfItemExistAndHaveGoodCondition_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_SwitchCarLights_Public_Boolean_Boolean_byref_SwitchCarLightsLockReason_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_RotateLight_Private_LTDescr_GameObject_Vector3_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_DisableTaillightCover_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetUnmountWithCarParts_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetBlockedBy_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_EnableConvex_Private_Static_Void_Component_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_AddPartIfShould_Private_Void_INIContent_String_Transform_0
+    private static IntPtr NativeMethodInfoPtr_LoadAndPrepareModel_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_UpdateModelRotation_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetEngineSound_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetBlockOBD_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetTurboSound_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetEngineData_Public_Single_String_0
+    private static IntPtr NativeMethodInfoPtr_CalcEngineValue_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CalcTuningValue_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_CheckIfPowerChanged_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_MeasurePower_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CalcBrakesValue_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetBrakesValue_Private_Static_Single_Il2CppReferenceArray_1_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_CalcTuningCost_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetWheelAllowedColor_Protected_Void_Int32_String_0
+    private static IntPtr NativeMethodInfoPtr_LoadConfig_Private_Boolean_byref_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CreateExterior_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetExterior_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_UpdateExteriorValues_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetLicensePlateNumber_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateInterior_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetInterior_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateChassis_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateChassisAsync_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_DestroyOldChassis_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ResetChassis_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CopyTransform_Private_Void_Transform_Transform_0
+    private static IntPtr NativeMethodInfoPtr_ResetAbsorberLeftPosition_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ResetAbsorberRightPosition_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetChassis_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateEngine_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_CreateEngineAsync_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_SetEngine_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SwapEngine_Public_IEnumerator_GroupItem_0
+    private static IntPtr NativeMethodInfoPtr_SupportsEngineSwap_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetEngineSwapOptions_Public_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_CanSwapEngineTo_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_RedoneEnginePartScriptBlocks_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateDriveshaft_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetDriveshaft_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateParts_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetParts_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetBonusParts_Public_List_1_BonusPart_0
+    private static IntPtr NativeMethodInfoPtr_AddBonusPart_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetCarLightParts_Public_List_1_CarLightParams_0
+    private static IntPtr NativeMethodInfoPtr_AddCarLight_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateCarLightParts_Protected_Void_0
+    private static IntPtr NativeMethodInfoPtr_RemoveBonusPart_Public_Void_BonusPart_0
+    private static IntPtr NativeMethodInfoPtr_RemoveCarLightPart_Public_Void_CarLightParams_0
+    private static IntPtr NativeMethodInfoPtr_CreateBonusParts_Protected_Void_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_TakeOffBonusPart_Public_Void_InteractiveObject_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SwapBonusPart_Public_Void_BonusPart_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetBonusPart_Public_BonusPart_InteractiveObject_0
+    private static IntPtr NativeMethodInfoPtr_GetBonusPart_Public_BonusPart_String_0
+    private static IntPtr NativeMethodInfoPtr_CreateWheels_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CreateWheelsIO_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateWheelMeshCollider_Public_Void_WheelType_0
+    private static IntPtr NativeMethodInfoPtr_DoWheelMath_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_UpdateET_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetWheelSize_Public_Void_Int32_Int32_Int32_WheelType_0
+    private static IntPtr NativeMethodInfoPtr_GetWheelSize_Public_Vector3_WheelType_0
+    private static IntPtr NativeMethodInfoPtr_SetWheelSizes_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetConditionAll_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_TweenConditionAll_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SwitchRusted_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SwitchRusted_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_TweenRust_Private_Void_CarPart_0
+    private static IntPtr NativeMethodInfoPtr_SetRustVal_Public_IEnumerator_Material_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomMissingPanels_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SetMountObjectsRandomCondition_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetMountObjectsStuck_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomColorPanels_Public_IEnumerator_Int32_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomMissingParts_Public_Void_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SetAllPartsMissing_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomMissingSuspension_Public_Void_Int32_Int32_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomHeadlampAlignment_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomWheelsAlignment_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetRustRandomParts_Public_Void_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetRustRandomPartsAsync_Public_Void_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetCondition_Public_Void_CarPart_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomPartsConditions_Public_Void_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_Dev_RepairAllBody_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateCarBodyParts_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateCarBodyPartsAsync_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_UpdateCarBodyPart_Public_Void_CarPart_0
+    private static IntPtr NativeMethodInfoPtr_UpdateCarBodyPart_Public_Void_CarPart_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_ShowCarConditions_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_HideCarConditions_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SwitchBody_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideInteriorToMount_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideInteriorPartToMount_Private_Void_GameObject_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_EnableIO_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideBody_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideBody_Public_Void_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideInterior_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideInterior_Public_Void_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideInteriorPart_Private_Void_GameObject_String_Boolean_Boolean_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetRawRustMap_Protected_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetRustMap_Protected_IEnumerator_String_0
+    private static IntPtr NativeMethodInfoPtr_UpdateRustMap_Private_Void_CarPart_0
+    private static IntPtr NativeMethodInfoPtr_TweenExteriorDustWash_Public_Void_Single_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_TweenInteriorConditionAndDust_Public_Void_Single_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetDustValue_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetDentValue_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_EnableDust_Public_Void_CarPart_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetWashFactorValue_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_NeedToWashCar_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetWashFactor_Public_Void_CarPart_Single_0
+    private static IntPtr NativeMethodInfoPtr_AddWashFactorValue_Public_Void_CarPart_Single_0
+    private static IntPtr NativeMethodInfoPtr_AddDustValue_Public_Void_CarPart_Single_0
+    private static IntPtr NativeMethodInfoPtr_AddDustValueOnParts_Public_Void_PartScript_Single_0
+    private static IntPtr NativeMethodInfoPtr_EnableRustOutside_Public_Void_CarPart_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCarColor_Public_Color_0
+    private static IntPtr NativeMethodInfoPtr_SetDent_Public_Void_CarPart_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomDent_Public_Void_Vector2_Vector2_Vector2_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomDust_Public_Void_Vector2_Vector2_0
+    private static IntPtr NativeMethodInfoPtr_SetCarColor_Public_Boolean_CarPart_Color_0
+    private static IntPtr NativeMethodInfoPtr_SetCarLivery_Public_Boolean_CarPart_String_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetCarAdditionalTexture_Public_Boolean_CarPart_Texture_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetRandomCarColor_Public_AllowedColor_0
+    private static IntPtr NativeMethodInfoPtr_SetColorForThumbnail_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomCarColor_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetDefaultCarLivery_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetRandomCarLivery_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetNextLivery_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetPartInfo_Public_CarPart_String_0
+    private static IntPtr NativeMethodInfoPtr_IsPartUnmounted_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_TakeOffCarPartFromSave_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_TakeOnCarPartFromSave_Private_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_TakeOffCarPart_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_SwapCarPartInstant_Public_Void_String_String_0
+    private static IntPtr NativeMethodInfoPtr_TakeOffCarPart_Public_IEnumerator_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CanTakeOffCarPart_Public_Boolean_String_byref_TakePartOffLockReason_0
+    private static IntPtr NativeMethodInfoPtr_ChangeLicencePlateTexture_Public_Void_CarPart_String_0
+    private static IntPtr NativeMethodInfoPtr_ChangeLicencePlateTexture_Public_Void_CarPart_Nullable_1_LicensePlate_0
+    private static IntPtr NativeMethodInfoPtr_GetLicencePlateTextureName_Public_String_String_0
+    private static IntPtr NativeMethodInfoPtr_GetCarPartColor_Public_Color_String_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideItemsToMount_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowHideBonusPartsToMount_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetConnectedCarPart_Public_CarPart_BonusPart_0
+    private static IntPtr NativeMethodInfoPtr_SwitchCarPart_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_SwitchCarPart_Public_Void_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_TunePart_Private_Boolean_String_String_0
+    private static IntPtr NativeMethodInfoPtr_SwitchCarPart_Public_Void_CarPart_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetConnectedBonusParts_Private_List_1_BonusPart_SpecialGroup_0
+    private static IntPtr NativeMethodInfoPtr_NameToSpecialGroupForBonusParts_Private_SpecialGroup_String_0
+    private static IntPtr NativeMethodInfoPtr_SwitchCarPart_Public_IEnumerator_CarPart_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ExplodeCar_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CloseCarAnimated_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_CloseCar_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CalcGlobalCondition_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetPartsGlobalCondition_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetBodyCondition_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetDetailsCondition_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetInteriorCondition_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetBodyGlobalCondition_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetPanelsGlobalCondition_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_ExamineAllParts_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CalcBodyValue_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CalcPartsValue_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CalcCarValue_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetPartPrice_Public_Int32_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetCarPrice_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetBodyPrice_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetPartsPrice_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetCustomerCar_Public_Void_Boolean_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SaveCarToFile_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetSaveName_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_SaveCarToFile_Public_Void_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_LoadCarFromFile_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_LoadCarFromFile_Public_IEnumerator_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_LoadCarFromFile_Public_IEnumerator_String_0
+    private static IntPtr NativeMethodInfoPtr_LoadCarFromFile_Private_IEnumerator_NewCarData_0
+    private static IntPtr NativeMethodInfoPtr_ChangeState_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetGlobalCondition_Public_Vector2_0
+    private static IntPtr NativeMethodInfoPtr_GetPartsCondition_Public_Vector2_0
+    private static IntPtr NativeMethodInfoPtr_GetPanelsCondition_Public_Vector2_0
+    private static IntPtr NativeMethodInfoPtr_GetUniqueCarValueMod_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_ChangePosition_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ChangePosition_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_DisconnectTools_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDrawGizmosSelected_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_FrontWheelsHaveThisSameSize_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_RearWheelsHaveThisSameSize_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CacheEnginePartsAvgCondition_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ClearEnginePartsConditionCache_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetEnginePartsAvgCondition_Public_Single_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_HaveEngine_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetEnginePartsAreMounted_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetBrakeAvgCondition_Public_Single_String_0
+    private static IntPtr NativeMethodInfoPtr_GetSuspensionAvgCondition_Public_Single_String_0
+    private static IntPtr NativeMethodInfoPtr_LockObject_Public_Void_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CheckCarHaveMountedWheel_Public_CheckCarCanDriveState_0
+    private static IntPtr NativeMethodInfoPtr_CheckIfHaveWheels_Public_CheckCarCanDriveState_0
+    private static IntPtr NativeMethodInfoPtr_GetMissingWheelTypes_Public_MissingWheelTypes_0
+    private static IntPtr NativeMethodInfoPtr_CheckCarPartsAreMounted_Public_CheckCarCanDriveState_0
+    private static IntPtr NativeMethodInfoPtr_CheckIfCarAbleToDrive_Public_CheckCarCanDriveState_0
+    private static IntPtr NativeMethodInfoPtr_CarCanDrive_Public_CheckCarCanDriveState_0
+    private static IntPtr NativeMethodInfoPtr_CarCanMoveInGarage_Public_CheckCarCanDriveState_0
+    private static IntPtr NativeMethodInfoPtr_GetMissingPartID_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_CheckCarPartsBolts_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CheckIfHaveBody_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CheckCarHaveOil_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CheckCarHaveFluid_Public_Boolean_CarFluidType_0
+    private static IntPtr NativeMethodInfoPtr_CheckCarHaveFluids_Public_Boolean_byref_CarFluidType_Job_0
+    private static IntPtr NativeMethodInfoPtr_CheckScam_Public_Boolean_Job_0
+    private static IntPtr NativeMethodInfoPtr_GetOtherPartsCondition_Public_Single_Job_0
+    private static IntPtr NativeMethodInfoPtr_GetFloatFromIni_Public_Single_String_String_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetStringFromIni_Public_String_String_String_String_0
+    private static IntPtr NativeMethodInfoPtr_GetIntFromIni_Public_Int32_String_String_Int32_0
+    private static IntPtr NativeMethodInfoPtr_UseWelder_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_TweenCondition_Public_Void_String_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_UseInteriorDetailingToolkit_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UseOilbin_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UseEngineCrane_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetEngineSide_Public_direction_0
+    private static IntPtr NativeMethodInfoPtr_UseEngineCraneMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetConditionOnBody_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetConditionOnDetails_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetConditionOnBody_Public_Void_Single_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_SetConditionOnDetails_Public_Void_Single_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_GetCurrentPerformanceIndexForCustomCar_Public_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetCurrentPerformanceIndex_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetRim_Public_Void_String_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetTire_Public_Void_String_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_UpdateWheels_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetWheelsColorsFromConfig_Public_Void_Wheels_0
+    private static IntPtr NativeMethodInfoPtr_SetCarRotation_Public_Void_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_SetSteeringAngle_Public_Void_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_SetCustomCarPosition_Public_Void_Transform_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Method_Private_Void_String_Boolean_byref___c__DisplayClass250_0_PDM_0
+    private static IntPtr NativeMethodInfoPtr__LoadConfig_b__264_0_Private_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_Method_Internal_Static_Void_GameObject_WheelColorData_0
+  -- Properties --
+    String carToLoad { get;set; }
+    Int32 ConfigVersion { get;set; }
+    Int32 placeNo { get;set; }
+    Boolean liveUpdate { get;set; }
+    Boolean livePlaceOnPosition { get;set; }
+    Boolean loadOnStart { get;set; }
+    Boolean randomColor { get;set; }
+    Boolean loadOnlyWheels { get;set; }
+    Boolean keepNoninstancedMaterials { get;set; }
+    Boolean isFatalException { get;set; }
+    Boolean customerCar { get;set; }
+    Int32 currentLiveryIndex { get;set; }
+    Texture2D rustMap { get;set; }
+    Texture2D rustMapTuning { get;set; }
+    Boolean rawRustmap { get;set; }
+    Boolean SaveComplete { get;set; }
+    Int32 orderConnection { get;set; }
+    LicensePlatesData LicensePlatesData { get;set; }
+    String cachedName { get;set; }
+    Il2CppReferenceArray<PartScript> partScriptCache { get;set; }
+    Boolean partScriptsCached { get;set; }
+    Boolean inGarage { get;set; }
+    Guid guid { get;set; }
+    ToolsData ToolsData { get;set; }
+    FluidsData FluidsData { get;set; }
+    Int32 CurrentUsedFluidId { get;set; }
+    CarFluidType CurrentUsedFluid { get;set; }
+    CarInfoData CarInfoData { get;set; }
+    SalonCarData SalonCarData { get;set; }
+    HeadlampAlignment HeadlampLeftAlignment { get;set; }
+    HeadlampAlignment HeadlampRightAlignment { get;set; }
+    WheelsAlignment WheelsAlignment { get;set; }
+    CarSupportData CarSupportData { get;set; }
+    Int32 MeasuredDragIndex { get;set; }
+    GameObject root { get;set; }
+    GameObject model { get;set; }
+    Boolean bodyHidden { get;set; }
+    Boolean ShowConditions { get;set; }
+    Boolean updateColorLive { get;set; }
+    Color factoryColor { get;set; }
+    PaintType factoryPaintType { get;set; }
+    Color color { get;set; }
+    Color lastColor { get;set; }
+    PaintData paintData { get;set; }
+    Boolean IsCustomPaintType { get;set; }
+    Int32 specialState { get;set; }
+    Single additionalCarRot { get;set; }
+    Single negotationMod { get;set; }
+    List<CarPart> carParts { get;set; }
+    List<BonusPart> bonusParts { get;set; }
+    List<CarLightParams> carLightParts { get;set; }
+    Vector3 groundRotation { get;set; }
+    Transform groundPosition { get;set; }
+    CarBonusPartsData CarBonusPartsData { get;set; }
+    SuspensionParams SuspensionParams { get;set; }
+    CarLightBasic CarLightBasic { get;set; }
+    String m_model { get;set; }
+    String m_rustTex { get;set; }
+    Vector3 m_rotation { get;set; }
+    Single m_scale { get;set; }
+    String m_carBrand { get;set; }
+    OtherData OtherData { get;set; }
+    DialData DialData { get;set; }
+    List<AllowedColor> AllowedColors { get;set; }
+    AllowedColor ThumbnailColor { get;set; }
+    GameObject s_frontCenter_h { get;set; }
+    GameObject s_rearCenter_h { get;set; }
+    GameObject s_frontRight_h { get;set; }
+    GameObject s_frontLeft_h { get;set; }
+    GameObject s_rearRight_h { get;set; }
+    GameObject s_rearLeft_h { get;set; }
+    Vector3 czapkaRightOldPos { get;set; }
+    Vector3 sprezynaRightOldPos { get;set; }
+    Vector3 palakWAmorkuRightOldPos { get;set; }
+    Vector3 czapkaLeftOldPos { get;set; }
+    Vector3 sprezynaLeftOldPos { get;set; }
+    Vector3 palakWAmorkuLeftOldPos { get;set; }
+    GameObject i_seat1_h { get;set; }
+    GameObject i_seat2_h { get;set; }
+    GameObject i_wheel_h { get;set; }
+    GameObject i_bench_h { get;set; }
+    GameObject i_bench_front_h { get;set; }
+    InteriorParams InteriorParams { get;set; }
+    GameObject ex_licensePlateFront_h { get;set; }
+    String ex_licensePlateFront { get;set; }
+    Vector3 ex_licensePlateFrontPos { get;set; }
+    Vector3 ex_licensePlateFrontRot { get;set; }
+    Single ex_licensePlateFrontScale { get;set; }
+    GameObject ex_licensePlateRear_h { get;set; }
+    String ex_licensePlateRear { get;set; }
+    Vector3 ex_licensePlateRearPos { get;set; }
+    Vector3 ex_licensePlateRearRot { get;set; }
+    Single ex_licensePlateRearScale { get;set; }
+    EngineParams EngineParams { get;set; }
+    GameObject e_engine_h { get;set; }
+    EngineData EngineData { get;set; }
+    DriveshaftParams DriveshaftParams { get;set; }
+    GameObject ds_h { get;set; }
+    List<Part> Parts { get;set; }
+    CarWheelsData WheelsData { get;set; }
+    GameObject w_frontRightWheel_h { get;set; }
+    GameObject w_frontLeftWheel_h { get;set; }
+    GameObject w_rearRightWheel_h { get;set; }
+    GameObject w_rearLeftWheel_h { get;set; }
+    Single w_frontWheelMaxSize { get;set; }
+    Single w_rearWheelMaxSize { get;set; }
+    Boolean rimOneSize { get;set; }
+    Vector2 l_globalCondition { get;set; }
+    Vector2 l_partsConditions { get;set; }
+    Vector2 l_panelsConditions { get;set; }
+    Single l_uniqueMod { get;set; }
+    Boolean l_blockOBD { get;set; }
+    String setupFileText { get;set; }
+    Boolean modelLoaded { get;set; }
+    Boolean done { get;set; }
+    Boolean loadedFromFile { get;set; }
+    Boolean addInteractiveObject { get;set; }
+    Single rotateWheels { get;set; }
+    Boolean moveCarWithWheels { get;set; }
+    Boolean isExploding { get;set; }
+    CarLifter lifter { get;set; }
+    ShadersBackup shadersBackup { get;set; }
+    Boolean LightsOn { get;set; }
+    Boolean rustIsSwitched { get;set; }
+    Boolean CanMountUnmountBodyParts { get;set; }
+    Action OnSwitchCarPart { get;set; }
+    Single cachedCondition { get;set; }
+    Boolean haveCachedCondition { get;set; }
+    String checkCarPartsBoltsMissingPartID { get;set; }
+    String CheckCarBodyMissingPartID { get;set; }
+    String CarBrand { get;set; }
+    Boolean IsExploding { get;set; }
+  -- Methods --
+    Int32 GetWelderCost()
+    Int32 GetInteriorDetailingCost()
+    Void CachePartScripts()
+    Il2CppReferenceArray<PartScript> GetPartScriptCache()
+    Void ClearPartScriptCache()
+    Void SetNewLicensePlateNumber(String newLicensePlateNumber, Boolean isFront)
+    Boolean GetCustomerCar()
+    Guid GetGUID()
+    Boolean IsBodyHidden()
+    Void SetFactoryColor(Color c)
+    Color GetFactoryColor()
+    Boolean CarIsInFactoryColor()
+    Boolean CheckFactoryColorOnCarParts()
+    Void SetFactoryPaintType(PaintType paintType)
+    PaintType GetFactoryPaintType()
+    Void SetRandomMileage(SceneType carFrom)
+    Void SetRandomMileage(AuctionType auctionType)
+    PaintData GetPaintData()
+    Boolean SetCarPaintType(CarPart part, PaintType paintType)
+    Void SetCarColorAndPaintType(CarPart part, Color newColor, PaintType paintType)
+    Void SetCustomCarPaintType(PaintData data)
+    Void SetLastCustomCarPaintType()
+    Void SetCustomCarPaintType(CarPart part, PaintData data)
+    Color GetColorWithoutAlpha()
+    Single GetNegotationPriceMod()
+    Void SetNegotiationPriceMod(Single newMod)
+    CarPart GetCarPart(String partName)
+    Boolean GetPart(String partName, Part& part)
+    Boolean IsDefault(String partName)
+    String GetDefaultName(String partName)
+    Boolean IsMountUnmoutWith(String partName)
+    Boolean GetAllowedPlace(AllowedPlaces place)
+    Boolean GetAllowedPlace(AllowedPlaces place, Int32 orderNumber)
+    Il2CppStringArray GetAllowedPlaces()
+    Il2CppStringArray GetAllowedPlacesForEditor()
+    GameObject GetFrontCenterSusp()
+    GameObject GetRearCenterSusp()
+    GameObject GetFrontLeftSusp()
+    GameObject GetFrontRightSusp()
+    GameObject GetRearLeftSusp()
+    GameObject GetRearRightSusp()
+    GameObject GetLeftSeatHandle()
+    GameObject GetRightSeatHandle()
+    GameObject GetSteeringWheelHandle()
+    GameObject GetEngine()
+    GameObject GetDriveshaft()
+    Single GetFrontWheelMaxSize()
+    Single GetRearWheelMaxSize()
+    Il2CppReferenceArray<Wheel> GetWheels()
+    Void SetET(WheelType wheelType, Int32 ET)
+    String GetEngineName()
+    Void ResetET()
+    Int32 GetET(WheelType wheelType)
+    GameObject GetWheelFLHandle()
+    GameObject GetWheelFRHandle()
+    GameObject GetWheelRLHandle()
+    GameObject GetWheelRRHandle()
+    Void ResetCarLifter()
+    CarLifter GetConnectedLifter()
+    List<Part> GetParts()
+    List<CarPart> GetCarParts()
+    Void EnablePartScripts(Boolean enable)
+    Void EnablePartScript(String id, Boolean enable)
+    Void EnableInteractiveObjects(Boolean enable)
+    Void EnableInteractiveObject(String id, Boolean enable)
+    Void CopyPartsParameters(List<CarPart> copy, List<BonusPart> bonusPartsCopy, Color backupColor)
+    CarPart GetCarPart(Int32 no)
+    String GetName()
+    Boolean HaveTunedParts()
+    String GetNameWithSufix()
+    Vector3 GetRootPosition()
+    GameObject GetRoot()
+    GameObject GetModel()
+    Transform GetRootTransform()
+    Boolean IsCarLoaded()
+    Boolean IsLoadedFromFile()
+    CarLifterState GetState()
+    Boolean IsCarOnLifter()
+    Int32 GetPlaceNo()
+    Void DeleteCar(Boolean disconnectGroundPosition)
+    Void OnDestroy()
+    Void DeleteCar()
+    Void SetupLoadPlace(Int32 place)
+    Void Awake()
+    Void Start()
+    IEnumerator Init()
+    Void ChangeCarVersion(Int32 index)
+    IEnumerator LoadCar(String name)
+    Void PreparePartScriptCuller()
+    Void PreparePartScriptCullerForBackgroundCars()
+    Void PrepareCollider()
+    Void SetModelScale()
+    Single GetRimRadius(Int32 index)
+    Single GetTireWidth(Int32 index)
+    Single GetWheelRadius(Int32 index)
+    String GetFrontTireSize()
+    String GetFrontRimType()
+    Wheel GetWheel(WheelType wheelType)
+    Vector3 GetGreaterWheelPoint()
+    Vector3 GetLowestWheelPoint()
+    Vector3 GetLowestWheelPoint(WheelType wheelType)
+    Single GetGreaterWheelRadius()
+    WheelType GetGreaterWheel()
+    Single GetFrontWheelRadius()
+    Single GetRearWheelRadius()
+    Int32 GetMinRimSize(Boolean isFront)
+    Single GetAngleOfSuspension()
+    Vector3 GetRearWheelPoint()
+    Boolean IsInPlace(CarPlace place)
+    Void PlaceAtPosition(Boolean setAdditionalCarRot, Boolean positionCenter)
+    Void SetupCarSupport()
+    Void ClearCarSupport()
+    Void SetAdditionalCarRot(Boolean generateAdditionalCarRot, Single rotationValue)
+    Boolean CheckIfItemExistAndHaveGoodCondition(String partName)
+    Boolean SwitchCarLights(Boolean on, SwitchCarLightsLockReason& reason, Boolean instant, Boolean isTrack)
+    LTDescr RotateLight(GameObject light, Vector3 angle, Boolean instant)
+    Void DisableTaillightCover()
+    Void SetUnmountWithCarParts()
+    Void SetBlockedBy()
+    static Void EnableConvex(Component t, Boolean inflateMesh, Boolean disableShadows)
+    Void AddPartIfShould(INIContent ini, String partName, Transform part)
+    IEnumerator LoadAndPrepareModel()
+    Void UpdateModelRotation()
+    String GetEngineSound()
+    Boolean GetBlockOBD()
+    Boolean GetTurboSound()
+    Single GetEngineData(String key)
+    Int32 CalcEngineValue()
+    Single CalcTuningValue()
+    Boolean CheckIfPowerChanged()
+    Void MeasurePower()
+    Single CalcBrakesValue()
+    static Single GetBrakesValue(Il2CppReferenceArray<PartScript> parts)
+    Single CalcTuningCost()
+    Void SetWheelAllowedColor(Int32 index, String data)
+    Boolean LoadConfig(Boolean& missingConfig)
+    Void CreateExterior()
+    Void SetExterior(Boolean useCarLoaderValues)
+    Void UpdateExteriorValues()
+    Void SetLicensePlateNumber()
+    Void CreateInterior()
+    Void SetInterior()
+    Void CreateChassis()
+    IEnumerator CreateChassisAsync()
+    Void DestroyOldChassis()
+    Void ResetChassis()
+    Void CopyTransform(Transform from, Transform to)
+    Void ResetAbsorberLeftPosition()
+    Void ResetAbsorberRightPosition()
+    Void SetChassis()
+    Void CreateEngine(String sceneName)
+    IEnumerator CreateEngineAsync()
+    Void SetEngine()
+    IEnumerator SwapEngine(GroupItem groupItem)
+    Boolean SupportsEngineSwap()
+    Il2CppStringArray GetEngineSwapOptions()
+    Boolean CanSwapEngineTo(String engine)
+    Void RedoneEnginePartScriptBlocks()
+    Void CreateDriveshaft()
+    Void SetDriveshaft()
+    Void CreateParts()
+    Void SetParts()
+    List<BonusPart> GetBonusParts()
+    Void AddBonusPart()
+    List<CarLightParams> GetCarLightParts()
+    Void AddCarLight()
+    Void CreateCarLightParts()
+    Void RemoveBonusPart(BonusPart bonusPart)
+    Void RemoveCarLightPart(CarLightParams carLight)
+    Void CreateBonusParts(Boolean takeOff, Boolean forEditor)
+    Void TakeOffBonusPart(InteractiveObject io, Boolean instant)
+    Void SwapBonusPart(BonusPart bonusPart, String newId, Boolean fromEditor)
+    BonusPart GetBonusPart(InteractiveObject io)
+    BonusPart GetBonusPart(String id)
+    Void CreateWheels()
+    Void CreateWheelsIO()
+    Void UpdateWheelMeshCollider(WheelType wheelType)
+    Boolean DoWheelMath()
+    Boolean UpdateET()
+    Void SetWheelSize(Int32 wheelWidth, Int32 rimSize, Int32 tireSize, WheelType wheelType)
+    Vector3 GetWheelSize(WheelType wheelType)
+    Void SetWheelSizes()
+    Void SetConditionAll(Single newCondition)
+    Void TweenConditionAll()
+    Void SwitchRusted()
+    Void SwitchRusted(Single condition)
+    Void TweenRust(CarPart part)
+    IEnumerator SetRustVal(Material mat, Single to)
+    Void SetRandomMissingPanels(Int32 chance)
+    Void SetMountObjectsRandomCondition(Single carCondition)
+    Void SetMountObjectsStuck()
+    IEnumerator SetRandomColorPanels(Int32 chance, Single conditionRangeX, Single conditionRangeY)
+    Void SetRandomMissingParts(Int32 rangeX, Int32 rangeY)
+    Void SetAllPartsMissing()
+    Void SetRandomMissingSuspension(Int32 chanceToComplete, Int32 chanceToMissing, Int32 minMissingParts, Int32 maxMissingParts)
+    Void SetRandomHeadlampAlignment()
+    Void SetRandomWheelsAlignment()
+    Void SetRustRandomParts(Single min, Single max)
+    Void SetRustRandomPartsAsync(Single min, Single max)
+    Void SetCondition(CarPart part, Single condition)
+    Void SetRandomPartsConditions(Single min, Single max)
+    Void Dev_RepairAllBody()
+    Void UpdateCarBodyParts()
+    IEnumerator UpdateCarBodyPartsAsync()
+    Void UpdateCarBodyPart(CarPart part)
+    Void UpdateCarBodyPart(CarPart part, Il2CppStringArray interiorMaterials)
+    Void ShowCarConditions()
+    Void HideCarConditions()
+    Void SwitchBody(Boolean forExamine)
+    Void ShowHideInteriorToMount(Boolean show)
+    Void ShowHideInteriorPartToMount(GameObject part, String partName, Boolean show)
+    Void EnableIO(Boolean enable)
+    Void ShowHideBody(Boolean show)
+    Void ShowHideBody(Boolean show, Single XRayAlpha)
+    Void ShowHideInterior(Boolean show)
+    Void ShowHideInterior(Boolean show, Single XRayAlpha)
+    Void ShowHideInteriorPart(GameObject part, String partName, Boolean checkRenderer, Boolean withCanvas, Boolean show, Single XRayAlpha)
+    Void SetRawRustMap()
+    IEnumerator SetRustMap(String textureName)
+    Void UpdateRustMap(CarPart carPart)
+    Void TweenExteriorDustWash(Single targetDust, Single targetWash, Single time)
+    Void TweenInteriorConditionAndDust(Single targetCondition, Single targetDust, Single time)
+    Single GetDustValue()
+    Single GetDentValue()
+    Void EnableDust(CarPart part, Single value)
+    Single GetWashFactorValue()
+    Boolean NeedToWashCar()
+    Void SetWashFactor(CarPart part, Single value)
+    Void AddWashFactorValue(CarPart part, Single value)
+    Void AddDustValue(CarPart part, Single value)
+    Void AddDustValueOnParts(PartScript part, Single value)
+    Void EnableRustOutside(CarPart part, Boolean b)
+    Color GetCarColor()
+    Void SetDent(CarPart part, Single value)
+    Void SetRandomDent(Vector2 chanceCarRange, Vector2 chancePartRange, Vector2 dentValueRange)
+    Void SetRandomDust(Vector2 chanceCarRange, Vector2 dustValueRange)
+    Boolean SetCarColor(CarPart part, Color c)
+    Boolean SetCarLivery(CarPart part, String liveryName, Single liveryStrength)
+    Boolean SetCarAdditionalTexture(CarPart part, Texture texture, Single textureStrength)
+    AllowedColor GetRandomCarColor()
+    Void SetColorForThumbnail(Boolean setPaintType)
+    Void SetRandomCarColor(Boolean setAsFactory)
+    Void SetDefaultCarLivery()
+    Void SetRandomCarLivery()
+    Void SetNextLivery()
+    CarPart GetPartInfo(String name)
+    Boolean IsPartUnmounted(String name)
+    Void TakeOffCarPartFromSave(String name)
+    Void TakeOnCarPartFromSave(String name)
+    Void TakeOffCarPart(String partName)
+    Void SwapCarPartInstant(String from, String newPartId)
+    IEnumerator TakeOffCarPart(String name, Boolean off)
+    Boolean CanTakeOffCarPart(String name, TakePartOffLockReason& reason)
+    Void ChangeLicencePlateTexture(CarPart part, String newTexture)
+    Void ChangeLicencePlateTexture(CarPart part, Nullable<LicensePlate> licensePlate)
+    String GetLicencePlateTextureName(String name)
+    Color GetCarPartColor(String name)
+    Void ShowHideItemsToMount(Boolean b)
+    Void ShowHideBonusPartsToMount(Boolean show)
+    CarPart GetConnectedCarPart(BonusPart search)
+    Void SwitchCarPart(String name)
+    Void SwitchCarPart(String name, Boolean instant)
+    Boolean TunePart(String no, String newPartName)
+    Void SwitchCarPart(CarPart part, Boolean instant, Boolean switched)
+    List<BonusPart> GetConnectedBonusParts(SpecialGroup specialGroup)
+    SpecialGroup NameToSpecialGroupForBonusParts(String name)
+    IEnumerator SwitchCarPart(CarPart part, Boolean instant)
+    Void ExplodeCar()
+    IEnumerator CloseCarAnimated()
+    Void CloseCar(Boolean instant)
+    Single CalcGlobalCondition()
+    Single GetPartsGlobalCondition()
+    Single GetBodyCondition()
+    Single GetDetailsCondition()
+    Single GetInteriorCondition()
+    Single GetBodyGlobalCondition()
+    Single GetPanelsGlobalCondition()
+    Void ExamineAllParts()
+    Int32 CalcBodyValue()
+    Int32 CalcPartsValue()
+    Int32 CalcCarValue()
+    Int32 GetPartPrice(PartScript part)
+    Int32 GetCarPrice()
+    Int32 GetBodyPrice()
+    Int32 GetPartsPrice()
+    Void Update()
+    Void SetCustomerCar(Boolean b, Int32 job_id)
+    Void SaveCarToFile()
+    String GetSaveName()
+    Void SaveCarToFile(Int32 index, Boolean toParking)
+    Void LoadCarFromFile()
+    IEnumerator LoadCarFromFile(Int32 index, Boolean fromParking)
+    IEnumerator LoadCarFromFile(String file)
+    IEnumerator LoadCarFromFile(NewCarData carDataCheck)
+    Void ChangeState(Int32 state)
+    Vector2 GetGlobalCondition()
+    Vector2 GetPartsCondition()
+    Vector2 GetPanelsCondition()
+    Single GetUniqueCarValueMod()
+    Void ChangePosition()
+    Void ChangePosition(Int32 no)
+    Void DisconnectTools()
+    Void OnDrawGizmosSelected()
+    Boolean FrontWheelsHaveThisSameSize()
+    Boolean RearWheelsHaveThisSameSize()
+    Void CacheEnginePartsAvgCondition()
+    Void ClearEnginePartsConditionCache()
+    Single GetEnginePartsAvgCondition(Boolean useCached)
+    Boolean HaveEngine()
+    Boolean GetEnginePartsAreMounted()
+    Single GetBrakeAvgCondition(String typeOfWheel)
+    Single GetSuspensionAvgCondition(String typeOfWheel)
+    Void LockObject(String name, Boolean isLocked)
+    CheckCarCanDriveState CheckCarHaveMountedWheel()
+    CheckCarCanDriveState CheckIfHaveWheels()
+    MissingWheelTypes GetMissingWheelTypes()
+    CheckCarCanDriveState CheckCarPartsAreMounted()
+    CheckCarCanDriveState CheckIfCarAbleToDrive()
+    CheckCarCanDriveState CarCanDrive()
+    CheckCarCanDriveState CarCanMoveInGarage()
+    String GetMissingPartID()
+    Boolean CheckCarPartsBolts()
+    Boolean CheckIfHaveBody()
+    Boolean CheckCarHaveOil()
+    Boolean CheckCarHaveFluid(CarFluidType fluidType)
+    Boolean CheckCarHaveFluids(CarFluidType& fluidType, Job job)
+    Boolean CheckScam(Job job)
+    Single GetOtherPartsCondition(Job job)
+    Single GetFloatFromIni(String section, String key, Single defaultValue)
+    String GetStringFromIni(String section, String key, String defaultValue)
+    Int32 GetIntFromIni(String section, String key, Int32 defaultValue)
+    Void UseWelder()
+    Void TweenCondition(String carpartname, Single targetRust, Single time)
+    Void UseInteriorDetailingToolkit()
+    Void UseOilbin()
+    Void UseEngineCrane()
+    direction GetEngineSide()
+    Void UseEngineCraneMount()
+    Void SetConditionOnBody(Single newCondition)
+    Void SetConditionOnDetails(Single newCondition)
+    Void SetConditionOnBody(Single newCondition, Il2CppStringArray interiorMaterials)
+    Void SetConditionOnDetails(Single newCondition, Il2CppStringArray interiorMaterials)
+    Single GetCurrentPerformanceIndexForCustomCar(Single tuningValue)
+    Single GetCurrentPerformanceIndex()
+    Void SetRim(String rimID, Boolean isFront, Boolean setOriginal)
+    Void SetTire(String tireID, Boolean isFront, Boolean setOriginal)
+    Void UpdateWheels(Boolean front)
+    Void SetWheelsColorsFromConfig(Wheels wheels)
+    Void SetCarRotation(Vector3 rotation)
+    Void SetSteeringAngle(Vector3 rotation)
+    Void SetCustomCarPosition(Transform position)
+    Void Method_Private_Void_String_Boolean_byref___c__DisplayClass250_0_PDM_0(String partName, Boolean enableConvex, __c__DisplayClass250_0& )
+    Boolean _LoadConfig_b__264_0(String element)
+    static Void Method_Internal_Static_Void_GameObject_WheelColorData_0(GameObject wheel, WheelColorData wheelColorData)
+

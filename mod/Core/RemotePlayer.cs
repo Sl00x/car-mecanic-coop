@@ -4,59 +4,99 @@ using Steamworks;
 
 namespace CarMecaSim.Mp.Core
 {
-    /// <summary>A visible proxy for another player (the game has no body mesh, so we spawn one).</summary>
+    /// <summary>
+    /// A visible 3D avatar for another player (the game has no body mesh, so we build a simple
+    /// mechanic humanoid out of primitives): head, torso, arms, legs, a cap, per-player colour.
+    /// Oriented by yaw; head tilts by pitch; idle bob + arm swing when the peer is working.
+    /// </summary>
     public sealed class RemotePlayer
     {
         public CSteamID Id;
         public byte PlayerId;
         public string Name;
 
-        public Vector3 TargetPos;
+        public Vector3 TargetPos;   // eye/head position
         public float TargetYaw;
         public float TargetPitch;
         public byte Tool;
         public byte Mode;
         public float LastUpdate;
 
-        private GameObject _go;
+        private GameObject _root, _head, _torso, _armL, _armR;
         private Transform _tr;
+        private Vector3 _pos;
+        private float _yaw;
 
         public Vector3 WorldPos => _tr != null ? _tr.position : TargetPos;
 
         public void EnsureSpawned()
         {
-            if (_go != null) return;
+            if (_root != null) return;
             try
             {
-                _go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-                _go.name = "CMS_RemotePlayer_" + PlayerId;
-                var col = _go.GetComponent<Collider>();
-                if (col != null) UnityEngine.Object.Destroy(col); // don't block the local player
-                _tr = _go.transform;
-                _tr.localScale = new Vector3(0.5f, 0.9f, 0.5f);
-                var rend = _go.GetComponent<Renderer>();
-                if (rend != null && rend.material != null)
-                    rend.material.color = ColorFor(PlayerId);
+                var col = ColorFor(PlayerId);
+                var skin = new Color(0.86f, 0.70f, 0.56f);
+                var dark = new Color(0.14f, 0.14f, 0.16f);
+
+                _root = new GameObject("CMS_Avatar_" + PlayerId);
+                _tr = _root.transform;
+
+                // head is near the eye position; body hangs below.
+                _head  = Part(PrimitiveType.Sphere,   new Vector3(0f, -0.14f, 0.04f), new Vector3(0.26f, 0.26f, 0.26f), skin);
+                Part(PrimitiveType.Cube,   new Vector3(0f, -0.02f, 0.02f), new Vector3(0.30f, 0.14f, 0.30f), col, _head.transform); // cap
+                _torso = Part(PrimitiveType.Capsule, new Vector3(0f, -0.56f, 0f), new Vector3(0.42f, 0.34f, 0.30f), col);
+                _armL  = Part(PrimitiveType.Capsule, new Vector3(-0.27f, -0.52f, 0.02f), new Vector3(0.13f, 0.26f, 0.13f), col);
+                _armR  = Part(PrimitiveType.Capsule, new Vector3( 0.27f, -0.52f, 0.02f), new Vector3(0.13f, 0.26f, 0.13f), col);
+                Part(PrimitiveType.Capsule, new Vector3(-0.12f, -1.04f, 0f), new Vector3(0.15f, 0.30f, 0.15f), dark); // legs
+                Part(PrimitiveType.Capsule, new Vector3( 0.12f, -1.04f, 0f), new Vector3(0.15f, 0.30f, 0.15f), dark);
+
+                _pos = TargetPos; _yaw = TargetYaw;
             }
-            catch { /* rendering unavailable; proxy stays logical only */ }
+            catch { /* rendering unavailable */ }
+        }
+
+        private GameObject Part(PrimitiveType type, Vector3 localPos, Vector3 scale, Color color, Transform parent = null)
+        {
+            var go = GameObject.CreatePrimitive(type);
+            var c = go.GetComponent<Collider>();
+            if (c != null) UnityEngine.Object.Destroy(c);
+            var t = go.transform;
+            t.SetParent(parent != null ? parent : _root.transform, false);
+            t.localPosition = localPos;
+            t.localScale = scale;
+            var r = go.GetComponent<Renderer>();
+            if (r != null && r.material != null) r.material.color = color;
+            return go;
         }
 
         public void Despawn()
         {
-            try { if (_go != null) UnityEngine.Object.Destroy(_go); } catch { }
-            _go = null; _tr = null;
+            try { if (_root != null) UnityEngine.Object.Destroy(_root); } catch { }
+            _root = _head = _torso = _armL = _armR = null; _tr = null;
         }
 
         public void Update(float dt)
         {
             if (_tr == null) return;
-            // smooth toward the latest received transform
-            _tr.position = Vector3.Lerp(_tr.position, TargetPos, Mathf.Clamp01(dt * 12f));
-            var euler = new Vector3(0f, TargetYaw, 0f);
-            _tr.rotation = Quaternion.Slerp(_tr.rotation, Quaternion.Euler(euler), Mathf.Clamp01(dt * 12f));
+            // smooth follow
+            _pos = Vector3.Lerp(_pos, TargetPos, Mathf.Clamp01(dt * 12f));
+            _yaw = Mathf.LerpAngle(_yaw, TargetYaw, Mathf.Clamp01(dt * 12f));
+
+            float t = Time.unscaledTime;
+            float bob = Mathf.Sin(t * 2f) * 0.02f;
+            _tr.position = _pos + new Vector3(0f, bob, 0f);
+            _tr.rotation = Quaternion.Euler(0f, _yaw, 0f);
+
+            if (_head != null) _head.transform.localRotation = Quaternion.Euler(Mathf.Clamp(TargetPitch, -60f, 60f), 0f, 0f);
+
+            // working animation: swing arms if the peer is in an assemble/mount mode
+            bool working = Mode is 1 or 2 or 3 or 4 or 9 or 10 or 11 or 12 or 13 or 23;
+            float swing = working ? Mathf.Sin(t * 8f) * 35f : Mathf.Sin(t * 1.5f) * 4f;
+            if (_armR != null) _armR.transform.localRotation = Quaternion.Euler(working ? -60f + swing : swing, 0f, 0f);
+            if (_armL != null) _armL.transform.localRotation = Quaternion.Euler(working ? -60f - swing : -swing, 0f, 0f);
         }
 
-        public void SetVisible(bool v) { try { if (_go != null) _go.SetActive(v); } catch { } }
+        public void SetVisible(bool v) { try { if (_root != null) _root.SetActive(v); } catch { } }
 
         private static Color ColorFor(byte id) => id switch
         {
@@ -64,7 +104,8 @@ namespace CarMecaSim.Mp.Core
             2 => new Color(1f, 0.55f, 0.2f),
             3 => new Color(0.4f, 0.85f, 0.4f),
             4 => new Color(0.9f, 0.4f, 0.8f),
-            _ => new Color(0.8f, 0.8f, 0.2f),
+            5 => new Color(0.95f, 0.85f, 0.3f),
+            _ => new Color(0.7f, 0.7f, 0.74f),
         };
     }
 }
