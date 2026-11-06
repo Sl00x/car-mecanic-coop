@@ -11,6 +11,12 @@ tools/_mods_hold/
 tools/*.zip
 tools/InteropDump/bin/
 tools/InteropDump/obj/
+tools/PatchInterop/bin/
+tools/PatchInterop/obj/
+tools/il2cppinterop_build/
+tools/il2cppinterop_src/
+tools/BepInEx_be793.zip
+re/scenemgr.txt
 
 # Reverse-engineering raw dump (huge; regenerate with Il2CppDumper)
 re/output/dump.cs
