@@ -1,62 +1,103 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 using CarMecaSim.Mp.Core;
 using CarMecaSim.Mp.Game;
 
 namespace CarMecaSim.Mp.Sync
 {
     /// <summary>
-    /// Shared garage: when a player loads a car, the others load the same car, so you both see
-    /// the vehicle on the lift. Loading the host's car also replaces the joiner's private car.
-    /// (v1 — model-level; exact part/damage state then syncs via PartSync.)
+    /// Host-authoritative SHARED GARAGE: the host broadcasts the full state of its garage (every
+    /// car slot + the car on it). Clients mirror it — unloading their own cars and loading the
+    /// host's, so everyone sees the same vehicles. (v1 — car model per slot; part state syncs via PartSync.)
     /// </summary>
     public static class CarSync
     {
-        public const byte OpLoad = 0;
+        public const byte OpGarage = 2;
 
-        public static bool Applying;   // true while applying a remote car load (don't re-broadcast)
+        public static bool Applying;   // true while applying the host's garage (don't re-broadcast)
 
         private static MpSession S => CarMecaPlugin.Session;
         private static bool Active => S != null && S.InLobby && GameRefs.InGameSession;
-        private static string _lastSent;
+        private static GameManager _gm;
+        private static float _lastBroadcast;
 
-        /// <summary>Harmony postfix on CarLoader.LoadCar: broadcast the car we just loaded.</summary>
+        private static GameManager Mgr()
+        {
+            try { if (_gm == null) _gm = UnityEngine.Object.FindObjectOfType<GameManager>(); } catch { }
+            return _gm;
+        }
+
+        private static Il2CppSystem.Collections.Generic.List<CarLoader> Loaders()
+        {
+            try { var gm = Mgr(); return gm != null ? gm.CarLoadersInScene : null; } catch { return null; }
+        }
+
+        private static string CarOn(CarLoader cl)
+        {
+            try { return (cl != null && cl.IsCarLoaded()) ? (cl.carToLoad ?? "") : ""; } catch { return ""; }
+        }
+
+        // ---- host side ----
+        /// <summary>Harmony postfix on CarLoader.LoadCar: the host re-broadcasts its garage.</summary>
         public static void OnLocalLoadCar(CarLoader cl, string name)
         {
-            if (Applying || !Active || string.IsNullOrEmpty(name)) return;
-            if (name == _lastSent) return;             // avoid spamming the same load
-            _lastSent = name;
-            CarMecaPlugin.Logger?.LogInfo("[car] local load -> broadcast " + name);
-            S.SendCarOp(OpLoad, name);
+            if (Applying || !Active || !S.IsHost) return;
+            BroadcastGarage();
         }
 
-        /// <summary>Host sends its current car to a newcomer so they load into the same garage.</summary>
-        public static void OnPeerJoined()
+        public static void OnPeerJoined() { if (Active && S.IsHost) BroadcastGarage(); }
+
+        public static void Tick()
+        {
+            if (Active && S.IsHost && Time.unscaledTime - _lastBroadcast > 3f) BroadcastGarage();
+        }
+
+        public static void BroadcastGarage()
         {
             if (!Active || !S.IsHost) return;
-            try
-            {
-                var cl = CarRefs.CurrentCar();
-                var name = cl != null ? cl.carToLoad : null;
-                if (!string.IsNullOrEmpty(name)) { _lastSent = null; S.SendCarOp(OpLoad, name); }
-            }
-            catch { }
+            var loaders = Loaders();
+            if (loaders == null) return;
+            var entries = new List<(int, string)>();
+            for (int i = 0; i < loaders.Count; i++)
+                entries.Add((i, CarOn(loaders[i])));
+            S.SendGarage(entries);
+            _lastBroadcast = Time.unscaledTime;
         }
 
-        public static void ApplyRemote(byte op, string name)
+        // ---- client side ----
+        public static void ApplyGarage(List<(int, string)> entries)
         {
-            if (!Active || op != OpLoad || string.IsNullOrEmpty(name)) return;
-            var cl = CarRefs.CurrentCar();
-            if (cl == null) { CarMecaPlugin.Logger?.LogWarning("[car] no CarLoader to load " + name); return; }
-            if (name == _lastSent) return;             // we already have this car
+            if (!Active || S.IsHost) return;   // only clients mirror the host
+            var loaders = Loaders();
+            if (loaders == null) return;
             Applying = true;
             try
             {
-                CarMecaPlugin.Logger?.LogInfo("[car] loading remote car: " + name);
-                _lastSent = name;
-                cl.StartCoroutine(cl.LoadCar(name));   // replaces the current car with the shared one
+                foreach (var (i, name) in entries)
+                {
+                    if (i < 0 || i >= loaders.Count) continue;
+                    var cl = loaders[i];
+                    if (cl == null) continue;
+                    var cur = CarOn(cl);
+                    if (cur == name) continue;             // slot already matches the host
+                    try
+                    {
+                        if (string.IsNullOrEmpty(name))
+                        {
+                            if (cl.IsCarLoaded()) cl.DeleteCar();          // host slot empty -> unload ours
+                        }
+                        else
+                        {
+                            if (cl.IsCarLoaded()) cl.DeleteCar();          // replace our car with the host's
+                            cl.StartCoroutine(cl.LoadCar(name));
+                        }
+                        CarMecaPlugin.Logger?.LogInfo($"[garage] slot {i}: '{cur}' -> '{name}'");
+                    }
+                    catch (Exception e) { CarMecaPlugin.Logger?.LogWarning($"[garage] slot {i} failed: {e.Message}"); }
+                }
             }
-            catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[car] load failed: " + e.Message); }
-            Applying = false;
+            finally { Applying = false; }
         }
     }
 }

@@ -1,0 +1,132 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== GameManager  :  Singleton`1  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_Inventory
+    private static IntPtr NativeFieldInfoPtr_Warehouse
+    private static IntPtr NativeFieldInfoPtr__tempInventory
+    private static IntPtr NativeFieldInfoPtr__carBundleLoader
+    private static IntPtr NativeFieldInfoPtr_bonusPartsManager
+    private static IntPtr NativeFieldInfoPtr__RDGPlayerPrefs
+    private static IntPtr NativeFieldInfoPtr__localization
+    private static IntPtr NativeFieldInfoPtr__carBundleManager
+    private static IntPtr NativeFieldInfoPtr__rustmapManager
+    private static IntPtr NativeFieldInfoPtr_liveriesManager
+    private static IntPtr NativeFieldInfoPtr__difficultyManager
+    private static IntPtr NativeFieldInfoPtr__FPSInputController
+    private static IntPtr NativeFieldInfoPtr__inputManager
+    private static IntPtr NativeFieldInfoPtr__partScriptCullerManager
+    private static IntPtr NativeFieldInfoPtr__profileManager
+    private static IntPtr NativeFieldInfoPtr__upgradeSystem
+    private static IntPtr NativeFieldInfoPtr__gameDataManager
+    private static IntPtr NativeFieldInfoPtr__platformManager
+    private static IntPtr NativeFieldInfoPtr__engineAudioController
+    private static IntPtr NativeFieldInfoPtr__engineStartAudio
+    private static IntPtr NativeFieldInfoPtr_OrderGenerator
+    private static IntPtr NativeFieldInfoPtr_CarLoadersInScene
+    private static IntPtr NativeFieldInfoPtr_Radio
+    private static IntPtr NativeFieldInfoPtr__xboxConnectedStorageManager
+    private static IntPtr NativeFieldInfoPtr_screenshotsManager
+    private static IntPtr NativeFieldInfoPtr_cacheManager
+    private static IntPtr NativeFieldInfoPtr_eventManager
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_get_TempInventory_Public_get_TempInventory_0
+    private static IntPtr NativeMethodInfoPtr_set_TempInventory_Private_set_Void_TempInventory_0
+    private static IntPtr NativeMethodInfoPtr_get_CarBundleLoader_Public_get_CarBundleLoader_0
+    private static IntPtr NativeMethodInfoPtr_set_CarBundleLoader_Private_set_Void_CarBundleLoader_0
+    private static IntPtr NativeMethodInfoPtr_get_BonusPartsManager_Public_get_BonusPartsManager_0
+    private static IntPtr NativeMethodInfoPtr_set_BonusPartsManager_Private_set_Void_BonusPartsManager_0
+    private static IntPtr NativeMethodInfoPtr_get_RDGPlayerPrefs_Public_get_RDGPlayerPrefs_0
+    private static IntPtr NativeMethodInfoPtr_set_RDGPlayerPrefs_Private_set_Void_RDGPlayerPrefs_0
+    private static IntPtr NativeMethodInfoPtr_get_Localization_Public_get_Localization_0
+    private static IntPtr NativeMethodInfoPtr_set_Localization_Private_set_Void_Localization_0
+    private static IntPtr NativeMethodInfoPtr_get_CarBundleManager_Public_get_CarBundleManager_0
+    private static IntPtr NativeMethodInfoPtr_set_CarBundleManager_Private_set_Void_CarBundleManager_0
+    private static IntPtr NativeMethodInfoPtr_get_RustmapManager_Public_get_RustmapManager_0
+    private static IntPtr NativeMethodInfoPtr_set_RustmapManager_Private_set_Void_RustmapManager_0
+    private static IntPtr NativeMethodInfoPtr_get_LiveriesManager_Public_get_LiveriesManager_0
+    private static IntPtr NativeMethodInfoPtr_set_LiveriesManager_Private_set_Void_LiveriesManager_0
+    private static IntPtr NativeMethodInfoPtr_get_DifficultyManager_Public_get_DifficultyManager_0
+    private static IntPtr NativeMethodInfoPtr_set_DifficultyManager_Private_set_Void_DifficultyManager_0
+    private static IntPtr NativeMethodInfoPtr_get_FPSInputController_Public_get_FPSInputController_0
+    private static IntPtr NativeMethodInfoPtr_set_FPSInputController_Private_set_Void_FPSInputController_0
+    private static IntPtr NativeMethodInfoPtr_get_InputManager_Public_get_InputManager_0
+    private static IntPtr NativeMethodInfoPtr_set_InputManager_Private_set_Void_InputManager_0
+    private static IntPtr NativeMethodInfoPtr_get_PartScriptCullerManager_Public_get_PartScriptCullerManager_0
+    private static IntPtr NativeMethodInfoPtr_set_PartScriptCullerManager_Private_set_Void_PartScriptCullerManager_0
+    private static IntPtr NativeMethodInfoPtr_get_ProfileManager_Public_get_ProfileManager_0
+    private static IntPtr NativeMethodInfoPtr_set_ProfileManager_Private_set_Void_ProfileManager_0
+    private static IntPtr NativeMethodInfoPtr_get_UpgradeSystem_Public_get_UpgradeSystem_0
+    private static IntPtr NativeMethodInfoPtr_set_UpgradeSystem_Private_set_Void_UpgradeSystem_0
+    private static IntPtr NativeMethodInfoPtr_get_GameDataManager_Public_get_GameDataManager_0
+    private static IntPtr NativeMethodInfoPtr_set_GameDataManager_Private_set_Void_GameDataManager_0
+    private static IntPtr NativeMethodInfoPtr_get_PlatformManager_Public_get_PlatformManager_0
+    private static IntPtr NativeMethodInfoPtr_set_PlatformManager_Private_set_Void_PlatformManager_0
+    private static IntPtr NativeMethodInfoPtr_get_EngineAudioController_Public_get_EngineAudioController_0
+    private static IntPtr NativeMethodInfoPtr_set_EngineAudioController_Private_set_Void_EngineAudioController_0
+    private static IntPtr NativeMethodInfoPtr_get_EngineStartAudio_Public_get_EngineStartAudio_0
+    private static IntPtr NativeMethodInfoPtr_set_EngineStartAudio_Private_set_Void_EngineStartAudio_0
+    private static IntPtr NativeMethodInfoPtr_get_XboxConnectedStorageManager_Public_get_XboxConnectedStorageManager_0
+    private static IntPtr NativeMethodInfoPtr_set_XboxConnectedStorageManager_Private_set_Void_XboxConnectedStorageManager_0
+    private static IntPtr NativeMethodInfoPtr_get_ScreenshotsManager_Public_get_ScreenshotsManager_0
+    private static IntPtr NativeMethodInfoPtr_set_ScreenshotsManager_Private_set_Void_ScreenshotsManager_0
+    private static IntPtr NativeMethodInfoPtr_get_CacheManager_Public_get_CacheManager_0
+    private static IntPtr NativeMethodInfoPtr_set_CacheManager_Private_set_Void_CacheManager_0
+    private static IntPtr NativeMethodInfoPtr_get_EventManager_Public_get_EventManager_0
+    private static IntPtr NativeMethodInfoPtr_set_EventManager_Private_set_Void_EventManager_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Inventory Inventory { get;set; }
+    Warehouse Warehouse { get;set; }
+    TempInventory _tempInventory { get;set; }
+    CarBundleLoader _carBundleLoader { get;set; }
+    BonusPartsManager bonusPartsManager { get;set; }
+    RDGPlayerPrefs _RDGPlayerPrefs { get;set; }
+    Localization _localization { get;set; }
+    CarBundleManager _carBundleManager { get;set; }
+    RustmapManager _rustmapManager { get;set; }
+    LiveriesManager liveriesManager { get;set; }
+    DifficultyManager _difficultyManager { get;set; }
+    FPSInputController _FPSInputController { get;set; }
+    InputManager _inputManager { get;set; }
+    PartScriptCullerManager _partScriptCullerManager { get;set; }
+    ProfileManager _profileManager { get;set; }
+    UpgradeSystem _upgradeSystem { get;set; }
+    GameDataManager _gameDataManager { get;set; }
+    PlatformManager _platformManager { get;set; }
+    EngineAudioController _engineAudioController { get;set; }
+    EngineStartAudio _engineStartAudio { get;set; }
+    OrderGenerator OrderGenerator { get;set; }
+    List<CarLoader> CarLoadersInScene { get;set; }
+    Radio Radio { get;set; }
+    XboxConnectedStorageManager _xboxConnectedStorageManager { get;set; }
+    ScreenshotsManager screenshotsManager { get;set; }
+    CacheManager cacheManager { get;set; }
+    EventManager eventManager { get;set; }
+    TempInventory TempInventory { get;set; }
+    CarBundleLoader CarBundleLoader { get;set; }
+    BonusPartsManager BonusPartsManager { get;set; }
+    RDGPlayerPrefs RDGPlayerPrefs { get;set; }
+    Localization Localization { get;set; }
+    CarBundleManager CarBundleManager { get;set; }
+    RustmapManager RustmapManager { get;set; }
+    LiveriesManager LiveriesManager { get;set; }
+    DifficultyManager DifficultyManager { get;set; }
+    FPSInputController FPSInputController { get;set; }
+    InputManager InputManager { get;set; }
+    PartScriptCullerManager PartScriptCullerManager { get;set; }
+    ProfileManager ProfileManager { get;set; }
+    UpgradeSystem UpgradeSystem { get;set; }
+    GameDataManager GameDataManager { get;set; }
+    PlatformManager PlatformManager { get;set; }
+    EngineAudioController EngineAudioController { get;set; }
+    EngineStartAudio EngineStartAudio { get;set; }
+    XboxConnectedStorageManager XboxConnectedStorageManager { get;set; }
+    ScreenshotsManager ScreenshotsManager { get;set; }
+    CacheManager CacheManager { get;set; }
+    EventManager EventManager { get;set; }
+  -- Methods --
+    Void Awake()
+

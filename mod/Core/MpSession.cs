@@ -147,11 +147,12 @@ namespace CarMecaSim.Mp.Core
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
-        public void SendCarOp(byte op, string name)
+        public void SendGarage(System.Collections.Generic.List<(int, string)> entries)
         {
             if (!InLobby) return;
             using var w = new PacketWriter(PacketType.CarOp);
-            w.Byte(op).Str(name);
+            w.Byte(Sync.CarSync.OpGarage).Int(entries.Count);
+            foreach (var (i, n) in entries) w.Int(i).Str(n);
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
@@ -215,8 +216,14 @@ namespace CarMecaSim.Mp.Core
                     }
                     case PacketType.CarOp:
                     {
-                        var op = r.Byte(); var name = r.Str();
-                        Sync.CarSync.ApplyRemote(op, name);
+                        var op = r.Byte();
+                        if (op == Sync.CarSync.OpGarage)
+                        {
+                            int n = r.Int();
+                            var entries = new System.Collections.Generic.List<(int, string)>(n);
+                            for (int k = 0; k < n; k++) { int idx = r.Int(); string nm = r.Str(); entries.Add((idx, nm)); }
+                            Sync.CarSync.ApplyGarage(entries);
+                        }
                         break;
                     }
                     case PacketType.Ping:
@@ -258,6 +265,7 @@ namespace CarMecaSim.Mp.Core
             if (_ecoAccum >= 0.33f) { _ecoAccum = 0f; EconomyTick(); }
 
             Sync.PartSync.Tick();   // release stale part locks
+            Sync.CarSync.Tick();    // host: periodic garage broadcast
         }
 
         // ---- economy (shared pool, host-authoritative) ----
