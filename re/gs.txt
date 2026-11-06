@@ -1,0 +1,112 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== GameSettings  :  Object  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_m_buildVersion
+    private static IntPtr NativeFieldInfoPtr_AppIdDemo
+    private static IntPtr NativeFieldInfoPtr_AppIdPrologue
+    private static IntPtr NativeFieldInfoPtr_AppIDNormal
+    private static IntPtr NativeFieldInfoPtr_AppID
+    private static IntPtr NativeFieldInfoPtr_VideoSettingsData
+    private static IntPtr NativeFieldInfoPtr_GameSettingsData
+    private static IntPtr NativeFieldInfoPtr_AudioSettingsData
+    private static IntPtr NativeFieldInfoPtr_LanguageSettings
+    private static IntPtr NativeFieldInfoPtr_gfx_noVideo
+    private static IntPtr NativeFieldInfoPtr_WrongResolution
+    private static IntPtr NativeFieldInfoPtr_SkipPartsAwake
+    private static IntPtr NativeFieldInfoPtr_DoNotUnloadAssets
+    private static IntPtr NativeFieldInfoPtr_DoNotClearPartsIDCache
+    private static IntPtr NativeFieldInfoPtr_DisableMouseEvents
+    private static IntPtr NativeFieldInfoPtr_input_MouseLookSensitivity
+    private static IntPtr NativeFieldInfoPtr_input_MouseLookSmoothSteps
+    private static IntPtr NativeFieldInfoPtr_input_MouseLookSmoothWeight
+    private static IntPtr NativeFieldInfoPtr_input_MouseLookAccelerationThreshold
+    private static IntPtr NativeFieldInfoPtr_inputFPS_MouseLookSensitivity
+    private static IntPtr NativeFieldInfoPtr_inputFPS_MouseLookSmoothSteps
+    private static IntPtr NativeFieldInfoPtr_inputFPS_MouseLookSmoothWeight
+    private static IntPtr NativeFieldInfoPtr_inputFPS_MouseLookAccelerationThreshold
+    private static IntPtr NativeFieldInfoPtr_input_KeyboardLookSensitivity
+    private static IntPtr NativeFieldInfoPtr_input_KeyboardLookSmoothSteps
+    private static IntPtr NativeFieldInfoPtr_input_KeyboardLookSmoothWeight
+    private static IntPtr NativeFieldInfoPtr_input_KeyboardLookInvert
+    private static IntPtr NativeFieldInfoPtr_ConsoleMode
+    private static IntPtr NativeFieldInfoPtr_LegacyConsoleMode
+    private static IntPtr NativeFieldInfoPtr_RunningOnSteamDeck
+    private static IntPtr NativeFieldInfoPtr_RunningInBigPictureMode
+    private static IntPtr NativeFieldInfoPtr_DescriptionForceMode
+    private static IntPtr NativeFieldInfoPtr_CanShowCursor
+    private static IntPtr NativeFieldInfoPtr_CanHighlight
+    private static IntPtr NativeFieldInfoPtr_CanGenerateOrders
+    private static IntPtr NativeFieldInfoPtr_CanShowPopups
+    private static IntPtr NativeFieldInfoPtr_UnlimitedBarns
+    private static IntPtr NativeFieldInfoPtr_UnlimitedMoney
+    private static IntPtr NativeFieldInfoPtr_UnlimitedScraps
+    private static IntPtr NativeFieldInfoPtr_MaxCarsAmountInGarage
+    private static IntPtr NativeFieldInfoPtr_MaxCarsPerParkingFloor
+    private static IntPtr NativeFieldInfoPtr_MaxModCarsFromDirectory
+    private static IntPtr NativeFieldInfoPtr_MaxParkingLevels
+    private static IntPtr NativeFieldInfoPtr_MaxCarsAmountInParking
+    private static IntPtr NativeFieldInfoPtr_MaxLastColors
+    private static IntPtr NativeFieldInfoPtr_MaxWarehouseNameLength
+    private static IntPtr NativeFieldInfoPtr_DLCReleaseDayChance
+    private static IntPtr NativeFieldInfoPtr_DLCReleaseDayPeriod
+    private static IntPtr NativeFieldInfoPtr_DragOpponentTimeout
+    private static IntPtr NativeMethodInfoPtr_get_BuildVersion_Public_Static_get_String_0
+    private static IntPtr NativeMethodInfoPtr_set_BuildVersion_Public_Static_set_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_Delta_Public_Static_Single_0
+  -- Properties --
+    static String m_buildVersion { get;set; }
+    static UInt32 AppIdDemo { get;set; }
+    static UInt32 AppIdPrologue { get;set; }
+    static UInt32 AppIDNormal { get;set; }
+    static UInt32 AppID { get;set; }
+    static VideoSettingsData VideoSettingsData { get;set; }
+    static GameSettingsData GameSettingsData { get;set; }
+    static AudioSettingsData AudioSettingsData { get;set; }
+    static String LanguageSettings { get;set; }
+    static Boolean gfx_noVideo { get;set; }
+    static Boolean WrongResolution { get;set; }
+    static Boolean SkipPartsAwake { get;set; }
+    static Boolean DoNotUnloadAssets { get;set; }
+    static Boolean DoNotClearPartsIDCache { get;set; }
+    static Boolean DisableMouseEvents { get;set; }
+    static Vector2 input_MouseLookSensitivity { get;set; }
+    static Int32 input_MouseLookSmoothSteps { get;set; }
+    static Single input_MouseLookSmoothWeight { get;set; }
+    static Single input_MouseLookAccelerationThreshold { get;set; }
+    static Vector2 inputFPS_MouseLookSensitivity { get;set; }
+    static Int32 inputFPS_MouseLookSmoothSteps { get;set; }
+    static Single inputFPS_MouseLookSmoothWeight { get;set; }
+    static Single inputFPS_MouseLookAccelerationThreshold { get;set; }
+    static Vector2 input_KeyboardLookSensitivity { get;set; }
+    static Int32 input_KeyboardLookSmoothSteps { get;set; }
+    static Single input_KeyboardLookSmoothWeight { get;set; }
+    static Boolean input_KeyboardLookInvert { get;set; }
+    static Boolean ConsoleMode { get;set; }
+    static Boolean LegacyConsoleMode { get;set; }
+    static Boolean RunningOnSteamDeck { get;set; }
+    static Boolean RunningInBigPictureMode { get;set; }
+    static DescriptionForceMode DescriptionForceMode { get;set; }
+    static Boolean CanShowCursor { get;set; }
+    static Boolean CanHighlight { get;set; }
+    static Boolean CanGenerateOrders { get;set; }
+    static Boolean CanShowPopups { get;set; }
+    static Boolean UnlimitedBarns { get;set; }
+    static Boolean UnlimitedMoney { get;set; }
+    static Boolean UnlimitedScraps { get;set; }
+    static Int32 MaxCarsAmountInGarage { get;set; }
+    static Int32 MaxCarsPerParkingFloor { get;set; }
+    static Int32 MaxModCarsFromDirectory { get;set; }
+    static Int32 MaxParkingLevels { get;set; }
+    static Int32 MaxCarsAmountInParking { get;set; }
+    static Int32 MaxLastColors { get;set; }
+    static Int32 MaxWarehouseNameLength { get;set; }
+    static Int32 DLCReleaseDayChance { get;set; }
+    static Byte DLCReleaseDayPeriod { get;set; }
+    static Single DragOpponentTimeout { get;set; }
+    static String BuildVersion { get;set; }
+  -- Methods --
+    static Single Delta()
+

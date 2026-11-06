@@ -35,6 +35,23 @@ namespace CarMecaSim.Mp.Game
             }
         }
 
+        /// <summary>
+        /// True when an actual game session is loaded and running (any gameplay scene) — NOT the
+        /// main menu and NOT a loading screen. Gates the in-game HUD per the design.
+        /// </summary>
+        public static bool InGameSession
+        {
+            get
+            {
+                try
+                {
+                    var scene = CurrentScene;
+                    return GameScript.Get() != null && scene != SceneType.None && scene != SceneType.Menu;
+                }
+                catch { return false; }
+            }
+        }
+
         public static FPSCamera Cam
         {
             get

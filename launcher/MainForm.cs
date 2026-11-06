@@ -1,162 +1,189 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using CarMecaSim.Shared;
 
 namespace CarMecaSim.Launcher
 {
+    /// <summary>
+    /// Car Mechanic Simulator-styled launcher. It only installs/verifies and launches the game —
+    /// hosting/joining & chat happen in-game (press F6). No host/join choice here by design.
+    /// </summary>
     public sealed class MainForm : Form
     {
-        private string? _gameDir;
-        private readonly Label _status = new();
-        private readonly TextBox _log = new();
-        private readonly TextBox _name = new();
-        private readonly RadioButton _host = new() { Text = "Host a game", Checked = true };
-        private readonly RadioButton _join = new() { Text = "Join a game" };
-        private readonly TextBox _lobby = new() { PlaceholderText = "Lobby ID (from your host)" };
-        private readonly NumericUpDown _max = new() { Minimum = 2, Maximum = 8, Value = 4 };
-        private readonly ComboBox _type = new() { DropDownStyle = ComboBoxStyle.DropDownList };
-        private readonly Button _setup = new() { Text = "Setup / Repair" };
-        private readonly Button _launch = new() { Text = "Launch co-op" };
-        private readonly Button _uninstall = new() { Text = "Uninstall" };
+        // CMS palette
+        static readonly Color Bg       = Color.FromArgb(24, 24, 27);
+        static readonly Color Panel    = Color.FromArgb(37, 37, 42);
+        static readonly Color PanelHi  = Color.FromArgb(46, 46, 52);
+        static readonly Color Orange   = Color.FromArgb(245, 148, 30);
+        static readonly Color OrangeHi = Color.FromArgb(255, 170, 55);
+        static readonly Color TextCol  = Color.FromArgb(236, 236, 239);
+        static readonly Color DimCol   = Color.FromArgb(150, 150, 156);
+        static readonly Color Green    = Color.FromArgb(120, 205, 110);
+        static readonly Color Red      = Color.FromArgb(214, 96, 84);
+
+        string? _gameDir;
+        readonly Label _statusLine = new();
+        readonly Label _ind = new();
+        readonly TextBox _name = new();
+        readonly TextBox _log = new();
+        readonly Button _play = new();
+        readonly Button _setup = new();
+        readonly Button _uninstall = new();
 
         public MainForm()
         {
             Text = "CarMecaSim — Co-op Launcher";
-            Size = new Size(560, 620);
-            MinimumSize = new Size(520, 560);
-            Font = new Font("Segoe UI", 9f);
+            ClientSize = new Size(600, 620);
+            MinimumSize = new Size(560, 560);
+            BackColor = Bg;
+            ForeColor = TextCol;
+            Font = new Font("Segoe UI", 9.5f);
             StartPosition = FormStartPosition.CenterScreen;
+            DoubleBuffered = true;
 
-            int y = 14;
-            Add(new Label { Text = "Car Mechanic Simulator 2021 — Shared-Garage Co-op",
-                            Font = new Font("Segoe UI", 12f, FontStyle.Bold), AutoSize = true, Left = 16, Top = y });
-            y += 34;
+            // ---- header banner ----
+            var header = new Panel { Dock = DockStyle.Top, Height = 92, BackColor = Panel };
+            header.Paint += (_, e) =>
+            {
+                var g = e.Graphics; g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.FillRectangle(new SolidBrush(Orange), 0, 0, 8, header.Height);              // orange spine
+                using var big = new Font("Segoe UI Black", 20f, FontStyle.Bold);
+                using var sub = new Font("Segoe UI", 9.5f);
+                g.DrawString("CAR MECHANIC SIMULATOR", big, new SolidBrush(TextCol), 26, 16);
+                g.DrawString("CO·OP  —  shared garage multiplayer", sub, new SolidBrush(Orange), 30, 56);
+            };
+            Controls.Add(header);
 
-            // --- Status box ---
-            var statusBox = new GroupBox { Text = "Install status", Left = 16, Top = y, Width = 510, Height = 120 };
-            _status.Left = 12; _status.Top = 22; _status.Width = 486; _status.Height = 60; _status.AutoSize = false;
-            statusBox.Controls.Add(_status);
-            _setup.SetBounds(12, 84, 130, 26);
-            _uninstall.SetBounds(150, 84, 110, 26);
-            statusBox.Controls.Add(_setup); statusBox.Controls.Add(_uninstall);
-            Controls.Add(statusBox);
-            y += 132;
+            int y = 108;
+            // ---- status card ----
+            var card = MakePanel(16, y, 568, 108);
+            _ind.SetBounds(14, 10, 540, 24); _ind.Font = new Font("Segoe UI", 10f, FontStyle.Bold); _ind.ForeColor = TextCol;
+            _statusLine.SetBounds(14, 40, 540, 56); _statusLine.ForeColor = DimCol; _statusLine.AutoSize = false;
+            card.Controls.Add(_ind); card.Controls.Add(_statusLine);
+            Controls.Add(card);
+            y += 120;
 
-            // --- Play box ---
-            var playBox = new GroupBox { Text = "Play", Left = 16, Top = y, Width = 510, Height = 230 };
-            int py = 26;
-            playBox.Controls.Add(new Label { Text = "Display name", Left = 12, Top = py + 3, AutoSize = true });
-            _name.SetBounds(130, py, 360, 24); _name.Text = Environment.UserName;
-            playBox.Controls.Add(_name); py += 36;
+            // ---- name + actions ----
+            var nameLbl = new Label { Text = "PSEUDO", Left = 20, Top = y + 6, AutoSize = true, ForeColor = DimCol, Font = new Font("Segoe UI", 8.5f, FontStyle.Bold) };
+            Controls.Add(nameLbl);
+            StyleField(_name); _name.SetBounds(100, y, 300, 28); _name.Text = Environment.UserName;
+            Controls.Add(_name);
+            y += 44;
 
-            _host.SetBounds(12, py, 150, 24); _join.SetBounds(170, py, 150, 24);
-            playBox.Controls.Add(_host); playBox.Controls.Add(_join); py += 34;
+            StyleButton(_setup, "INSTALLER / RÉPARER", false); _setup.SetBounds(20, y, 230, 40);
+            StyleButton(_uninstall, "DÉSINSTALLER", false); _uninstall.SetBounds(262, y, 150, 40);
+            Controls.Add(_setup); Controls.Add(_uninstall);
+            y += 52;
 
-            playBox.Controls.Add(new Label { Text = "Lobby ID (join)", Left = 12, Top = py + 3, AutoSize = true });
-            _lobby.SetBounds(130, py, 360, 24); _lobby.Enabled = false;
-            playBox.Controls.Add(_lobby); py += 36;
+            StyleButton(_play, "▶  JOUER", true); _play.SetBounds(20, y, 560, 56); _play.Font = new Font("Segoe UI", 15f, FontStyle.Bold);
+            Controls.Add(_play);
+            y += 68;
 
-            playBox.Controls.Add(new Label { Text = "Max players (host)", Left = 12, Top = py + 3, AutoSize = true });
-            _max.SetBounds(130, py, 60, 24);
-            playBox.Controls.Add(_max);
-            playBox.Controls.Add(new Label { Text = "Lobby type", Left = 210, Top = py + 3, AutoSize = true });
-            _type.Items.AddRange(new object[] { "FriendsOnly", "Public", "Private" }); _type.SelectedIndex = 0;
-            _type.SetBounds(290, py, 120, 24);
-            playBox.Controls.Add(_type); py += 40;
+            var hint = new Label { Text = "Héberger / rejoindre & chat se font EN JEU (touche F6, une fois dans une partie).",
+                Left = 20, Top = y, Width = 560, Height = 20, ForeColor = Orange, Font = new Font("Segoe UI", 8.5f, FontStyle.Italic) };
+            Controls.Add(hint);
+            y += 26;
 
-            _launch.SetBounds(12, py, 478, 34); _launch.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
-            playBox.Controls.Add(_launch);
-            Controls.Add(playBox);
-            y += 242;
-
-            // --- Log ---
-            _log.SetBounds(16, y, 510, 120); _log.Multiline = true; _log.ReadOnly = true;
-            _log.ScrollBars = ScrollBars.Vertical; _log.BackColor = Color.White;
+            // ---- log ----
+            _log.SetBounds(16, y, 568, 150); _log.Multiline = true; _log.ReadOnly = true;
+            _log.ScrollBars = ScrollBars.Vertical; _log.BackColor = Color.FromArgb(18, 18, 20); _log.ForeColor = DimCol;
+            _log.BorderStyle = BorderStyle.FixedSingle; _log.Font = new Font("Consolas", 8.5f);
             _log.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
             Controls.Add(_log);
 
-            // wiring
-            _host.CheckedChanged += (_, _) => { _lobby.Enabled = _join.Checked; };
-            _join.CheckedChanged += (_, _) => { _lobby.Enabled = _join.Checked; };
             _setup.Click += (_, _) => DoSetup();
             _uninstall.Click += (_, _) => DoUninstall();
-            _launch.Click += (_, _) => DoLaunch();
+            _play.Click += (_, _) => DoPlay();
             Load += (_, _) => RefreshStatus();
         }
 
-        private void Add(Control c) => Controls.Add(c);
-        private void LogLine(string s) => _log.AppendText(s + Environment.NewLine);
+        // ---- styling helpers ----
+        Panel MakePanel(int x, int y, int w, int h)
+        {
+            var p = new Panel { Left = x, Top = y, Width = w, Height = h, BackColor = Panel };
+            p.Paint += (_, e) => e.Graphics.FillRectangle(new SolidBrush(Orange), 0, 0, 4, p.Height);
+            return p;
+        }
+        void StyleField(TextBox t)
+        {
+            t.BackColor = Color.FromArgb(18, 18, 20); t.ForeColor = TextCol;
+            t.BorderStyle = BorderStyle.FixedSingle; t.Font = new Font("Segoe UI", 10f);
+        }
+        void StyleButton(Button b, string text, bool primary)
+        {
+            b.Text = text; b.FlatStyle = FlatStyle.Flat; b.FlatAppearance.BorderSize = 0;
+            b.ForeColor = primary ? Color.Black : TextCol;
+            b.BackColor = primary ? Orange : PanelHi;
+            b.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
+            b.Cursor = Cursors.Hand;
+            b.FlatAppearance.MouseOverBackColor = primary ? OrangeHi : Color.FromArgb(60, 60, 68);
+            b.FlatAppearance.MouseDownBackColor = primary ? OrangeHi : Color.FromArgb(70, 70, 80);
+        }
 
-        private void RefreshStatus()
+        void LogLine(string s) { _log.AppendText(s + Environment.NewLine); }
+
+        void RefreshStatus()
         {
             _gameDir = GameLocator.Find();
             if (_gameDir == null)
             {
-                _status.Text = "Game not found. Use the Steam library, or place the launcher in the game folder.";
-                _setup.Enabled = _launch.Enabled = _uninstall.Enabled = false;
+                _ind.Text = "● JEU INTROUVABLE";  _ind.ForeColor = Red;
+                _statusLine.Text = "Car Mechanic Simulator 2021 n'a pas été trouvé via Steam.";
+                _play.Enabled = _setup.Enabled = _uninstall.Enabled = false;
                 return;
             }
             var s = new ModInstaller(_gameDir).GetStatus();
-            _status.Text =
-                $"Game: {_gameDir}\n" +
-                $"BepInEx: {YN(s.LoaderInstalled)}   Interop: {YN(s.InteropGenerated)}   " +
-                $"Co-op mod: {YN(s.ModInstalled)} {s.InstalledModVersion}\n" +
-                (s.FullyReady ? "Status: READY to play." : "Status: click Setup / Repair.");
-            _launch.Enabled = s.FullyReady;
+            if (s.FullyReady) { _ind.Text = "● PRÊT À JOUER";  _ind.ForeColor = Green; }
+            else              { _ind.Text = "● CONFIGURATION REQUISE"; _ind.ForeColor = Orange; }
+            _statusLine.Text =
+                $"Jeu : {_gameDir}\n" +
+                $"BepInEx {Mark(s.LoaderInstalled)}    Mod co-op {Mark(s.ModInstalled)} {s.InstalledModVersion}";
+            _play.Enabled = s.FullyReady;
             _setup.Enabled = true;
             _uninstall.Enabled = s.LoaderInstalled || s.ModInstalled;
         }
 
-        private void DoSetup()
+        static string Mark(bool b) => b ? "✓" : "✗";
+
+        void DoSetup()
         {
             if (_gameDir == null) return;
             var payload = ModInstaller.FindPayloadRoot();
-            if (payload == null) { LogLine("ERROR: install payload not found next to launcher."); return; }
+            if (payload == null) { LogLine("ERREUR : payload d'installation introuvable à côté du launcher."); return; }
             var inst = new ModInstaller(_gameDir);
-            LogLine("Setup starting...");
-            if (!inst.EnsureLoader(payload, LogLine)) { LogLine("BepInEx step failed."); return; }
-            InteropPatcher.EnsurePatched(_gameDir, LogLine);   // required for class injection on this game
-            if (!inst.GetStatus().InteropGenerated)
-                LogLine("Note: interop not generated yet — it is created automatically the first time the game launches.");
-            if (!inst.InstallMod(payload, LogLine)) { LogLine("Mod install failed (is the mod built?)."); }
+            LogLine("Installation…");
+            if (!inst.EnsureLoader(payload, LogLine)) { LogLine("Échec de l'installation de BepInEx."); return; }
+            InteropPatcher.EnsurePatched(_gameDir, LogLine);
+            if (!inst.InstallMod(payload, LogLine)) { LogLine("Échec de l'installation du mod (est-il compilé ?)."); }
             inst.EnsureAppId(LogLine);
-            LogLine("Setup done.");
+            LogLine("Terminé. Le 1er lancement génère l'interop (quelques minutes).");
             RefreshStatus();
         }
 
-        private void DoUninstall()
+        void DoUninstall()
         {
             if (_gameDir == null) return;
-            var all = MessageBox.Show("Also remove BepInEx entirely (full vanilla restore)?",
-                "Uninstall", MessageBoxButtons.YesNo) == DialogResult.Yes;
+            var all = MessageBox.Show("Supprimer aussi BepInEx (retour au jeu vanilla) ?",
+                "Désinstaller", MessageBoxButtons.YesNo) == DialogResult.Yes;
             new ModInstaller(_gameDir).Uninstall(all, LogLine);
             RefreshStatus();
         }
 
-        private void DoLaunch()
+        void DoPlay()
         {
             if (_gameDir == null) return;
             var cfg = new MpConfig
             {
-                Role = _host.Checked ? MpRole.Host : MpRole.Join,
+                Role = MpRole.Menu,  // host/join happens in-game
                 DisplayName = string.IsNullOrWhiteSpace(_name.Text) ? Environment.UserName : _name.Text.Trim(),
-                MaxPlayers = (int)_max.Value,
-                LobbyType = Enum.Parse<MpLobbyType>(_type.SelectedItem!.ToString()!),
+                AutoStart = true,
             };
-            if (cfg.Role == MpRole.Join)
-            {
-                if (!ulong.TryParse(_lobby.Text.Trim(), out var id))
-                { MessageBox.Show("Enter a numeric Lobby ID to join."); return; }
-                cfg.LobbyId = id;
-            }
             var runner = new GameRunner(_gameDir);
-            var path = runner.WriteConfig(cfg);
-            LogLine($"Config written ({cfg.Role}) -> {path}");
+            runner.WriteConfig(cfg);
+            LogLine($"Lancement du jeu (pseudo : {cfg.DisplayName})…");
             runner.Launch();
-            LogLine("Launching game via Steam...");
         }
-
-        private static string YN(bool b) => b ? "yes" : "no";
     }
 }
