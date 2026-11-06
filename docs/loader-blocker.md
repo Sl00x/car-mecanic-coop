@@ -1,5 +1,18 @@
 # Runtime blocker: Il2CppInterop class-injection fails on CMS2021
 
+## ✅ RESOLVED
+Fixed by patching Il2CppInterop's finder. `GetTypeInfoFromTypeDefinitionIndex` lives at
+**RVA 0x2AE3A0** in this game's `GameAssembly.dll` (found by following the call chain from the
+`il2cpp_image_get_class` export; see `tools/find_func.py`). The launcher's `InteropPatcher`
+verifies the function prologue at that RVA, then rewrites `MetadataCache_GetTypeInfoFromType-
+DefinitionIndex_Hook.FindTargetMethod` (Mono.Cecil) in `BepInEx/core/Il2CppInterop.Runtime.dll`
+to return `Il2CppModule.BaseAddress + 0x2AE3A0`. Applied automatically by `--setup` (keeps a
+`.bak`). Verified in-game: plugin loads, `MpBehaviour` injects, Steam P2P initializes.
+If the game updates and the RVA changes, `--setup` detects the prologue mismatch and warns;
+re-run `tools/find_func.py` and update `InteropPatcher.DefaultRva`.
+
+The original diagnosis is kept below for reference.
+
 ## Summary
 The co-op **plugin and launcher are complete and compile**, and the reverse engineering is done.
 But the **mod loader cannot initialize on this specific game build**, so plugin callbacks never
