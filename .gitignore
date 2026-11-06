@@ -2,6 +2,7 @@
 bin/
 obj/
 *.user
+dist/
 
 # Downloaded tooling (large, re-downloadable)
 tools/Il2CppDumper/
