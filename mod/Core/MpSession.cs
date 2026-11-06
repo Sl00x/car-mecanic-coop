@@ -268,9 +268,32 @@ namespace CarMecaSim.Mp.Core
                         }
                         break;
                     }
+                    case PacketType.FullState:
+                    {
+                        // Host's full save snapshot, chunked. Reassemble, then adopt it (client only).
+                        int total = r.Int(); int ci = r.Int(); int chunks = r.Int(); int len = r.Int();
+                        var chunk = r.BytesRaw(len);
+                        if (_saveBuf == null || _saveBuf.Length != total || _saveChunksExpected != chunks)
+                        { _saveBuf = new byte[total]; _saveChunksExpected = chunks; _saveChunksGot = 0; }
+                        int dst = ci * SaveChunk;
+                        if (dst >= 0 && dst + len <= _saveBuf.Length) Array.Copy(chunk, 0, _saveBuf, dst, len);
+                        if (++_saveChunksGot >= _saveChunksExpected)
+                        {
+                            var full = _saveBuf; _saveBuf = null; _saveChunksExpected = 0; _saveChunksGot = 0;
+                            _log?.Invoke($"[save] received snapshot ({full.Length} bytes); applying");
+                            Sync.SaveSync.ApplyHost(full);
+                        }
+                        break;
+                    }
                     case PacketType.Ping:
                         // A client reached the garage and wants the current state.
-                        if (IsHost) { BroadcastEcoAbsolute(); Sync.CarSync.OnPeerJoined(); Sync.OrderSync.OnPeerJoined(); }
+                        if (IsHost)
+                        {
+                            SendSaveSnapshot(sender);      // client adopts host's full garage/jobs/money (native)
+                            BroadcastEcoAbsolute();        // then set live money on top (ordered after the save)
+                            Sync.CarSync.OnPeerJoined();   // keep incremental garage/job sync going afterwards
+                            Sync.OrderSync.OnPeerJoined();
+                        }
                         break;
                     case PacketType.Bye:
                         OnPeerLeft(sender);
@@ -309,6 +332,30 @@ namespace CarMecaSim.Mp.Core
             Sync.PartSync.Tick();   // release stale part locks
             Sync.CarSync.Tick();    // host: periodic garage broadcast
             Sync.OrderSync.Tick();  // host: periodic job-board broadcast
+        }
+
+        // ---- save snapshot (host -> joining client; makes the client's garage a native copy) ----
+        private const int SaveChunk = 256 * 1024;   // < Steam's 512KB message limit, with header room
+        private byte[] _saveBuf;
+        private int _saveChunksExpected, _saveChunksGot;
+
+        /// <summary>Host: serialize the current profile and stream it (chunked) to one client.</summary>
+        public void SendSaveSnapshot(CSteamID target)
+        {
+            if (!InLobby || !IsHost) return;
+            var data = Sync.SaveSync.SerializeHost();
+            if (data == null || data.Length == 0) { _log?.Invoke("[save] nothing to send"); return; }
+            int total = data.Length;
+            int chunks = (total + SaveChunk - 1) / SaveChunk;
+            for (int c = 0; c < chunks; c++)
+            {
+                int off = c * SaveChunk;
+                int len = Math.Min(SaveChunk, total - off);
+                using var w = new PacketWriter(PacketType.FullState);
+                w.Int(total).Int(c).Int(chunks).Int(len).BytesRaw(data, off, len);
+                Net.Send(target, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+            }
+            _log?.Invoke($"[save] sent snapshot {total} bytes in {chunks} chunk(s) to {Net.NameOf(target)}");
         }
 
         // ---- economy (shared pool, host-authoritative) ----

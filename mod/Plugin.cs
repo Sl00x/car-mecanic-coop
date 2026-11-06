@@ -18,6 +18,7 @@ namespace CarMecaSim.Mp
         public static ManualLogSource Logger;
         public static MpSession Session;
         public static Overlay Overlay;
+        public static MenuOverlay MenuOverlay;
         public static MpConfig Cfg = new();
 
         public override void Load()
@@ -29,6 +30,7 @@ namespace CarMecaSim.Mp
             Session = new MpSession();
             Session.Init(Cfg, s => Log.LogInfo(s));
             Overlay = new Overlay(Session);
+            MenuOverlay = new MenuOverlay(Session);
 
             // Drive Update/OnGUI via an injected Il2Cpp MonoBehaviour (loader-independent game loop).
             ClassInjector.RegisterTypeInIl2Cpp<MpBehaviour>();
@@ -131,7 +133,8 @@ namespace CarMecaSim.Mp
 
         private void OnGUI()
         {
-            CarMecaPlugin.Overlay?.Draw();
+            CarMecaPlugin.Overlay?.Draw();        // in-game co-op panel (F6)
+            CarMecaPlugin.MenuOverlay?.Draw();    // main-menu Héberger/Rejoindre
         }
     }
 }

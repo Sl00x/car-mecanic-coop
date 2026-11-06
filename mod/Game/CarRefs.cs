@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 namespace CarMecaSim.Mp.Game
@@ -6,6 +7,17 @@ namespace CarMecaSim.Mp.Game
     /// <summary>Access to the car currently being worked on, and its parts, for sync.</summary>
     public static class CarRefs
     {
+        private static GameManager _gm;
+        public static GameManager Mgr()
+        {
+            try { if (_gm == null) _gm = UnityEngine.Object.FindObjectOfType<GameManager>(); } catch { }
+            return _gm;
+        }
+        public static GameDataManager Gdm()
+        {
+            try { var gm = Mgr(); return gm != null ? gm.GameDataManager : null; } catch { return null; }
+        }
+
         public static CarLoader CurrentCar()
         {
             try { var gs = GameScript.Get(); return gs != null ? gs.GetLastCarLoader() : null; }

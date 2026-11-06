@@ -44,6 +44,9 @@ namespace CarMecaSim.Mp.Net
             return this;
         }
 
+        /// <summary>Write a raw byte slice with no length prefix (reader must know the length).</summary>
+        public PacketWriter BytesRaw(byte[] b, int offset, int len) { _w.Write(b, offset, len); return this; }
+
         public byte[] ToArray() { _w.Flush(); return _ms.ToArray(); }
         public void Dispose() { _w.Dispose(); _ms.Dispose(); }
     }
@@ -84,6 +87,9 @@ namespace CarMecaSim.Mp.Net
             int len = _r.ReadInt32();
             return _r.ReadBytes(len);
         }
+
+        /// <summary>Read exactly n raw bytes (matches PacketWriter.BytesRaw).</summary>
+        public byte[] BytesRaw(int n) => _r.ReadBytes(n);
 
         public bool HasMore => _r.BaseStream.Position < _r.BaseStream.Length;
     }

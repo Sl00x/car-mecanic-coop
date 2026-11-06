@@ -1,0 +1,179 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== GameDataManager  :  Object  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_SaveIsLoaded
+    private static IntPtr NativeFieldInfoPtr_ProfileData
+    private static IntPtr NativeFieldInfoPtr_ProfilesUpdated
+    private static IntPtr NativeMethodInfoPtr_get_CurrentProfileData_Public_get_ProfileData_0
+    private static IntPtr NativeMethodInfoPtr_InitContainer_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ClearData_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SaveCarInGarage_Public_Void_NewCarData_Int32_0
+    private static IntPtr NativeMethodInfoPtr_LoadCarInGarage_Public_NewCarData_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SaveCarInParking_Public_Void_NewCarData_Int32_0
+    private static IntPtr NativeMethodInfoPtr_FillParkingPlaces_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_RemoveAllCarsFromParking_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_LoadCarInParking_Public_NewCarData_Int32_0
+    private static IntPtr NativeMethodInfoPtr_Load_Public_IEnumerator_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_LoadInstant_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_Load_Private_Void_PlatformManager_0
+    private static IntPtr NativeMethodInfoPtr_SaveCar_Public_Void_NewCarData_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_LoadCar_Public_NewCarData_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SaveLifter_Public_Void_NewCarLifterData_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetCarNamesFromGarage_Public_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_GetIndexFromCarLoaderName_Private_Int32_String_0
+    private static IntPtr NativeMethodInfoPtr_Save_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_ReloadProfiles_Public_Void_Il2CppReferenceArray_1_SaveData_0
+    private static IntPtr NativeMethodInfoPtr_LoadProfile_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CheckSaveHaveUsedDLCs_Public_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Boolean SaveIsLoaded { get;set; }
+    Il2CppReferenceArray<ProfileData> ProfileData { get;set; }
+    Boolean ProfilesUpdated { get;set; }
+    ProfileData CurrentProfileData { get; }
+  -- Methods --
+    Void InitContainer()
+    Void ClearData()
+    Void SaveCarInGarage(NewCarData carData, Int32 index)
+    NewCarData LoadCarInGarage(Int32 index)
+    Void SaveCarInParking(NewCarData carData, Int32 index)
+    Void FillParkingPlaces()
+    Void RemoveAllCarsFromParking()
+    NewCarData LoadCarInParking(Int32 index)
+    IEnumerator Load(Boolean forceLoad)
+    Void LoadInstant(Boolean forceLoad)
+    Void Load(PlatformManager platformManager)
+    Void SaveCar(NewCarData carData, Int32 index, Boolean toParking)
+    NewCarData LoadCar(Int32 index, Boolean fromParking)
+    Void SaveLifter(NewCarLifterData lifterData, Int32 index)
+    Il2CppStringArray GetCarNamesFromGarage()
+    Int32 GetIndexFromCarLoaderName(String name)
+    Void Save(Int32 profileID)
+    Void ReloadProfiles(Il2CppReferenceArray<SaveData> saveData)
+    Void LoadProfile()
+    Int32 CheckSaveHaveUsedDLCs(Int32 profileIndex)
+
+==== ProfileData  :  Object  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_saveVersion
+    private static IntPtr NativeFieldInfoPtr_Name
+    private static IntPtr NativeFieldInfoPtr_LastSave
+    private static IntPtr NativeFieldInfoPtr_PlayTime
+    private static IntPtr NativeFieldInfoPtr_BestRaceTime
+    private static IntPtr NativeFieldInfoPtr_TopSpeed
+    private static IntPtr NativeFieldInfoPtr_LastUID
+    private static IntPtr NativeFieldInfoPtr_BuildVersion
+    private static IntPtr NativeFieldInfoPtr_FinishedTutorial
+    private static IntPtr NativeFieldInfoPtr_Difficulty
+    private static IntPtr NativeFieldInfoPtr_carsInGarage
+    private static IntPtr NativeFieldInfoPtr_carsOnParking
+    private static IntPtr NativeFieldInfoPtr_jukeboxData
+    private static IntPtr NativeFieldInfoPtr_garageCustomizationData
+    private static IntPtr NativeFieldInfoPtr_inventoryData
+    private static IntPtr NativeFieldInfoPtr_warehouseData
+    private static IntPtr NativeFieldInfoPtr_carLiftersData
+    private static IntPtr NativeFieldInfoPtr_carLoaderData
+    private static IntPtr NativeFieldInfoPtr_unlockedPosition
+    private static IntPtr NativeFieldInfoPtr_upgradeForPointsData
+    private static IntPtr NativeFieldInfoPtr_upgradeForMoneyData
+    private static IntPtr NativeFieldInfoPtr_machines
+    private static IntPtr NativeFieldInfoPtr_jobsData
+    private static IntPtr NativeFieldInfoPtr_globalDataWrapper
+    private static IntPtr NativeFieldInfoPtr_PlayerData
+    private static IntPtr NativeFieldInfoPtr_ShopListItemsData
+    private static IntPtr NativeFieldInfoPtr_PaintshopData
+    private static IntPtr NativeFieldInfoPtr_WindowTintData
+    private static IntPtr NativeMethodInfoPtr_Init_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitGarageCars_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitParkingCars_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitJukeboxData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitGarageCustomizationData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitInventoryData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitWarehouseData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitCarLiftersData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitCarLoaderData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitUnlockedPosition_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitUpgradesForPointsData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitUpgradesForMoneyData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitMachinesData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitJobsData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_InitGlobalData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_TryRecoverProfile_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecoverGarageCars_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecoverParkingCars_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecoverJobsData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecoverUpgradesData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecoverUnlockedPosition_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecoverWarehouseData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecoverCarLoaderData_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_WriteSaveHeader_Private_Void_BinaryWriter_0
+    private static IntPtr NativeMethodInfoPtr_ReadAndVerifyHeader_Private_Boolean_BinaryReader_0
+    private static IntPtr NativeMethodInfoPtr_WriteSaveVersion_Private_Void_BinaryWriter_0
+    private static IntPtr NativeMethodInfoPtr_ReadAndVerifySaveVersion_Private_Boolean_BinaryReader_0
+    private static IntPtr NativeMethodInfoPtr_SerializeToBytes_Public_Il2CppStructArray_1_Byte_0
+    private static IntPtr NativeMethodInfoPtr_DeserializeFromBytes_Public_Void_byref_Il2CppStructArray_1_Byte_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Byte saveVersion { get;set; }
+    String Name { get;set; }
+    Int64 LastSave { get;set; }
+    UInt32 PlayTime { get;set; }
+    Int64 BestRaceTime { get;set; }
+    Int32 TopSpeed { get;set; }
+    Int64 LastUID { get;set; }
+    String BuildVersion { get;set; }
+    Boolean FinishedTutorial { get;set; }
+    DifficultyLevel Difficulty { get;set; }
+    Il2CppReferenceArray<NewCarData> carsInGarage { get;set; }
+    Il2CppReferenceArray<NewCarData> carsOnParking { get;set; }
+    RadioData jukeboxData { get;set; }
+    GarageCustomizationData garageCustomizationData { get;set; }
+    NewInventoryData inventoryData { get;set; }
+    NewWarehouseData warehouseData { get;set; }
+    Il2CppReferenceArray<NewCarLifterData> carLiftersData { get;set; }
+    NewCarLoaderData carLoaderData { get;set; }
+    NewUnlockedPosition unlockedPosition { get;set; }
+    NewUpgradeSystemData upgradeForPointsData { get;set; }
+    NewUpgradeSystemData upgradeForMoneyData { get;set; }
+    NewMachines machines { get;set; }
+    NewJobsData jobsData { get;set; }
+    NewGlobalDataWrapper globalDataWrapper { get;set; }
+    PlayerData PlayerData { get;set; }
+    Il2CppReferenceArray<ShopListItemData> ShopListItemsData { get;set; }
+    PaintshopData PaintshopData { get;set; }
+    WindowTintData WindowTintData { get;set; }
+  -- Methods --
+    Void Init()
+    Void InitGarageCars()
+    Void InitParkingCars()
+    Void InitJukeboxData()
+    Void InitGarageCustomizationData()
+    Void InitInventoryData()
+    Void InitWarehouseData()
+    Void InitCarLiftersData()
+    Void InitCarLoaderData()
+    Void InitUnlockedPosition()
+    Void InitUpgradesForPointsData()
+    Void InitUpgradesForMoneyData()
+    Void InitMachinesData()
+    Void InitJobsData()
+    Void InitGlobalData()
+    Void TryRecoverProfile()
+    Void RecoverGarageCars()
+    Void RecoverParkingCars()
+    Void RecoverJobsData()
+    Void RecoverUpgradesData()
+    Void RecoverUnlockedPosition()
+    Void RecoverWarehouseData()
+    Void RecoverCarLoaderData()
+    Void WriteSaveHeader(BinaryWriter binaryWriter)
+    Boolean ReadAndVerifyHeader(BinaryReader binaryReader)
+    Void WriteSaveVersion(BinaryWriter binaryWriter)
+    Boolean ReadAndVerifySaveVersion(BinaryReader binaryReader)
+    Il2CppStructArray<Byte> SerializeToBytes()
+    Void DeserializeFromBytes(Il2CppStructArray`1& bytes)
+

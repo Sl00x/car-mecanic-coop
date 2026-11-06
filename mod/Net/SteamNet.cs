@@ -95,6 +95,14 @@ namespace CarMecaSim.Mp.Net
                 SteamMatchmaking.LeaveLobby(LobbyId);
                 LobbyId = CSteamID.Nil;
             }
+            try { if (Ready) SteamFriends.ClearRichPresence(); } catch { }
+        }
+
+        /// <summary>Publish "connect" rich presence so friends get a "Join game" button in Steam.</summary>
+        private void PublishJoinable()
+        {
+            try { if (Ready && LobbyId.IsValid()) SteamFriends.SetRichPresence("connect", "+connect_lobby " + LobbyId.m_SteamID); }
+            catch { }
         }
 
         public IEnumerable<CSteamID> LobbyMembers()
@@ -174,6 +182,7 @@ namespace CarMecaSim.Mp.Net
             LobbyId = new CSteamID(cb.m_ulSteamIDLobby);
             LobbyOwner = LocalId;
             SetLobbyData("cms_mp", Protocol.Version.ToString());
+            PublishJoinable();
             OnStatus?.Invoke($"Lobby created: {LobbyId}");
             OnLobbyEntered?.Invoke(LobbyId);
         }
@@ -183,6 +192,7 @@ namespace CarMecaSim.Mp.Net
             if (ioFail) { OnStatus?.Invoke("Lobby enter IO failure."); return; }
             LobbyId = new CSteamID(cb.m_ulSteamIDLobby);
             LobbyOwner = SteamMatchmaking.GetLobbyOwner(LobbyId);
+            PublishJoinable();
             OnStatus?.Invoke($"Entered lobby {LobbyId}, owner {LobbyOwner}");
             OnLobbyEntered?.Invoke(LobbyId);
             // Open a P2P session to the host by sending a probe handled upstream (Hello).
