@@ -77,6 +77,11 @@ namespace CarMecaSim.Mp
             // Safety: never stay frozen if we lose the session or the panel closed another way.
             if (_frozen && (!GameRefs.InGameSession || CarMecaPlugin.Overlay == null || !CarMecaPlugin.Overlay.Visible))
                 SetFrozen(false);
+            // Keep the cursor free each frame while frozen, so the game's FPS controller can't grab it back.
+            if (_frozen)
+            {
+                try { Time.timeScale = 0f; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; } catch { }
+            }
 
             s.EnsureSteam();
             // Use UNSCALED time so networking/chat keep running even while the game is frozen (timeScale 0).
