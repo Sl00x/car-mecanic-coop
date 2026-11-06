@@ -25,6 +25,7 @@ namespace CarMecaSim.Mp.Core
         private readonly Dictionary<ulong, RemotePlayer> _peers = new();
         private byte _nextPlayerId = 1;
         private float _lastPresence;
+        private CSteamID _curLobby;
         private Action<string> _log;
 
         public IReadOnlyCollection<RemotePlayer> Peers => _peers.Values;
@@ -70,7 +71,15 @@ namespace CarMecaSim.Mp.Core
         // ---- lifecycle ----
         private void OnLobbyEntered(CSteamID lobby)
         {
+            // Switching lobbies (e.g. we were auto-hosting, then joined a friend): drop stale peers.
+            if (_curLobby.IsValid() && _curLobby != lobby)
+            {
+                foreach (var p in _peers.Values) p.Despawn();
+                _peers.Clear();
+            }
+            _curLobby = lobby;
             InLobby = true;
+            _stateRequested = false;   // request a fresh snapshot for the lobby we just entered
             AddChat($"* joined lobby {lobby.m_SteamID}  (host: {Net.NameOf(Net.LobbyOwner)})");
             // Greet everyone already present.
             Hello();
@@ -303,7 +312,8 @@ namespace CarMecaSim.Mp.Core
             catch (Exception e) { _log?.Invoke("packet error: " + e.Message); }
         }
 
-        private bool _wasInSession;
+        private bool _stateRequested;
+        private bool _autoHostTried;
 
         // ---- per-frame ----
         public void Update(float dt)
@@ -311,14 +321,30 @@ namespace CarMecaSim.Mp.Core
             Net.Pump();
             bool show = GameRefs.InGameSession;
 
-            // When a client first enters a game session (incl. after joining from the menu),
-            // ask the host to push its current state (money + car) so we sync into the same garage.
-            if (InLobby && !IsHost && show && !_wasInSession)
+            // A client asks the host for its full save snapshot once BOTH conditions hold: we're in a
+            // lobby as a guest AND we're in a game session. This fires whichever order they happen in
+            // (load-then-join via Steam overlay, OR join-then-load) — the old "session-entry edge" missed
+            // the overlay-join case because we were already in-session when we joined.
+            bool wantState = InLobby && !IsHost && show;
+            if (wantState && !_stateRequested)
             {
                 using var w = new PacketWriter(PacketType.Ping);
                 Net.Send(Net.LobbyOwner, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+                _stateRequested = true;
+                _log?.Invoke("[save] requested host snapshot");
             }
-            _wasInSession = show;
+            else if (!wantState) _stateRequested = false;   // reset so re-entering re-syncs
+
+            // Native hosting: load your save through the game's own menu and you're automatically
+            // hosting a lobby friends can drop into via Steam's "Join Game" — no custom menu UI.
+            // Joining a friend (Steam overlay) replaces this auto-hosted lobby with theirs.
+            if (show && Net.Ready && !InLobby && !_autoHostTried)
+            {
+                _autoHostTried = true;
+                _log?.Invoke("[net] auto-hosting on session entry");
+                HostLobby();
+            }
+            else if (!show) _autoHostTried = false;   // re-arm for the next session
             foreach (var p in _peers.Values)
             {
                 p.SetVisible(show);

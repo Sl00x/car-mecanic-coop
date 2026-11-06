@@ -83,6 +83,12 @@ namespace CarMecaSim.Mp.Net
         public void JoinLobby(CSteamID lobby)
         {
             if (!Ready) return;
+            // If we were auto-hosting (or in another lobby), leave it before joining the target.
+            if (LobbyId.IsValid() && LobbyId != lobby)
+            {
+                SteamMatchmaking.LeaveLobby(LobbyId);
+                LobbyId = CSteamID.Nil;
+            }
             OnStatus?.Invoke($"Joining lobby {lobby}...");
             var call = SteamMatchmaking.JoinLobby(lobby);
             _crEnter.Set(call);

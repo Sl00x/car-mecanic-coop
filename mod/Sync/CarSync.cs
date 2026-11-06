@@ -66,8 +66,16 @@ namespace CarMecaSim.Mp.Sync
         }
 
         // ---- client side ----
+        /// <summary>
+        /// Disabled: the client's garage is now bootstrapped by the full save snapshot (SaveSync),
+        /// which loads every car NATIVELY with its correct config. The old name-only replication here
+        /// couldn't reconstruct a car's saved config (e.g. "Cannot load config 1 for car ...") and
+        /// retried forever. Keep the method as a no-op so the host's broadcasts are simply ignored.
+        /// </summary>
         public static void ApplyGarage(List<(int, string)> entries)
         {
+            return;
+#pragma warning disable CS0162
             if (!Active || S.IsHost) return;   // only clients mirror the host
             // Car-load is a coroutine; it stalls while the game is frozen (F6 open). Defer until unfrozen
             // — the host's 3s garage heartbeat re-applies it then.
@@ -101,6 +109,7 @@ namespace CarMecaSim.Mp.Sync
                 }
             }
             finally { Applying = false; }
+#pragma warning restore CS0162
         }
     }
 }
