@@ -20,14 +20,19 @@ namespace CarMecaSim.Mp.Game
             if (_scanned) return;                // already scanned the class; fields absent -> stop retrying
             try
             {
+                // Economy statics live on GlobalData (not GameSettings — that's just config).
                 if (_cls == IntPtr.Zero)
-                    foreach (var asm in new[] { "Assembly-CSharp-firstpass.dll", "Assembly-CSharp-firstpass",
-                                                "Assembly-CSharp.dll", "Assembly-CSharp" })
+                    foreach (var cn in new[] { "GlobalData", "GameSettings" })
                     {
-                        _cls = IL2CPP.GetIl2CppClass(asm, "", "GameSettings");
+                        foreach (var asm in new[] { "Assembly-CSharp-firstpass.dll", "Assembly-CSharp-firstpass",
+                                                    "Assembly-CSharp.dll", "Assembly-CSharp" })
+                        {
+                            _cls = IL2CPP.GetIl2CppClass(asm, "", cn);
+                            if (_cls != IntPtr.Zero) break;
+                        }
                         if (_cls != IntPtr.Zero) break;
                     }
-                if (_cls == IntPtr.Zero) { Status = "classe GameSettings introuvable (réessai)"; return; }
+                if (_cls == IntPtr.Zero) { Status = "classe GlobalData introuvable (réessai)"; return; }
 
                 IL2CPP.il2cpp_runtime_class_init(_cls);
 
