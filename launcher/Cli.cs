@@ -51,6 +51,7 @@ namespace CarMecaSim.Launcher
             if (payload == null) { Console.WriteLine("ERROR: install payload not found."); return 3; }
             void Log(string m) => Console.WriteLine("  " + m);
             if (!inst.EnsureLoader(payload, Log)) { Console.WriteLine("BepInEx install FAILED."); return 4; }
+            InteropPatcher.EnsurePatched(gameDir, Log);   // required for class injection on this game
             if (!inst.InstallMod(payload, Log)) { Console.WriteLine("Mod install FAILED (build the mod first)."); return 5; }
             inst.EnsureAppId(Log);
             return CmdStatus(gameDir);

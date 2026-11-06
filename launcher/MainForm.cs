@@ -116,6 +116,7 @@ namespace CarMecaSim.Launcher
             var inst = new ModInstaller(_gameDir);
             LogLine("Setup starting...");
             if (!inst.EnsureLoader(payload, LogLine)) { LogLine("BepInEx step failed."); return; }
+            InteropPatcher.EnsurePatched(_gameDir, LogLine);   // required for class injection on this game
             if (!inst.GetStatus().InteropGenerated)
                 LogLine("Note: interop not generated yet — it is created automatically the first time the game launches.");
             if (!inst.InstallMod(payload, LogLine)) { LogLine("Mod install failed (is the mod built?)."); }

@@ -74,7 +74,9 @@ namespace CarMecaSim.Mp
             s.SendPresenceTick(Time.time);
 
             var cfg = CarMecaPlugin.Cfg;
-            if (!_autoStarted && cfg.AutoStart && cfg.Role != MpRole.Menu && GameRefs.InGarage && s.EnsureSteam())
+            // Host/join as soon as Steam is ready (lobby works from the menu, so you can invite
+            // friends before entering the garage). Presence sync itself stays gated to the garage.
+            if (!_autoStarted && cfg.AutoStart && cfg.Role != MpRole.Menu && s.EnsureSteam())
             {
                 s.StartFromConfig();
                 _autoStarted = true;
