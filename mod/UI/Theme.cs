@@ -2,94 +2,89 @@ using UnityEngine;
 
 namespace CarMecaSim.Mp.UI
 {
-    /// <summary>Car Mechanic Simulator-style IMGUI theme: dark steel panels, orange accents.</summary>
+    /// <summary>Premium dark-glass IMGUI theme for the in-game co-op panel.</summary>
     public static class Theme
     {
-        // CMS palette
-        public static readonly Color Bg       = new Color(0.10f, 0.10f, 0.11f, 0.96f);
-        public static readonly Color Panel    = new Color(0.15f, 0.15f, 0.17f, 0.98f);
-        public static readonly Color PanelAlt = new Color(0.19f, 0.19f, 0.21f, 1f);
-        public static readonly Color Orange   = new Color(0.96f, 0.58f, 0.11f, 1f);   // CMS signature
-        public static readonly Color OrangeHi = new Color(1.00f, 0.66f, 0.18f, 1f);
-        public static readonly Color Text     = new Color(0.92f, 0.92f, 0.93f, 1f);
-        public static readonly Color Dim      = new Color(0.62f, 0.62f, 0.65f, 1f);
-        public static readonly Color Money     = new Color(0.52f, 0.86f, 0.46f, 1f);
-        public static readonly Color Xp        = new Color(0.36f, 0.72f, 1.00f, 1f);
-        public static readonly Color Scraps    = new Color(0.80f, 0.70f, 0.45f, 1f);
+        public static readonly Color Orange = new Color(1.00f, 0.68f, 0.18f, 1f);
+        public static readonly Color OrangeHi = new Color(1.00f, 0.77f, 0.33f, 1f);
+        public static readonly Color Green  = new Color(0.44f, 0.88f, 0.50f, 1f);
+        public static readonly Color Text   = new Color(0.93f, 0.94f, 0.96f, 1f);
+        public static readonly Color Muted  = new Color(0.60f, 0.63f, 0.70f, 1f);
 
-        public static GUIStyle Panel_, Header, Chip, Btn, BtnPrimary, Label, LabelDim,
-                               Value, Title, ChatLine, Field, BarBg, BarFill, OrangeFill;
+        public static GUIStyle Glass, GlassShadow, OrangeFill, Divider,
+            PanelTitle, TabLabel, KeyHint, SectionLabel, MutedS, Label, ChatLine,
+            RolePill, Dot, Field, Btn, BtnPrimary, Tag;
         private static bool _ready;
-
-        // RectOffset's (l,r,t,b) ctor isn't exposed by Il2CppInterop; build via properties.
-        private static RectOffset RO(int l, int r, int t, int b)
-        {
-            var o = new RectOffset();
-            o.left = l; o.right = r; o.top = t; o.bottom = b;
-            return o;
-        }
 
         private static Texture2D Tex(Color c)
         {
             var t = new Texture2D(1, 1);
-            t.SetPixel(0, 0, c);
-            t.Apply();
-            t.hideFlags = HideFlags.HideAndDontSave;
-            t.wrapMode = TextureWrapMode.Repeat;
+            t.SetPixel(0, 0, c); t.Apply();
+            t.hideFlags = HideFlags.HideAndDontSave; t.wrapMode = TextureWrapMode.Repeat;
             return t;
         }
+        private static RectOffset RO(int l, int r, int t, int b) { var o = new RectOffset(); o.left = l; o.right = r; o.top = t; o.bottom = b; return o; }
 
         public static void EnsureInit()
         {
-            if (_ready) return;
-            _ready = true;
+            if (_ready) return; _ready = true;
 
-            var bg = Tex(Bg); var panel = Tex(Panel); var panelAlt = Tex(PanelAlt);
-            var orange = Tex(Orange); var orangeHi = Tex(OrangeHi);
-            var clear = Tex(new Color(0, 0, 0, 0));
-            var barbg = Tex(new Color(0.08f, 0.08f, 0.09f, 1f));
-            var xpfill = Tex(Xp);
+            var glass  = Tex(new Color(0.055f, 0.06f, 0.075f, 0.94f));
+            var shadow = Tex(new Color(0f, 0f, 0f, 0.55f));
+            var amber  = Tex(Orange);
+            var div    = Tex(new Color(1f, 1f, 1f, 0.07f));
+            var fieldbg = Tex(new Color(0f, 0f, 0f, 0.45f));
+            var btnbg  = Tex(new Color(0.14f, 0.15f, 0.18f, 0.95f));
+            var amberHi = Tex(OrangeHi);
+            var tagbg  = Tex(new Color(0.04f, 0.05f, 0.06f, 0.82f));
 
-            Panel_ = new GUIStyle { padding = RO(10, 10, 8, 10) };
-            Panel_.normal.background = panel;
+            Glass = new GUIStyle(); Glass.normal.background = glass;
+            GlassShadow = new GUIStyle(); GlassShadow.normal.background = shadow;
+            OrangeFill = new GUIStyle(); OrangeFill.normal.background = amber;
+            Divider = new GUIStyle(); Divider.normal.background = div;
 
-            Header = new GUIStyle { padding = RO(10, 10, 6, 6), fontSize = 13, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
-            Header.normal.background = orange;
-            Header.normal.textColor = new Color(0.08f, 0.06f, 0.03f, 1f);
+            PanelTitle = new GUIStyle { fontSize = 14, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
+            PanelTitle.normal.textColor = Orange;
 
-            Title = new GUIStyle { fontSize = 15, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
-            Title.normal.textColor = Orange;
+            TabLabel = new GUIStyle { fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
+            TabLabel.normal.textColor = Text;
 
-            Chip = new GUIStyle { padding = RO(8, 8, 3, 3), fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
-            Chip.normal.background = panelAlt; Chip.normal.textColor = Text;
+            KeyHint = new GUIStyle { fontSize = 10, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleRight };
+            KeyHint.normal.textColor = Muted;
 
-            Label = new GUIStyle { fontSize = 12, alignment = TextAnchor.MiddleLeft, wordWrap = true };
+            SectionLabel = new GUIStyle { fontSize = 10, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
+            SectionLabel.normal.textColor = Muted;
+
+            MutedS = new GUIStyle { fontSize = 11, alignment = TextAnchor.MiddleLeft, wordWrap = true };
+            MutedS.normal.textColor = Muted;
+
+            Label = new GUIStyle { fontSize = 12, alignment = TextAnchor.MiddleLeft };
             Label.normal.textColor = Text;
-
-            LabelDim = new GUIStyle(Label); LabelDim.normal.textColor = Dim; LabelDim.fontStyle = FontStyle.Italic;
-
-            Value = new GUIStyle { fontSize = 16, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleRight };
-            Value.normal.textColor = Text;
 
             ChatLine = new GUIStyle { fontSize = 11, alignment = TextAnchor.UpperLeft, wordWrap = true };
             ChatLine.normal.textColor = Text;
 
-            Btn = new GUIStyle { padding = RO(10, 10, 7, 7), fontSize = 12, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
-            Btn.normal.background = panelAlt; Btn.normal.textColor = Text;
-            Btn.hover.background = orangeHi; Btn.hover.textColor = Color.black;
-            Btn.active.background = orange; Btn.active.textColor = Color.black;
+            RolePill = new GUIStyle { fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleLeft };
+            RolePill.normal.textColor = Orange;
+
+            Dot = new GUIStyle { fontSize = 12, alignment = TextAnchor.MiddleCenter };
+            Dot.normal.textColor = Color.white;
+
+            Field = new GUIStyle { padding = RO(8, 8, 6, 6), fontSize = 12, alignment = TextAnchor.MiddleLeft };
+            Field.normal.background = fieldbg; Field.normal.textColor = Text;
+            Field.focused.background = fieldbg; Field.focused.textColor = Color.white;
+
+            Btn = new GUIStyle { padding = RO(10, 10, 7, 7), fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+            Btn.normal.background = btnbg; Btn.normal.textColor = Text;
+            Btn.hover.background = amberHi; Btn.hover.textColor = Color.black;
+            Btn.active.background = amber; Btn.active.textColor = Color.black;
 
             BtnPrimary = new GUIStyle(Btn);
-            BtnPrimary.normal.background = orange; BtnPrimary.normal.textColor = Color.black;
-            BtnPrimary.hover.background = orangeHi; BtnPrimary.hover.textColor = Color.black;
+            BtnPrimary.normal.background = amber; BtnPrimary.normal.textColor = Color.black;
+            BtnPrimary.hover.background = amberHi; BtnPrimary.hover.textColor = Color.black;
 
-            Field = new GUIStyle { padding = RO(7, 7, 5, 5), fontSize = 12, alignment = TextAnchor.MiddleLeft };
-            Field.normal.background = barbg; Field.normal.textColor = Text;
-            Field.focused.background = barbg; Field.focused.textColor = Color.white;
-
-            BarBg = new GUIStyle(); BarBg.normal.background = barbg;
-            BarFill = new GUIStyle(); BarFill.normal.background = xpfill;
-            OrangeFill = new GUIStyle(); OrangeFill.normal.background = orange;
+            Tag = new GUIStyle { fontSize = 11, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, padding = RO(6, 6, 3, 3) };
+            Tag.normal.background = tagbg; Tag.normal.textColor = Text;
         }
     }
 }

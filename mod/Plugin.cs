@@ -57,30 +57,62 @@ namespace CarMecaSim.Mp
     {
         public MpBehaviour(IntPtr ptr) : base(ptr) { }
 
-        private bool _overlayVisible = true;
         private bool _autoStarted;
+        private bool _frozen;
+        private float _savedTime = 1f;
+        private CursorLockMode _savedLock;
+        private bool _savedCursor;
 
         private void Update()
         {
             var s = CarMecaPlugin.Session;
             if (s == null) return;
 
-            if (Input.GetKeyDown(KeyCode.F6))
-            { _overlayVisible = !_overlayVisible; if (CarMecaPlugin.Overlay != null) CarMecaPlugin.Overlay.Visible = _overlayVisible; }
+            // F6 opens/closes the full co-op panel — only during an active session.
+            if (GameRefs.InGameSession && Input.GetKeyDown(KeyCode.F6))
+            {
+                var ov = CarMecaPlugin.Overlay;
+                if (ov != null) { ov.Visible = !ov.Visible; SetFrozen(ov.Visible); }
+            }
+            // Safety: never stay frozen if we lose the session or the panel closed another way.
+            if (_frozen && (!GameRefs.InGameSession || CarMecaPlugin.Overlay == null || !CarMecaPlugin.Overlay.Visible))
+                SetFrozen(false);
 
             s.EnsureSteam();
-            float dt = Time.deltaTime;
-            s.Update(dt);
-            s.SendPresenceTick(Time.time);
+            // Use UNSCALED time so networking/chat keep running even while the game is frozen (timeScale 0).
+            s.Update(Time.unscaledDeltaTime);
+            s.SendPresenceTick(Time.unscaledTime);
 
             var cfg = CarMecaPlugin.Cfg;
-            // Host/join as soon as Steam is ready (lobby works from the menu, so you can invite
-            // friends before entering the garage). Presence sync itself stays gated to the garage.
             if (!_autoStarted && cfg.AutoStart && cfg.Role != MpRole.Menu && s.EnsureSteam())
             {
                 s.StartFromConfig();
                 _autoStarted = true;
             }
+        }
+
+        /// <summary>Freeze/unfreeze the local game while the co-op panel is open (F6), freeing the cursor.</summary>
+        private void SetFrozen(bool on)
+        {
+            if (on == _frozen) return;
+            _frozen = on;
+            try
+            {
+                if (on)
+                {
+                    _savedTime = Time.timeScale; _savedLock = Cursor.lockState; _savedCursor = Cursor.visible;
+                    Time.timeScale = 0f;
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+                else
+                {
+                    Time.timeScale = _savedTime <= 0f ? 1f : _savedTime;
+                    Cursor.lockState = _savedLock;
+                    Cursor.visible = _savedCursor;
+                }
+            }
+            catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("freeze toggle failed: " + e.Message); }
         }
 
         private void OnGUI()

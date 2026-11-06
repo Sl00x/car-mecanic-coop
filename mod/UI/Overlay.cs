@@ -7,14 +7,14 @@ using CarMecaSim.Mp.Game;
 namespace CarMecaSim.Mp.UI
 {
     /// <summary>
-    /// Car Mechanic Simulator-styled in-game UI. Only drawn during an actual game session
-    /// (never the main menu or loading). Top-right: money/scraps/level/XP HUD.
-    /// Top-left: co-op panel (host/join/chat). Plus floating nametags for remote players.
+    /// In-game co-op UI. Only drawn during an actual game session (never menu/loading).
+    /// We do NOT draw money/XP — the game's own HUD stays. Just the co-op panel + nametags.
+    /// F6 opens the full panel (and the plugin freezes the game while it's open).
     /// </summary>
     public sealed class Overlay
     {
         private readonly MpSession _s;
-        public bool Visible = true;   // co-op panel visibility (F6)
+        public bool Visible = false;   // full panel (F6); a slim tab shows otherwise
 
         private string _lobbyInput = "";
         private string _chatInput = "";
@@ -25,93 +25,78 @@ namespace CarMecaSim.Mp.UI
 
         public void Draw()
         {
-            // HARD GATE: nothing in menus or during loading.
-            if (!GameRefs.InGameSession) return;
+            if (!GameRefs.InGameSession) return;      // hard gate: nothing in menus/loading
             Theme.EnsureInit();
-
-            DrawStatsHud();
             DrawNametags();
-            if (Visible) DrawCoopPanel();
-            else DrawCollapsedTab();
+            if (Visible) DrawPanel();
+            else DrawTab();
         }
 
-        // ---- top-right money / scraps / level / XP ----
-        private void DrawStatsHud()
+        private void DrawTab()
         {
-            const int w = 226, h = 96;
-            var r = new Rect(Screen.width - w - 12, 12, w, h);
-            GUI.Box(r, GUIContent.none, Theme.Panel_);
-            // accent bar
-            GUI.Box(new Rect(r.x, r.y, w, 4), GUIContent.none, Theme.OrangeFill);
-
-            var money = GameState.Available ? GameState.Money : 0;
-            var scraps = GameState.Available ? GameState.Scraps : 0;
-            var level = GameState.Available ? GameState.Level : 0;
-            var exp = GameState.Available ? GameState.Exp : 0;
-
-            float x = r.x + 12, y = r.y + 12;
-            GUI.Label(new Rect(x, y, 90, 22), "ARGENT", Theme.LabelDim);
-            GUI.Label(new Rect(x + 80, y, w - 92, 22), "$ " + money.ToString("N0"), MoneyStyle());
-            y += 24;
-            GUI.Label(new Rect(x, y, 90, 22), "FERRAILLE", Theme.LabelDim);
-            GUI.Label(new Rect(x + 80, y, w - 92, 22), scraps.ToString("N0"), ScrapsStyle());
-            y += 26;
-            GUI.Label(new Rect(x, y, 70, 22), "NIVEAU " + level, Theme.Title);
-            GUI.Label(new Rect(x + 86, y + 2, w - 98, 20), "XP " + exp.ToString("N0"), Theme.Value);
+            var r = new Rect(16, 16, 172, 30);
+            GUI.Box(r, GUIContent.none, Theme.Glass);
+            GUI.Box(new Rect(r.x, r.y, 3, r.height), GUIContent.none, Theme.OrangeFill);
+            GUI.Label(new Rect(r.x + 14, r.y, r.width - 20, r.height),
+                _s.InLobby ? "● CO-OP   CONNECTÉ" : "CO-OP   ·   F6", Theme.TabLabel);
         }
 
-        private GUIStyle _money, _scrapsSt;
-        private GUIStyle MoneyStyle() { _money ??= new GUIStyle(Theme.Value) { }; _money.normal.textColor = Theme.Money; return _money; }
-        private GUIStyle ScrapsStyle() { _scrapsSt ??= new GUIStyle(Theme.Value) { }; _scrapsSt.normal.textColor = Theme.Scraps; return _scrapsSt; }
-
-        // ---- top-left co-op panel ----
-        private void DrawCoopPanel()
+        private void DrawPanel()
         {
-            const int w = 330;
-            int h = _s.InLobby ? 400 : 250;
-            var r = new Rect(12, 12, w, h);
-            GUI.Box(r, GUIContent.none, Theme.Panel_);
-            GUI.Box(new Rect(r.x, r.y, w, 26), "  MULTIJOUEUR CO-OP        [F6]", Theme.Header);
+            const int w = 360;
+            int h = _s.InLobby ? 430 : 230;
+            var r = new Rect(16, 16, w, h);
 
-            GUILayout.BeginArea(new Rect(r.x + 12, r.y + 34, w - 24, h - 44));
+            // layered glass panel with a glowing left edge
+            GUI.Box(new Rect(r.x - 2, r.y - 2, w + 4, h + 4), GUIContent.none, Theme.GlassShadow);
+            GUI.Box(r, GUIContent.none, Theme.Glass);
+            GUI.Box(new Rect(r.x, r.y, 4, h), GUIContent.none, Theme.OrangeFill);
+
+            // title bar
+            var tb = new Rect(r.x, r.y, w, 34);
+            GUI.Label(new Rect(tb.x + 18, tb.y + 7, 220, 22), "MULTIJOUEUR CO-OP", Theme.PanelTitle);
+            GUI.Label(new Rect(tb.x + w - 54, tb.y + 9, 40, 18), "F6", Theme.KeyHint);
+            GUI.Box(new Rect(r.x + 16, r.y + 36, w - 32, 1), GUIContent.none, Theme.Divider);
+
+            GUILayout.BeginArea(new Rect(r.x + 18, r.y + 46, w - 36, h - 56));
 
             if (!_s.InLobby)
             {
-                GUILayout.Label(_s.Net.Ready ? "Connecté à Steam. Prêt." : "Initialisation de Steam...", Theme.Label);
-                GUILayout.Space(6);
-                if (GUILayout.Button("HÉBERGER UNE PARTIE", Theme.BtnPrimary, GUILayout.Height(34))) _s.HostLobby();
+                GUILayout.Label(_s.Net.Ready ? "Connecté à Steam · prêt" : "Connexion à Steam…", Theme.MutedS);
                 GUILayout.Space(8);
-                GUILayout.Label("Rejoindre via un code lobby :", Theme.LabelDim);
+                if (Button("HÉBERGER UNE PARTIE", true)) _s.HostLobby();
+                GUILayout.Space(10);
+                GUILayout.Label("REJOINDRE  ·  code lobby", Theme.SectionLabel);
+                GUILayout.Space(2);
                 GUILayout.BeginHorizontal();
-                _lobbyInput = GUILayout.TextField(_lobbyInput, Theme.Field, GUILayout.Height(28));
-                if (GUILayout.Button("REJOINDRE", Theme.Btn, GUILayout.Width(100), GUILayout.Height(28))
-                    && ulong.TryParse(_lobbyInput.Trim(), out var id)) _s.JoinLobby(id);
+                _lobbyInput = GUILayout.TextField(_lobbyInput, Theme.Field, GUILayout.Height(30));
+                if (Button("OK", false, 64) && ulong.TryParse(_lobbyInput.Trim(), out var id)) _s.JoinLobby(id);
                 GUILayout.EndHorizontal();
-                GUILayout.Space(6);
-                GUILayout.Label("…ou invite un ami via l'overlay Steam (Maj+Tab).", Theme.LabelDim);
+                GUILayout.Space(8);
+                GUILayout.Label("…ou invite un ami via l'overlay Steam (Maj+Tab).", Theme.MutedS);
             }
             else
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(_s.IsHost ? "RÔLE : HÔTE" : "RÔLE : CLIENT", Theme.Title);
+                GUILayout.Label(_s.IsHost ? "● HÔTE" : "● CLIENT", Theme.RolePill);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("QUITTER", Theme.Btn, GUILayout.Width(84), GUILayout.Height(24))) _s.Leave();
+                if (Button("QUITTER", false, 92)) _s.Leave();
                 GUILayout.EndHorizontal();
-                GUILayout.Label($"Lobby : {_s.Net.LobbyId.m_SteamID}", Theme.LabelDim);
+                GUILayout.Label("LOBBY  " + _s.Net.LobbyId.m_SteamID, Theme.MutedS);
 
-                GUILayout.Space(4);
-                GUILayout.Label($"JOUEURS ({1 + _s.Peers.Count})", Theme.Header, GUILayout.Height(22));
-                GUILayout.Label("  ● " + _s.Config.DisplayName + " (toi)", Theme.Label);
-                foreach (var p in _s.Peers) GUILayout.Label("  ● " + p.Name, Theme.Label);
+                GUILayout.Space(8);
+                GUILayout.Label("JOUEURS  —  " + (1 + _s.Peers.Count), Theme.SectionLabel);
+                PlayerRow(_s.Config.DisplayName + "  (toi)", Theme.Orange);
+                foreach (var p in _s.Peers) PlayerRow(p.Name, Theme.Green);
 
-                GUILayout.Space(6);
-                GUILayout.Label("CHAT", Theme.Header, GUILayout.Height(22));
+                GUILayout.Space(8);
+                GUILayout.Label("CHAT", Theme.SectionLabel);
                 _chatScroll = GUILayout.BeginScrollView(_chatScroll, GUILayout.Height(140));
                 foreach (var line in _s.ChatLog) GUILayout.Label(line, Theme.ChatLine);
                 GUILayout.EndScrollView();
 
                 GUI.SetNextControlName("cms_chat");
-                _chatInput = GUILayout.TextField(_chatInput, Theme.Field, GUILayout.Height(26));
+                _chatInput = GUILayout.TextField(_chatInput, Theme.Field, GUILayout.Height(28));
                 if (_focusChat) { GUI.FocusControl("cms_chat"); _focusChat = false; }
                 var e = Event.current;
                 if (e != null && e.type == EventType.KeyDown && (e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter))
@@ -119,14 +104,24 @@ namespace CarMecaSim.Mp.UI
                     if (!string.IsNullOrWhiteSpace(_chatInput)) { _s.SendChat(_chatInput.Trim()); _chatInput = ""; _focusChat = true; }
                 }
             }
-
             GUILayout.EndArea();
         }
 
-        private void DrawCollapsedTab()
+        private static bool Button(string text, bool primary, int width = 0)
         {
-            var r = new Rect(12, 12, 150, 26);
-            GUI.Box(r, _s.InLobby ? "  CO-OP ● connecté" : "  CO-OP  [F6]", Theme.Header);
+            var style = primary ? Theme.BtnPrimary : Theme.Btn;
+            return width > 0
+                ? GUILayout.Button(text, style, GUILayout.Height(30), GUILayout.Width(width))
+                : GUILayout.Button(text, style, GUILayout.Height(34));
+        }
+
+        private static void PlayerRow(string name, Color dot)
+        {
+            GUILayout.BeginHorizontal(GUILayout.Height(22));
+            var rect = GUILayoutUtility.GetRect(12, 22, GUILayout.Width(16));
+            GUI.color = dot; GUI.Label(new Rect(rect.x, rect.y + 5, 12, 12), "●", Theme.Dot); GUI.color = Color.white;
+            GUILayout.Label(name, Theme.Label);
+            GUILayout.EndHorizontal();
         }
 
         private void DrawNametags()
@@ -135,10 +130,10 @@ namespace CarMecaSim.Mp.UI
             if (cam == null) return;
             foreach (var p in _s.Peers)
             {
-                var sp = cam.WorldToScreenPoint(p.WorldPos + new Vector3(0, 1.1f, 0));
+                var sp = cam.WorldToScreenPoint(p.WorldPos + new Vector3(0, 1.15f, 0));
                 if (sp.z <= 0) continue;
-                var r = new Rect(sp.x - 70, Screen.height - sp.y - 12, 140, 22);
-                GUI.Box(r, p.Name, Theme.Chip);
+                var r = new Rect(sp.x - 70, Screen.height - sp.y - 14, 140, 24);
+                GUI.Box(r, p.Name, Theme.Tag);
             }
         }
     }
