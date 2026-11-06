@@ -23,4 +23,11 @@ namespace CarMecaSim.Mp.Sync
     {
         private static bool Prefix(MountObject __instance) => PartSync.TryLocalBolt(__instance);
     }
+
+    // A car is loaded -> replicate it so everyone sees the same vehicle on the lift.
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
+    internal static class Patch_LoadCar
+    {
+        private static void Postfix(CarLoader __instance, string name) => CarSync.OnLocalLoadCar(__instance, name);
+    }
 }

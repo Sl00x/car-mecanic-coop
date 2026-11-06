@@ -81,6 +81,7 @@ namespace CarMecaSim.Mp.Core
             AddChat($"* {Net.NameOf(who)} connected");
             GetOrAdd(who);
             Hello(); // re-announce so the newcomer learns our name
+            if (IsHost) { BroadcastEcoAbsolute(); CarMecaSim.Mp.Sync.CarSync.OnPeerJoined(); }  // give the newcomer our money + current car
         }
 
         private void OnPeerLeft(CSteamID who)
@@ -146,6 +147,14 @@ namespace CarMecaSim.Mp.Core
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
+        public void SendCarOp(byte op, string name)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.CarOp);
+            w.Byte(op).Str(name);
+            Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
         // ---- receiving ----
         private void OnData(CSteamID sender, byte[] data, int channel)
         {
@@ -204,6 +213,16 @@ namespace CarMecaSim.Mp.Core
                         Sync.PartSync.ApplyRemote(PlayerIdOf(sender), action, key, idx);
                         break;
                     }
+                    case PacketType.CarOp:
+                    {
+                        var op = r.Byte(); var name = r.Str();
+                        Sync.CarSync.ApplyRemote(op, name);
+                        break;
+                    }
+                    case PacketType.Ping:
+                        // A client reached the garage and wants the current state.
+                        if (IsHost) { BroadcastEcoAbsolute(); Sync.CarSync.OnPeerJoined(); }
+                        break;
                     case PacketType.Bye:
                         OnPeerLeft(sender);
                         break;
@@ -212,11 +231,22 @@ namespace CarMecaSim.Mp.Core
             catch (Exception e) { _log?.Invoke("packet error: " + e.Message); }
         }
 
+        private bool _wasInSession;
+
         // ---- per-frame ----
         public void Update(float dt)
         {
             Net.Pump();
             bool show = GameRefs.InGameSession;
+
+            // When a client first enters a game session (incl. after joining from the menu),
+            // ask the host to push its current state (money + car) so we sync into the same garage.
+            if (InLobby && !IsHost && show && !_wasInSession)
+            {
+                using var w = new PacketWriter(PacketType.Ping);
+                Net.Send(Net.LobbyOwner, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+            }
+            _wasInSession = show;
             foreach (var p in _peers.Values)
             {
                 p.SetVisible(show);
@@ -233,28 +263,38 @@ namespace CarMecaSim.Mp.Core
         // ---- economy (shared pool, host-authoritative) ----
         private int _lastMoney = -1, _lastExp = -1, _lastScraps = -1;
         private bool _ecoInit;
-        private float _ecoAccum;
+        private float _ecoAccum, _ecoHeartbeat;
+
+        /// <summary>Host pushes its absolute economy to everyone (money becomes the host's money).</summary>
+        public void BroadcastEcoAbsolute()
+        {
+            if (!IsHost || !GameState.Available) return;
+            using var w = new PacketWriter(PacketType.Economy);
+            w.Byte(0).Int(GameState.Money).Int(GameState.Exp).Int(GameState.Scraps).Int(GameState.Level);
+            Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+            _lastMoney = GameState.Money; _lastExp = GameState.Exp; _lastScraps = GameState.Scraps;
+            _ecoHeartbeat = Time.unscaledTime;
+        }
 
         private void EconomyTick()
         {
             if (!InLobby || !GameRefs.InGameSession || !GameState.Available) return;
             int m = GameState.Money, x = GameState.Exp, s = GameState.Scraps, lvl = GameState.Level;
             if (!_ecoInit) { _lastMoney = m; _lastExp = x; _lastScraps = s; _ecoInit = true; return; }
-            if (m == _lastMoney && x == _lastExp && s == _lastScraps) return;
+            bool changed = (m != _lastMoney || x != _lastExp || s != _lastScraps);
 
             if (IsHost)
             {
-                using var w = new PacketWriter(PacketType.Economy);
-                w.Byte(0).Int(m).Int(x).Int(s).Int(lvl);                 // 0 = absolute
-                Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+                // Broadcast on change, and a heartbeat every ~2s so clients always mirror the host.
+                if (changed || Time.unscaledTime - _ecoHeartbeat > 2f) BroadcastEcoAbsolute();
             }
-            else
+            else if (changed)
             {
                 using var w = new PacketWriter(PacketType.Economy);
-                w.Byte(1).Int(m - _lastMoney).Int(x - _lastExp).Int(s - _lastScraps); // 1 = delta
+                w.Byte(1).Int(m - _lastMoney).Int(x - _lastExp).Int(s - _lastScraps); // 1 = delta -> host applies
                 Net.Send(Net.LobbyOwner, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+                _lastMoney = m; _lastExp = x; _lastScraps = s;
             }
-            _lastMoney = m; _lastExp = x; _lastScraps = s;
         }
 
         private void AddChat(string line)
