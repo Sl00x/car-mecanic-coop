@@ -1,0 +1,201 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== OrderGenerator  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_OnTakeMission
+    private static IntPtr NativeFieldInfoPtr_orderTimer
+    private static IntPtr NativeFieldInfoPtr_nextOrderTime
+    private static IntPtr NativeFieldInfoPtr_jobs
+    private static IntPtr NativeFieldInfoPtr_selectedJobs
+    private static IntPtr NativeFieldInfoPtr_LastUId
+    private static IntPtr NativeFieldInfoPtr_ordersData
+    private static IntPtr NativeFieldInfoPtr_c_typeName
+    private static IntPtr NativeFieldInfoPtr_notAvailableForElectric
+    private static IntPtr NativeFieldInfoPtr_ordersDataINI
+    private static IntPtr NativeMethodInfoPtr_get_Jobs_Public_get_List_1_Job_0
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDestroy_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Start_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Prepare_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_GenerateNewJob_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_AddJob_Public_Void_Job_List_1_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_TakeJob_Public_IEnumerator_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_PrepareJob_Private_Void_CarLoader_Job_0
+    private static IntPtr NativeMethodInfoPtr_CancelJob_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_TakeMission_Public_IEnumerator_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GenerateMission_Public_Void_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetChanceToEasyMode_Private_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetMaxJobSubTypes_Private_Int32_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetTasksAmount_Private_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetRandomColorHSV_Private_Static_ColorHSV_0
+    private static IntPtr NativeMethodInfoPtr_GetAvailableCategories_Private_Void_Int32_byref_List_1_String_byref_List_1_Il2CppStringArray_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetExperience_Private_Int32_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetJobForCarLoader_Public_Job_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetChanceMod_Private_Single_Int32_0
+    private static IntPtr NativeMethodInfoPtr_PreparePart_Private_Void_Il2CppReferenceArray_1_PartScript_Int32_Int32_JobTask_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_PrepareBodyParts_Private_Void_CarLoader_JobTask_Single_0
+    private static IntPtr NativeMethodInfoPtr_CheckHowMuchJobsForMyXP_Private_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CheckHowMuchJobsOverMyXP_Private_Int32_0
+    private static IntPtr NativeMethodInfoPtr_RemoveCarInPreGeneratedJobs_Private_Void_byref_List_1_CarsIdWithConfig_0
+    private static IntPtr NativeMethodInfoPtr_CheckOrdersFilesCompatibility_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Load_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Save_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetRandomIncreaseTuneValue_Private_Int32_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Action OnTakeMission { get;set; }
+    Single orderTimer { get;set; }
+    Single nextOrderTime { get;set; }
+    List<Job> jobs { get;set; }
+    List<Job> selectedJobs { get;set; }
+    Int32 LastUId { get;set; }
+    TextAsset ordersData { get;set; }
+    Il2CppStringArray c_typeName { get;set; }
+    Il2CppStringArray notAvailableForElectric { get;set; }
+    IniData ordersDataINI { get;set; }
+    List<Job> Jobs { get; }
+  -- Methods --
+    Void Awake()
+    Void OnDestroy()
+    Void Start()
+    Void Update()
+    Void Prepare()
+    Void GenerateNewJob()
+    Void AddJob(Job job, List<Il2CppStringArray> jobSubtypes)
+    IEnumerator TakeJob(Int32 id, Boolean movePlayerToCar)
+    Void PrepareJob(CarLoader carLoader, Job job)
+    Void CancelJob(Int32 id)
+    IEnumerator TakeMission(Int32 id, Boolean movePlayerToCar)
+    Void GenerateMission(Int32 id, Boolean forTutorial)
+    Int32 GetChanceToEasyMode(Int32 playerLvl)
+    Int32 GetMaxJobSubTypes(Int32 playerLvl, Int32 howManyTask)
+    Int32 GetTasksAmount(Int32 playerLvl)
+    static ColorHSV GetRandomColorHSV()
+    Void GetAvailableCategories(Int32 playerLvl, List`1& availableCategories, List`1& availableSubCategories, Boolean isElectric)
+    Int32 GetExperience(Int32 howMuchJobForPlayer, Int32 howMuchPlayerCanGetOrder)
+    Job GetJobForCarLoader(Int32 carLoaderID)
+    Single GetChanceMod(Int32 playerXP)
+    Void PreparePart(Il2CppReferenceArray<PartScript> parts, Int32 faultNo, Int32 percent, JobTask jobTask, Boolean easyMode, Single globalCondition)
+    Void PrepareBodyParts(CarLoader carLoader, JobTask jobTask, Single minCondition)
+    Int32 CheckHowMuchJobsForMyXP()
+    Int32 CheckHowMuchJobsOverMyXP()
+    Void RemoveCarInPreGeneratedJobs(List`1& availableCars)
+    Void CheckOrdersFilesCompatibility()
+    Void Load()
+    Void Save()
+    Int32 GetRandomIncreaseTuneValue()
+
+==== Job  :  Object  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_id
+    private static IntPtr NativeFieldInfoPtr_carLoaderID
+    private static IntPtr NativeFieldInfoPtr_forXP
+    private static IntPtr NativeFieldInfoPtr_carFile
+    private static IntPtr NativeFieldInfoPtr_configVersion
+    private static IntPtr NativeFieldInfoPtr_timeToEnd
+    private static IntPtr NativeFieldInfoPtr_PaintType
+    private static IntPtr NativeFieldInfoPtr_carColor
+    private static IntPtr NativeFieldInfoPtr_carFactoryColor
+    private static IntPtr NativeFieldInfoPtr_carFactoryPaintType
+    private static IntPtr NativeFieldInfoPtr_Mileage
+    private static IntPtr NativeFieldInfoPtr_oilLevel
+    private static IntPtr NativeFieldInfoPtr_jobType
+    private static IntPtr NativeFieldInfoPtr_jobTasks
+    private static IntPtr NativeFieldInfoPtr_jobPartsCount
+    private static IntPtr NativeFieldInfoPtr_globalCondition
+    private static IntPtr NativeFieldInfoPtr_otherPartsCondition
+    private static IntPtr NativeFieldInfoPtr_BonusToExp
+    private static IntPtr NativeFieldInfoPtr_BonusToMoney
+    private static IntPtr NativeFieldInfoPtr_LocalizationID
+    private static IntPtr NativeFieldInfoPtr_IsMission
+    private static IntPtr NativeFieldInfoPtr_MissionID
+    private static IntPtr NativeFieldInfoPtr_CanDelete
+    private static IntPtr NativeFieldInfoPtr_TaskBonus
+    private static IntPtr NativeFieldInfoPtr_JobBonus
+    private static IntPtr NativeFieldInfoPtr_TotalPayout
+    private static IntPtr NativeFieldInfoPtr_MoneySpent
+    private static IntPtr NativeFieldInfoPtr_MoneySpentWithDifficultyMod
+    private static IntPtr NativeFieldInfoPtr_XP
+    private static IntPtr NativeFieldInfoPtr_IsCompleted
+    private static IntPtr NativeFieldInfoPtr_IconTypeEngine
+    private static IntPtr NativeFieldInfoPtr_IconTypeTiming
+    private static IntPtr NativeFieldInfoPtr_IconTypeSuspension
+    private static IntPtr NativeFieldInfoPtr_IconTypeBrakes
+    private static IntPtr NativeFieldInfoPtr_IconTypeExhaust
+    private static IntPtr NativeFieldInfoPtr_IconTypeGearbox
+    private static IntPtr NativeFieldInfoPtr_IconTypeOil
+    private static IntPtr NativeFieldInfoPtr_IconTypeBody
+    private static IntPtr NativeFieldInfoPtr_IconTypeTuning
+    private static IntPtr NativeFieldInfoPtr_timerCoroutine
+    private static IntPtr NativeFieldInfoPtr_haveToStopTimer
+    private static IntPtr NativeFieldInfoPtr_canUpdateText
+    private static IntPtr NativeFieldInfoPtr_timerText
+    private static IntPtr NativeMethodInfoPtr_HaveOnPartList_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_HaveSubtype_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_StartTimer_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_StopTimer_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetTimerText_Public_Void_Text_0
+    private static IntPtr NativeMethodInfoPtr_ClearTimerText_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateTimerText_Private_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_UpdateTimerTextIfCan_Private_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_Timer_Public_IEnumerator_Single_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Int32 id { get;set; }
+    Int32 carLoaderID { get;set; }
+    Int32 forXP { get;set; }
+    String carFile { get;set; }
+    Int32 configVersion { get;set; }
+    Single timeToEnd { get;set; }
+    PaintType PaintType { get;set; }
+    Color carColor { get;set; }
+    Color carFactoryColor { get;set; }
+    PaintType carFactoryPaintType { get;set; }
+    Int32 Mileage { get;set; }
+    Single oilLevel { get;set; }
+    Il2CppStructArray<Boolean> jobType { get;set; }
+    Il2CppReferenceArray<JobTask> jobTasks { get;set; }
+    Int32 jobPartsCount { get;set; }
+    Single globalCondition { get;set; }
+    Single otherPartsCondition { get;set; }
+    Boolean BonusToExp { get;set; }
+    Boolean BonusToMoney { get;set; }
+    String LocalizationID { get;set; }
+    Boolean IsMission { get;set; }
+    Int32 MissionID { get;set; }
+    Boolean CanDelete { get;set; }
+    Int32 TaskBonus { get;set; }
+    Int32 JobBonus { get;set; }
+    Int32 TotalPayout { get;set; }
+    Int32 MoneySpent { get;set; }
+    Int32 MoneySpentWithDifficultyMod { get;set; }
+    Int32 XP { get;set; }
+    Boolean IsCompleted { get;set; }
+    Boolean IconTypeEngine { get;set; }
+    Boolean IconTypeTiming { get;set; }
+    Boolean IconTypeSuspension { get;set; }
+    Boolean IconTypeBrakes { get;set; }
+    Boolean IconTypeExhaust { get;set; }
+    Boolean IconTypeGearbox { get;set; }
+    Boolean IconTypeOil { get;set; }
+    Boolean IconTypeBody { get;set; }
+    Boolean IconTypeTuning { get;set; }
+    Coroutine timerCoroutine { get;set; }
+    Boolean haveToStopTimer { get;set; }
+    Boolean canUpdateText { get;set; }
+    Text timerText { get;set; }
+  -- Methods --
+    Boolean HaveOnPartList(String jobPartID)
+    Boolean HaveSubtype(String jobSubTypeId)
+    Void StartTimer()
+    Void StopTimer()
+    Void SetTimerText(Text text)
+    Void ClearTimerText()
+    Void UpdateTimerText(Single time)
+    Void UpdateTimerTextIfCan(Single i)
+    IEnumerator Timer(Single seconds)
+

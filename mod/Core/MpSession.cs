@@ -81,7 +81,7 @@ namespace CarMecaSim.Mp.Core
             AddChat($"* {Net.NameOf(who)} connected");
             GetOrAdd(who);
             Hello(); // re-announce so the newcomer learns our name
-            if (IsHost) { BroadcastEcoAbsolute(); CarMecaSim.Mp.Sync.CarSync.OnPeerJoined(); }  // give the newcomer our money + current car
+            if (IsHost) { BroadcastEcoAbsolute(); Sync.CarSync.OnPeerJoined(); Sync.OrderSync.OnPeerJoined(); }  // newcomer gets money + garage + jobs
         }
 
         private void OnPeerLeft(CSteamID who)
@@ -156,6 +156,23 @@ namespace CarMecaSim.Mp.Core
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
+        public void SendJobs(System.Collections.Generic.List<Sync.OrderSync.JobInfo> jobs)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.Order);
+            w.Byte(Sync.OrderSync.OpList).Int(jobs.Count);
+            foreach (var j in jobs) w.Int(j.Id).Str(j.Car).Int(j.Pay).Int(j.Xp).Bool(j.Mission).Int(j.MissionId);
+            Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
+        public void SendTakeJob(int id, bool mission, int missionId)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.Order);
+            w.Byte(Sync.OrderSync.OpTake).Int(id).Bool(mission).Int(missionId);
+            Net.Send(Net.LobbyOwner, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
         // ---- receiving ----
         private void OnData(CSteamID sender, byte[] data, int channel)
         {
@@ -226,9 +243,31 @@ namespace CarMecaSim.Mp.Core
                         }
                         break;
                     }
+                    case PacketType.Order:
+                    {
+                        var op = r.Byte();
+                        if (op == Sync.OrderSync.OpList)
+                        {
+                            int n = r.Int();
+                            var jobs = new System.Collections.Generic.List<Sync.OrderSync.JobInfo>(n);
+                            for (int k = 0; k < n; k++)
+                            {
+                                int id = r.Int(); string car = r.Str(); int pay = r.Int(); int xp = r.Int();
+                                bool mi = r.Bool(); int mid = r.Int();
+                                jobs.Add(new Sync.OrderSync.JobInfo(id, car, pay, xp, mi, mid));
+                            }
+                            Sync.OrderSync.ApplyJobs(jobs);
+                        }
+                        else if (op == Sync.OrderSync.OpTake && IsHost)
+                        {
+                            int id = r.Int(); bool mi = r.Bool(); int mid = r.Int();
+                            Sync.OrderSync.HostTake(id, mi, mid);
+                        }
+                        break;
+                    }
                     case PacketType.Ping:
                         // A client reached the garage and wants the current state.
-                        if (IsHost) { BroadcastEcoAbsolute(); Sync.CarSync.OnPeerJoined(); }
+                        if (IsHost) { BroadcastEcoAbsolute(); Sync.CarSync.OnPeerJoined(); Sync.OrderSync.OnPeerJoined(); }
                         break;
                     case PacketType.Bye:
                         OnPeerLeft(sender);
@@ -266,6 +305,7 @@ namespace CarMecaSim.Mp.Core
 
             Sync.PartSync.Tick();   // release stale part locks
             Sync.CarSync.Tick();    // host: periodic garage broadcast
+            Sync.OrderSync.Tick();  // host: periodic job-board broadcast
         }
 
         // ---- economy (shared pool, host-authoritative) ----

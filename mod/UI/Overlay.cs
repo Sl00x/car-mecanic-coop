@@ -3,6 +3,7 @@ using UnityEngine;
 using CarMecaSim.Shared;
 using CarMecaSim.Mp.Core;
 using CarMecaSim.Mp.Game;
+using CarMecaSim.Mp.Sync;
 
 namespace CarMecaSim.Mp.UI
 {
@@ -21,7 +22,7 @@ namespace CarMecaSim.Mp.UI
 
         private string _lobbyInput = "";
         private string _chatInput = "";
-        private Vector2 _chatScroll;
+        private Vector2 _chatScroll, _jobScroll;
         private bool _focusChat;
 
         public Overlay(MpSession s) { _s = s; }
@@ -48,7 +49,7 @@ namespace CarMecaSim.Mp.UI
         private void DrawPanel()
         {
             const int w = 360;
-            int h = _s.InLobby ? 430 : 230;
+            int h = _s.InLobby ? 580 : 230;
             var r = new Rect(16, 16, w, h);
 
             // layered glass panel with a glowing left edge
@@ -102,9 +103,26 @@ namespace CarMecaSim.Mp.UI
                     PlayerRow(fresh ? p.Name : p.Name + "  (pas de position)", fresh ? Theme.Green : Theme.Muted);
                 }
 
+                // --- MISSIONS (host's job board) ---
+                GUILayout.Space(8);
+                var jobs = _s.IsHost ? OrderSync.LocalJobs() : OrderSync.HostJobs;
+                GUILayout.Label("MISSIONS  —  " + jobs.Count + (_s.IsHost ? "" : "  (de l'hôte)"), Theme.SectionLabel);
+                _jobScroll = GUILayout.BeginScrollView(_jobScroll, GUILayout.Height(108));
+                foreach (var j in jobs)
+                {
+                    GUILayout.BeginHorizontal(GUILayout.Height(24));
+                    var car = j.Car.StartsWith("car_") ? j.Car.Substring(4) : j.Car;
+                    GUILayout.Label($"{(j.Mission ? "★ " : "")}{car}   ${j.Pay}  +{j.Xp}xp", Theme.Label);
+                    GUILayout.FlexibleSpace();
+                    if (Button("Prendre", true, 74)) OrderSync.Take(j);
+                    GUILayout.EndHorizontal();
+                }
+                if (jobs.Count == 0) GUILayout.Label("aucune mission dispo", Theme.MutedS);
+                GUILayout.EndScrollView();
+
                 GUILayout.Space(8);
                 GUILayout.Label("CHAT", Theme.SectionLabel);
-                _chatScroll = GUILayout.BeginScrollView(_chatScroll, GUILayout.Height(140));
+                _chatScroll = GUILayout.BeginScrollView(_chatScroll, GUILayout.Height(104));
                 foreach (var line in _s.ChatLog) GUILayout.Label(line, Theme.ChatLine);
                 GUILayout.EndScrollView();
 
