@@ -40,12 +40,16 @@ Setup places BepInEx in the game root and the plugin in `BepInEx/plugins/CarMeca
 `steam_appid.txt` (1190000). The **first** game launch generates `BepInEx/interop/` (a few minutes).
 
 ## Play
-- **Host**: launcher GUI → *Host game* → Launch, or `--host --name "Alexis" --max 4 --type friends`.
-  In-game press **F6** for the overlay; it shows the Lobby ID. Invite via the Steam overlay
-  (Shift+Tab → Invite) or share the Lobby ID.
-- **Join**: `--join <lobbyId>`, accept a Steam invite, or paste the Lobby ID in the overlay → *Join*.
-- The plugin auto-hosts/joins (per the launcher config at `BepInEx/config/CarMecaSim/mp_config.json`)
-  the first time you reach the **garage**.
+The launcher only **installs and launches** — hosting/joining & chat happen **in-game** (by design).
+1. Launcher → set your pseudo → **▶ JOUER**.
+2. Load/continue a save. Once you're in an actual session (not the menu/loading), the CMS-styled
+   co-op HUD appears — press **F6** to open the co-op panel.
+3. **Host**: click *HÉBERGER UNE PARTIE* → the panel shows your Lobby ID. Invite via the Steam
+   overlay (Shift+Tab → Invite) or share the Lobby ID.
+4. **Join**: paste a Lobby ID → *REJOINDRE*, or accept a Steam invite.
+
+The HUD (money / scraps / level / XP, top-right; co-op panel top-left) is **only shown during a
+loaded game session** — never on the main menu or loading screens.
 
 ## Uninstall (reversible)
 ```powershell
