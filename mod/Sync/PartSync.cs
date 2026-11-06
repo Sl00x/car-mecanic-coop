@@ -32,11 +32,14 @@ namespace CarMecaSim.Mp.Sync
         }
 
         // ---- local actions (from Harmony prefixes). Return false to BLOCK the local action. ----
+        private static bool _loggedHook, _loggedRemote;
+
         public static bool TryLocalPart(PartScript part, byte action)
         {
             if (Applying || !Active || part == null) return true;
             var key = CarRefs.PathOf(part);
             if (string.IsNullOrEmpty(key)) return true;
+            if (!_loggedHook) { _loggedHook = true; CarMecaPlugin.Logger?.LogInfo($"[diag] part hook fired (action {action}) key={key}"); }
             if (IsLockedByOther(key)) { Notify(key); return false; }
             Claim(key);
             S.SendPartAction(action, key, -1);
@@ -59,6 +62,7 @@ namespace CarMecaSim.Mp.Sync
         public static void ApplyRemote(byte fromPlayer, byte action, string key, int boltIdx)
         {
             if (action == ActRelease) { Release(key); return; }
+            if (!_loggedRemote) { _loggedRemote = true; CarMecaPlugin.Logger?.LogInfo($"[diag] remote part action {action} key={key}"); }
             Locks[key] = fromPlayer; Touched[key] = Now;          // remote owns this part now
 
             var part = CarRefs.FindByPath(key);

@@ -13,9 +13,12 @@ namespace CarMecaSim.Mp.Game
         private static IntPtr _cls, _money, _exp, _scraps, _level, _jobs;
         private static bool _tried;
 
+        public static string Status { get; private set; } = "pas encore résolu";
+
         private static void Resolve()
         {
             if (_tried && _cls != IntPtr.Zero) return;
+            bool first = !_tried;
             _tried = true;
             try
             {
@@ -34,7 +37,10 @@ namespace CarMecaSim.Mp.Game
                 _level  = IL2CPP.GetIl2CppField(_cls, "PlayerLevel");
                 _jobs   = IL2CPP.GetIl2CppField(_cls, "Jobs");
             }
-            catch { _cls = IntPtr.Zero; }
+            catch (Exception e) { _cls = IntPtr.Zero; Status = "exception: " + e.Message; }
+
+            Status = $"cls={(_cls != IntPtr.Zero ? "ok" : "INTROUVABLE")} money={(_money != IntPtr.Zero ? "ok" : "X")}";
+            if (first) CarMecaSim.Mp.CarMecaPlugin.Logger?.LogInfo("[GameState] " + Status);
         }
 
         private static int ReadInt(IntPtr field)

@@ -55,6 +55,8 @@ namespace CarMecaSim.Mp.Core
             catch { /* rendering unavailable */ }
         }
 
+        private static Shader _hdrpLit;
+
         private GameObject Part(PrimitiveType type, Vector3 localPos, Vector3 scale, Color color, Transform parent = null)
         {
             var go = GameObject.CreatePrimitive(type);
@@ -65,8 +67,23 @@ namespace CarMecaSim.Mp.Core
             t.localPosition = localPos;
             t.localScale = scale;
             var r = go.GetComponent<Renderer>();
-            if (r != null && r.material != null) r.material.color = color;
+            if (r != null) ApplyColor(r, color);
             return go;
+        }
+
+        // CMS2021 renders with HDRP: the default primitive (Standard shader) shows up magenta/invisible.
+        // Build an HDRP/Lit material and set its _BaseColor so the avatar is actually visible.
+        private static void ApplyColor(Renderer r, Color color)
+        {
+            try
+            {
+                if (_hdrpLit == null) _hdrpLit = Shader.Find("HDRP/Lit");
+                Material m = _hdrpLit != null ? new Material(_hdrpLit) : r.material;
+                try { m.SetColor("_BaseColor", color); } catch { }
+                try { m.color = color; } catch { }
+                r.material = m;
+            }
+            catch { try { r.material.color = color; } catch { } }
         }
 
         public void Despawn()

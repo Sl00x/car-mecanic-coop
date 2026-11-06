@@ -60,6 +60,11 @@ namespace CarMecaSim.Mp.UI
 
             GUILayout.BeginArea(new Rect(r.x + 18, r.y + 46, w - 36, h - 56));
 
+            // live diagnostics (helps verify sync while testing)
+            bool eco = GameState.Available;
+            GUILayout.Label($"garage {(GameRefs.InGarage ? "✓" : "✗")}    éco {(eco ? "✓ " + GameState.Money : "✗")}    présence {_s.PresenceReceived}", Theme.MutedS);
+            GUILayout.Space(4);
+
             if (!_s.InLobby)
             {
                 GUILayout.Label(_s.Net.Ready ? "Connecté à Steam · prêt" : "Connexion à Steam…", Theme.MutedS);
@@ -87,7 +92,11 @@ namespace CarMecaSim.Mp.UI
                 GUILayout.Space(8);
                 GUILayout.Label("JOUEURS  —  " + (1 + _s.Peers.Count), Theme.SectionLabel);
                 PlayerRow(_s.Config.DisplayName + "  (toi)", Theme.Orange);
-                foreach (var p in _s.Peers) PlayerRow(p.Name, Theme.Green);
+                foreach (var p in _s.Peers)
+                {
+                    bool fresh = UnityEngine.Time.unscaledTime - p.LastUpdate < 2f;
+                    PlayerRow(fresh ? p.Name : p.Name + "  (pas de position)", fresh ? Theme.Green : Theme.Muted);
+                }
 
                 GUILayout.Space(8);
                 GUILayout.Label("CHAT", Theme.SectionLabel);

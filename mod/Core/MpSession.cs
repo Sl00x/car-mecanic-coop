@@ -21,6 +21,7 @@ namespace CarMecaSim.Mp.Core
         public bool IsHost => Net.IsLobbyOwner;
 
         public readonly List<string> ChatLog = new();
+        public int PresenceReceived;   // diagnostics: how many presence packets arrived
         private readonly Dictionary<ulong, RemotePlayer> _peers = new();
         private byte _nextPlayerId = 1;
         private float _lastPresence;
@@ -167,8 +168,9 @@ namespace CarMecaSim.Mp.Core
                         var p = GetOrAdd(sender);
                         p.TargetPos = new Vector3(x, y, z);
                         p.TargetYaw = yaw; p.TargetPitch = pitch; p.Tool = tool; p.Mode = mode;
-                        p.LastUpdate = Time.time;
+                        p.LastUpdate = Time.unscaledTime;
                         p.EnsureSpawned();
+                        if (PresenceReceived++ == 0) CarMecaPlugin.Logger?.LogInfo($"[diag] first presence from {Net.NameOf(sender)} at {p.TargetPos}");
                         break;
                     }
                     case PacketType.Chat:

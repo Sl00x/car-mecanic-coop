@@ -48,14 +48,17 @@ Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/$Repo/releases
   tag_name = $tag; name = "CarMecaSim Co-op $tag"; body = "Plugin v$Version - clique METTRE A JOUR dans le launcher."; draft = $false; prerelease = $false
 } | ConvertTo-Json) | Out-Null
 
-# 3. Re-fetch the release to get a reliable id, then upload the plugin DLLs as assets.
-Start-Sleep -Milliseconds 700
-$rel = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/tags/$tag" -Headers $H
-$uploadBase = "https://uploads.github.com/repos/$Repo/releases/$($rel.id)/assets"
+# 3. Re-fetch the newest release to get a reliable id, then upload the plugin DLLs as assets.
+Start-Sleep -Milliseconds 800
+$rel = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -Headers $H
+$relId = [string]$rel.id
+if (-not $relId) { throw "release id introuvable apres creation" }
+$uploadBase = "https://uploads.github.com/repos/$Repo/releases/" + $relId + "/assets"
+Write-Host "  (upload -> $uploadBase)"
 foreach ($dll in $dlls) {
   $fn = Split-Path $dll -Leaf
   Write-Host "  uploading $fn..."
-  Invoke-RestMethod -Method Post -Uri "$uploadBase?name=$fn" -Headers ($H + @{ "Content-Type" = "application/octet-stream" }) -InFile $dll | Out-Null
+  Invoke-RestMethod -Method Post -Uri ($uploadBase + "?name=$fn") -Headers ($H + @{ "Content-Type" = "application/octet-stream" }) -InFile $dll | Out-Null
 }
 
 Write-Host ""
