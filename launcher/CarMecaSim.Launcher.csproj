@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>CarMecaSim.Launcher</RootNamespace>
+    <AssemblyName>CarMecaSim.Launcher</AssemblyName>
+    <Version>0.1.0</Version>
+    <Product>CarMecaSim Co-op Launcher</Product>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\shared\CarMecaSim.Shared.csproj" />
+  </ItemGroup>
+</Project>
