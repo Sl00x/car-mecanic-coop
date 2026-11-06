@@ -54,11 +54,14 @@ namespace CarMecaSim.Launcher
             var shipped = Path.Combine(baseDir, "payload");
             if (Directory.Exists(Path.Combine(shipped, "MelonLoader_x64"))) return shipped;
 
-            // Dev fallback: climb to repo root (contains CarMecaSim.sln)
+            // Dev fallback: climb to repo root (marked by the solution file, .sln or .slnx)
             var dir = new DirectoryInfo(baseDir);
-            while (dir != null && !File.Exists(Path.Combine(dir.FullName, "CarMecaSim.sln")))
+            while (dir != null
+                   && !File.Exists(Path.Combine(dir.FullName, "CarMecaSim.sln"))
+                   && !File.Exists(Path.Combine(dir.FullName, "CarMecaSim.slnx")))
                 dir = dir.Parent;
-            if (dir != null) return Path.Combine(dir.FullName, "tools"); // tools/MelonLoader_x64 lives here
+            if (dir != null && Directory.Exists(Path.Combine(dir.FullName, "tools", "MelonLoader_x64")))
+                return Path.Combine(dir.FullName, "tools"); // tools/MelonLoader_x64 lives here
             return null;
         }
 
