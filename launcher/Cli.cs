@@ -26,6 +26,7 @@ namespace CarMecaSim.Launcher
                 case "setup":    return CmdSetup(gameDir!);
                 case "host":     return CmdPlay(gameDir!, MpRole.Host, opts);
                 case "join":     return CmdPlay(gameDir!, MpRole.Join, opts, args);
+                case "update":   return CmdUpdate(gameDir!);
                 case "uninstall":return CmdUninstall(gameDir!, opts.ContainsKey("all"));
                 case "help":     default: return CmdHelp();
             }
@@ -79,6 +80,20 @@ namespace CarMecaSim.Launcher
             return 0;
         }
 
+        private static int CmdUpdate(string gameDir)
+        {
+            var info = GithubUpdater.CheckAsync(gameDir).GetAwaiter().GetResult();
+            Console.WriteLine($"Repo      : {GithubUpdater.Repo}");
+            Console.WriteLine($"Installed : v{info.Current}");
+            if (!info.Configured) { Console.WriteLine("Repo not configured."); return 2; }
+            if (!string.IsNullOrEmpty(info.Error)) { Console.WriteLine("Error: " + info.Error); return 3; }
+            Console.WriteLine($"Latest    : v{info.Tag}");
+            if (!info.HasUpdate) { Console.WriteLine("Already up to date."); return 0; }
+            Console.WriteLine("Updating...");
+            var ok = GithubUpdater.UpdateAsync(gameDir, info, m => Console.WriteLine("  " + m)).GetAwaiter().GetResult();
+            return ok ? 0 : 4;
+        }
+
         private static int CmdUninstall(string gameDir, bool all)
         {
             new ModInstaller(gameDir).Uninstall(all, m => Console.WriteLine("  " + m));
@@ -95,6 +110,7 @@ namespace CarMecaSim.Launcher
                   --setup                    Install/verify BepInEx + co-op mod
                   --host [--name N] [--max N] [--type friends|public|private] [--direct]
                   --join <lobbyId> [--name N] [--direct]
+                  --update                   Download & install the latest plugin from GitHub
                   --uninstall [--all]        Remove mod (--all also removes BepInEx)
                   --game "<dir>"             Override game directory
                 """);
