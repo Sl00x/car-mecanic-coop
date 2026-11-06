@@ -32,6 +32,7 @@ namespace CarMecaSim.Launcher
         readonly BPanel _hero = new();
         readonly TextBox _name = new();
         readonly Button _play = new();
+        readonly Button _update = new();
         readonly Button _setup = new();
         readonly Button _uninstall = new();
 
@@ -57,19 +58,42 @@ namespace CarMecaSim.Launcher
             _side.Controls.Add(_name);
             _name.TextChanged += (_, _) => _hero.Invalidate();
 
-            AngularBtn(_setup, "RÉPARER / INSTALLER", false); _setup.SetBounds(22, _side.Height, 212, 36);
-            AngularBtn(_uninstall, "DÉSINSTALLER", false); _uninstall.SetBounds(22, _side.Height, 212, 30);
-            _side.Controls.Add(_setup); _side.Controls.Add(_uninstall);
-            _side.Resize += (_, _) => { _setup.Top = _side.Height - 86; _uninstall.Top = _side.Height - 46; };
+            AngularBtn(_update, "⭳  METTRE À JOUR", true); _update.SetBounds(22, _side.Height, 212, 38);
+            AngularBtn(_setup, "RÉPARER / INSTALLER", false); _setup.SetBounds(22, _side.Height, 212, 34);
+            AngularBtn(_uninstall, "DÉSINSTALLER", false); _uninstall.SetBounds(22, _side.Height, 212, 28);
+            _side.Controls.Add(_update); _side.Controls.Add(_setup); _side.Controls.Add(_uninstall);
+            _side.Resize += (_, _) => PlaceSideButtons();
 
             AngularBtn(_play, "▶   JOUER", true); _play.Size = new Size(280, 60); _play.Font = new Font("Segoe UI", 15.5f, FontStyle.Bold | FontStyle.Italic);
             _hero.Controls.Add(_play);
             _hero.Resize += (_, _) => LayoutHero();
 
+            _update.Click += async (_, _) => await DoUpdate();
             _setup.Click += (_, _) => DoSetup();
             _uninstall.Click += (_, _) => DoUninstall();
             _play.Click += (_, _) => DoPlay();
-            Load += (_, _) => { RefreshStatus(); LayoutHero(); _setup.Top = _side.Height - 86; _uninstall.Top = _side.Height - 46; };
+            Load += (_, _) => { RefreshStatus(); LayoutHero(); PlaceSideButtons(); };
+        }
+
+        void PlaceSideButtons()
+        {
+            _update.Top = _side.Height - 134;
+            _setup.Top = _side.Height - 92;
+            _uninstall.Top = _side.Height - 52;
+        }
+
+        async System.Threading.Tasks.Task DoUpdate()
+        {
+            if (_gameDir == null) return;
+            SetActivity("vérification des mises à jour…");
+            var info = await GithubUpdater.CheckAsync(_gameDir);
+            if (!info.Configured) { SetActivity("dépôt de MAJ non configuré (" + GithubUpdater.Repo + ")"); return; }
+            if (!string.IsNullOrEmpty(info.Error)) { SetActivity("MAJ: " + info.Error); return; }
+            if (!info.HasUpdate) { SetActivity($"déjà à jour (v{info.Current})"); return; }
+            SetActivity($"mise à jour v{info.Current} → v{info.Tag}…");
+            var ok = await GithubUpdater.UpdateAsync(_gameDir, info, SetActivity);
+            if (ok) SetActivity($"✓ mis à jour en v{info.Tag} · relance le jeu");
+            RefreshStatus();
         }
 
         void LayoutHero()
