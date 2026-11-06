@@ -2,6 +2,9 @@
   <Folder Name="/launcher/">
     <Project Path="launcher/CarMecaSim.Launcher.csproj" />
   </Folder>
+  <Folder Name="/mod/">
+    <Project Path="mod/CarMecaSim.Mp.csproj" />
+  </Folder>
   <Folder Name="/shared/">
     <Project Path="shared/CarMecaSim.Shared.csproj" />
   </Folder>

@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>CarMecaSim.Mp</RootNamespace>
+    <AssemblyName>CarMecaSim.Mp</AssemblyName>
+    <Version>0.1.0</Version>
+    <Product>CarMecaSim.Mp</Product>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Mod + its NuGet deps (Steamworks.NET) must land in output; game/ML refs must NOT. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Suppress ref-assembly resolution noise from the many interop dlls -->
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\shared\CarMecaSim.Shared.csproj" />
+    <PackageReference Include="Steamworks.NET" Version="20.2.0" />
+  </ItemGroup>
+
+  <!-- MelonLoader + Il2CppInterop runtime + Harmony (present in game; not copied to output) -->
+  <ItemGroup>
+    <Reference Include="$(GameMLDir)\net6\MelonLoader.dll"><Private>false</Private></Reference>
+    <Reference Include="$(GameMLDir)\net6\Il2CppInterop.Runtime.dll"><Private>false</Private></Reference>
+    <Reference Include="$(GameMLDir)\net6\Il2CppInterop.Common.dll"><Private>false</Private></Reference>
+    <Reference Include="$(GameMLDir)\net6\0Harmony.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+
+  <!-- All generated interop assemblies EXCEPT the game's stripped Steamworks (would clash with Steamworks.NET) -->
+  <ItemGroup>
+    <Reference Include="$(GameMLDir)\Il2CppAssemblies\*.dll"
+               Exclude="$(GameMLDir)\Il2CppAssemblies\Il2Cppcom.rlabrecque.steamworks.net.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
