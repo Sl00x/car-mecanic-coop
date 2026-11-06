@@ -28,6 +28,7 @@ namespace CarMecaSim.Mp.Net
         private Callback<LobbyChatUpdate_t> _cbChat;
         private Callback<LobbyDataUpdate_t> _cbData;
         private Callback<GameLobbyJoinRequested_t> _cbJoinReq; // Steam overlay "Join game"
+        private Callback<SteamNetworkingMessagesSessionRequest_t> _cbSession;
         private CallResult<LobbyCreated_t> _crCreate;
         private CallResult<LobbyEnter_t> _crEnter;
 
@@ -55,6 +56,8 @@ namespace CarMecaSim.Mp.Net
                 _cbChat = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
                 _cbData = Callback<LobbyDataUpdate_t>.Create(_ => { });
                 _cbJoinReq = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequested);
+                // Accept incoming P2P message sessions, else the first messages are dropped.
+                _cbSession = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(OnSessionRequest);
                 _crCreate = CallResult<LobbyCreated_t>.Create(OnLobbyCreated);
                 _crEnter = CallResult<LobbyEnter_t>.Create(OnLobbyEnter);
 
@@ -201,6 +204,13 @@ namespace CarMecaSim.Mp.Net
         {
             OnStatus?.Invoke("Steam overlay join requested.");
             JoinLobby(cb.m_steamIDLobby);
+        }
+
+        private void OnSessionRequest(SteamNetworkingMessagesSessionRequest_t cb)
+        {
+            var id = cb.m_identityRemote;
+            try { SteamNetworkingMessages.AcceptSessionWithUser(ref id); } catch { }
+            OnStatus?.Invoke("P2P session accepted: " + id.GetSteamID());
         }
     }
 }

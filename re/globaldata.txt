@@ -1,0 +1,398 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== GlobalData  :  Object  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_CurrentSaveVersion
+    private static IntPtr NativeFieldInfoPtr_ValueNotExists
+    private static IntPtr NativeFieldInfoPtr_ExpertMode
+    private static IntPtr NativeFieldInfoPtr_MaxCarLightsAmount
+    private static IntPtr NativeFieldInfoPtr_DefaultLicensePlate
+    private static IntPtr NativeFieldInfoPtr_CurrentYear
+    private static IntPtr NativeFieldInfoPtr_DemoMissionsCount
+    private static IntPtr NativeFieldInfoPtr_StreamingInstallProgress
+    private static IntPtr NativeFieldInfoPtr_XrayBodyNormal
+    private static IntPtr NativeFieldInfoPtr_XrayBodyHide
+    private static IntPtr NativeFieldInfoPtr_XrayPartNormal
+    private static IntPtr NativeFieldInfoPtr_XrayPartHide
+    private static IntPtr NativeFieldInfoPtr_TempVideoSettingsData
+    private static IntPtr NativeFieldInfoPtr_TempGameSettingsData
+    private static IntPtr NativeFieldInfoPtr_TempAudioSettingsData
+    private static IntPtr NativeFieldInfoPtr_TempLanguageSettings
+    private static IntPtr NativeFieldInfoPtr_TempConsoleMode
+    private static IntPtr NativeFieldInfoPtr_TempLegacyConsoleMode
+    private static IntPtr NativeFieldInfoPtr_UpdateGraphicsPreset
+    private static IntPtr NativeFieldInfoPtr_cachedResolutions
+    private static IntPtr NativeFieldInfoPtr_SelectedCarLoader
+    private static IntPtr NativeFieldInfoPtr_TestToShow
+    private static IntPtr NativeFieldInfoPtr_TutorialToLoad
+    private static IntPtr NativeFieldInfoPtr_DestinationParkingLevel
+    private static IntPtr NativeFieldInfoPtr_NewMileage
+    private static IntPtr NativeFieldInfoPtr_CanOpenPieMenu
+    private static IntPtr NativeFieldInfoPtr_CustomTrackPathToFolder
+    private static IntPtr NativeFieldInfoPtr_CustomPhotoLocationPathToFolder
+    private static IntPtr NativeFieldInfoPtr_PhotoLocationToLoad
+    private static IntPtr NativeFieldInfoPtr_GameRunType
+    private static IntPtr NativeFieldInfoPtr_JunkCondition
+    private static IntPtr NativeFieldInfoPtr_EasyModeMoney
+    private static IntPtr NativeFieldInfoPtr_SandboxModeMoney
+    private static IntPtr NativeFieldInfoPtr_DefaultCultureInfo
+    private static IntPtr NativeFieldInfoPtr_SettingsManagedByPreset
+    private static IntPtr NativeFieldInfoPtr_SettingsToDisableOnConsole
+    private static IntPtr NativeFieldInfoPtr_MinTabIconSize
+    private static IntPtr NativeFieldInfoPtr_MaxTabIconSize
+    private static IntPtr NativeFieldInfoPtr_MinArrowSize
+    private static IntPtr NativeFieldInfoPtr_MaxArrowSize
+    private static IntPtr NativeFieldInfoPtr_MinDotSize
+    private static IntPtr NativeFieldInfoPtr_MaxDotSize
+    private static IntPtr NativeFieldInfoPtr_MinSmallArrowSize
+    private static IntPtr NativeFieldInfoPtr_MaxSmallArrowSize
+    private static IntPtr NativeFieldInfoPtr_MinShopOptionArrowSize
+    private static IntPtr NativeFieldInfoPtr_MaxShopOptionArrowSize
+    private static IntPtr NativeFieldInfoPtr_MinWheelDotSize
+    private static IntPtr NativeFieldInfoPtr_MaxWheelDotSize
+    private static IntPtr NativeFieldInfoPtr__xray
+    private static IntPtr NativeFieldInfoPtr_unlockedPositions
+    private static IntPtr NativeFieldInfoPtr_DEFAULT_ITEM_COLOR
+    private static IntPtr NativeFieldInfoPtr_DEFAULT_PARTS_COLOR
+    private static IntPtr NativeFieldInfoPtr_S_HIGHLIGHTCOLOR_1
+    private static IntPtr NativeFieldInfoPtr_S_HIGHLIGHTCOLOR_2
+    private static IntPtr NativeFieldInfoPtr_S_HIGHLIGHTCOLOR_3
+    private static IntPtr NativeFieldInfoPtr_S_HIGHLIGHTCOLOR_4
+    private static IntPtr NativeFieldInfoPtr_DEFAULT
+    private static IntPtr NativeFieldInfoPtr_COLOR_ORANGE
+    private static IntPtr NativeFieldInfoPtr_COLOR_GRAY
+    private static IntPtr NativeFieldInfoPtr_OPTION_UNLOCKED
+    private static IntPtr NativeFieldInfoPtr_OPTION_LOCKED
+    private static IntPtr NativeFieldInfoPtr_CostPaintPart
+    private static IntPtr NativeFieldInfoPtr_CostPaintCar
+    private static IntPtr NativeFieldInfoPtr_CostZeroOil
+    private static IntPtr NativeFieldInfoPtr_CostZeroFluid
+    private static IntPtr NativeFieldInfoPtr_CostWashCarInPaintshopAndTinting
+    private static IntPtr NativeFieldInfoPtr_CostTintWindow
+    private static IntPtr NativeFieldInfoPtr_Cost_UseWelder
+    private static IntPtr NativeFieldInfoPtr_Cost_UseInteriorDetailingToolkit
+    private static IntPtr NativeFieldInfoPtr_Cost_BaseParkingLevel
+    private static IntPtr NativeFieldInfoPtr_Cost_TravelBarn
+    private static IntPtr NativeFieldInfoPtr_Cost_TravelJunkyard
+    private static IntPtr NativeFieldInfoPtr_Cost_TravelAuction
+    private static IntPtr NativeFieldInfoPtr_Cost_DragDyno
+    private static IntPtr NativeFieldInfoPtr_UnlockedParkingLevels
+    private static IntPtr NativeFieldInfoPtr_WashFactorLvlToClean
+    private static IntPtr NativeFieldInfoPtr_CommissionSalon
+    private static IntPtr NativeFieldInfoPtr_CommissionJunkyard
+    private static IntPtr NativeFieldInfoPtr_CommissionBarn
+    private static IntPtr NativeFieldInfoPtr_DentCarJunkyardChance
+    private static IntPtr NativeFieldInfoPtr_DentCarBarnChance
+    private static IntPtr NativeFieldInfoPtr_DentCarAuctionChance
+    private static IntPtr NativeFieldInfoPtr_DentCarSalvageChance
+    private static IntPtr NativeFieldInfoPtr_DentCarOrderChance
+    private static IntPtr NativeFieldInfoPtr_DentPartJunkyardChance
+    private static IntPtr NativeFieldInfoPtr_DentPartBarnChance
+    private static IntPtr NativeFieldInfoPtr_DentPartAuctionChance
+    private static IntPtr NativeFieldInfoPtr_DentPartSalvageChance
+    private static IntPtr NativeFieldInfoPtr_DentPartOrderChance
+    private static IntPtr NativeFieldInfoPtr_DentValueJunkyard
+    private static IntPtr NativeFieldInfoPtr_DentValueBarn
+    private static IntPtr NativeFieldInfoPtr_DentValueAuction
+    private static IntPtr NativeFieldInfoPtr_DentValueSalvage
+    private static IntPtr NativeFieldInfoPtr_DentValueOrder
+    private static IntPtr NativeFieldInfoPtr_DustCarSalvageChance
+    private static IntPtr NativeFieldInfoPtr_DustValueSalvage
+    private static IntPtr NativeFieldInfoPtr_SuspensionChanceToCompleteJunkyard
+    private static IntPtr NativeFieldInfoPtr_SuspensionChanceToCompleteBarn
+    private static IntPtr NativeFieldInfoPtr_SuspensionChanceToCompleteSalvage
+    private static IntPtr NativeFieldInfoPtr_SuspensionMissingChanceJunkyard
+    private static IntPtr NativeFieldInfoPtr_SuspensionMissingChanceBarn
+    private static IntPtr NativeFieldInfoPtr_SuspensionMissingChanceSalvage
+    private static IntPtr NativeFieldInfoPtr_SuspensionMissingPartsChanceJunkyard
+    private static IntPtr NativeFieldInfoPtr_SuspensionMissingPartsChanceBarn
+    private static IntPtr NativeFieldInfoPtr_SuspensionMissingPartsChanceSalvage
+    private static IntPtr NativeFieldInfoPtr_MissingPartsChanceSalvage
+    private static IntPtr NativeFieldInfoPtr_MissingPartsAmountSalvage
+    private static IntPtr NativeFieldInfoPtr_QualityChanceBarn
+    private static IntPtr NativeFieldInfoPtr_Quality3ChanceBarn
+    private static IntPtr NativeFieldInfoPtr_QualityChanceJunkyard
+    private static IntPtr NativeFieldInfoPtr_Quality3ChanceJunkyard
+    private static IntPtr NativeFieldInfoPtr_MaxQualityBarn
+    private static IntPtr NativeFieldInfoPtr_MaxQualityJunkyard
+    private static IntPtr NativeFieldInfoPtr_DefaultScrap
+    private static IntPtr NativeFieldInfoPtr_BonusScrap
+    private static IntPtr NativeFieldInfoPtr_BigBonusScrap
+    private static IntPtr NativeFieldInfoPtr_PlayerMoney
+    private static IntPtr NativeFieldInfoPtr_PrevPlayerMoney
+    private static IntPtr NativeFieldInfoPtr_AddMoneyAmount
+    private static IntPtr NativeFieldInfoPtr_PlayerScraps
+    private static IntPtr NativeFieldInfoPtr_PrevPlayerScraps
+    private static IntPtr NativeFieldInfoPtr_AddPlayerScrapsAmount
+    private static IntPtr NativeFieldInfoPtr_PlayerExp
+    private static IntPtr NativeFieldInfoPtr_PrevPlayerExp
+    private static IntPtr NativeFieldInfoPtr_AddExpAmount
+    private static IntPtr NativeFieldInfoPtr_CurrentAddExp
+    private static IntPtr NativeFieldInfoPtr_PlayerLevel
+    private static IntPtr NativeFieldInfoPtr_StartingLevelInDemo
+    private static IntPtr NativeFieldInfoPtr_StartingLevelInPrologue
+    private static IntPtr NativeFieldInfoPtr_MinLevelToBarn
+    private static IntPtr NativeFieldInfoPtr_PrevPlayerLevel
+    private static IntPtr NativeFieldInfoPtr_LevelCap
+    private static IntPtr NativeFieldInfoPtr_Jobs
+    private static IntPtr NativeFieldInfoPtr_PrevJobsAmount
+    private static IntPtr NativeFieldInfoPtr_AddJobsAmount
+    private static IntPtr NativeFieldInfoPtr_MissionsFinished
+    private static IntPtr NativeFieldInfoPtr_CurrentMissionDone
+    private static IntPtr NativeFieldInfoPtr_IsStoryMissionInProgress
+    private static IntPtr NativeFieldInfoPtr_MissionsAmount
+    private static IntPtr NativeFieldInfoPtr__barnsAmount
+    private static IntPtr NativeFieldInfoPtr_Quality1BaseCost
+    private static IntPtr NativeFieldInfoPtr_Quality2BaseCost
+    private static IntPtr NativeFieldInfoPtr_Quality3BaseCost
+    private static IntPtr NativeFieldInfoPtr_Quality1CostMultiplier
+    private static IntPtr NativeFieldInfoPtr_Quality2CostMultiplier
+    private static IntPtr NativeFieldInfoPtr_Quality3CostMultiplier
+    private static IntPtr NativeFieldInfoPtr_TrackInteriorVolumeMod
+    private static IntPtr NativeFieldInfoPtr_MinEcuBarValue
+    private static IntPtr NativeFieldInfoPtr_MaxEcuBarValue
+    private static IntPtr NativeFieldInfoPtr_MaxEcuTuningValue
+    private static IntPtr NativeFieldInfoPtr_MinCarbBarValue
+    private static IntPtr NativeFieldInfoPtr_MaxCarbBarValue
+    private static IntPtr NativeFieldInfoPtr_DragBetValuesStage1
+    private static IntPtr NativeFieldInfoPtr_DragBetValuesStage2
+    private static IntPtr NativeFieldInfoPtr_DragBetValuesStage3
+    private static IntPtr NativeFieldInfoPtr_DragBetValuesStage4
+    private static IntPtr NativeFieldInfoPtr_DragExceptions
+    private static IntPtr NativeFieldInfoPtr_DragEntryFeeA
+    private static IntPtr NativeFieldInfoPtr_DragEntryFeeB
+    private static IntPtr NativeFieldInfoPtr_DragEntryFeeC
+    private static IntPtr NativeFieldInfoPtr_DragEntryFeeD
+    private static IntPtr NativeFieldInfoPtr_DragEntryFeeE
+    private static IntPtr NativeFieldInfoPtr_CurrentDragConfigVersion
+    private static IntPtr NativeMethodInfoPtr_GetXray_Public_Static_Material_0
+    private static IntPtr NativeMethodInfoPtr_GetUnlockedPositions_Public_Static_Il2CppStructArray_1_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetUnlockedPositions_Public_Static_Void_Il2CppStructArray_1_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCommissionForScene_Public_Static_Int32_SceneType_0
+    private static IntPtr NativeMethodInfoPtr_GetScrapFromItem_Public_Static_Int32_Item_ScrapType_0
+    private static IntPtr NativeMethodInfoPtr_AddPlayerMoney_Public_Static_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SetPlayerMoney_Public_Static_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetStartingMoney_Public_Static_Int32_DifficultyLevel_0
+    private static IntPtr NativeMethodInfoPtr_AddPlayerScraps_Public_Static_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SetPlayerScraps_Public_Static_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_get_RealPlayerLevel_Public_Static_get_Int32_0
+    private static IntPtr NativeMethodInfoPtr_AddPlayerExp_Public_Static_Void_Int32_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCurrentExp_Public_Static_Int32_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetCurrentExpToNextLevel_Public_Static_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetCapToNextLvl_Public_Static_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetDiffToNextLvl_Public_Static_Int32_Int32_0
+    private static IntPtr NativeMethodInfoPtr_AddJob_Public_Static_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetMissionID_Public_Static_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CanRegenerateMission_Public_Static_Boolean_byref_List_1_Job_byref_List_1_Job_0
+    private static IntPtr NativeMethodInfoPtr_get_BarnsAmount_Public_Static_get_Int32_0
+    private static IntPtr NativeMethodInfoPtr_set_BarnsAmount_Public_Static_set_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetMaxParkingPlacesAmount_Public_Static_Int32_0
+    private static IntPtr NativeMethodInfoPtr_Save_Public_Static_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_Load_Public_Static_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetMaxOrdersAmount_Public_Static_Int32_0
+    private static IntPtr NativeMethodInfoPtr_IsOrderSlotUnlocked_Public_Static_Boolean_Int32_byref_OrderSlotLockReason_byref_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetSettingsFor_Public_Static_Il2CppStringArray_SettingType_0
+    private static IntPtr NativeMethodInfoPtr_GetRebindKey_Public_Static_String_SettingType_0
+    private static IntPtr NativeMethodInfoPtr_GetRebindKey_Public_Static_String_SettingType_InputManager_0
+    private static IntPtr NativeMethodInfoPtr_GetSelectedResolution_Public_Static_Int32_Il2CppStringArray_0
+    private static IntPtr NativeMethodInfoPtr_GetSelectedSettingsFor_Public_Static_Int32_SettingType_0
+    private static IntPtr NativeMethodInfoPtr_GetCostForScrapUpgrade_Public_Static_Int32_Int32_Int32_0
+  -- Properties --
+    static Byte CurrentSaveVersion { get;set; }
+    static Int32 ValueNotExists { get;set; }
+    static Boolean ExpertMode { get;set; }
+    static Int32 MaxCarLightsAmount { get;set; }
+    static String DefaultLicensePlate { get;set; }
+    static Int32 CurrentYear { get;set; }
+    static Int32 DemoMissionsCount { get;set; }
+    static UInt32 StreamingInstallProgress { get;set; }
+    static Single XrayBodyNormal { get;set; }
+    static Single XrayBodyHide { get;set; }
+    static Single XrayPartNormal { get;set; }
+    static Single XrayPartHide { get;set; }
+    static VideoSettingsData TempVideoSettingsData { get;set; }
+    static GameSettingsData TempGameSettingsData { get;set; }
+    static AudioSettingsData TempAudioSettingsData { get;set; }
+    static String TempLanguageSettings { get;set; }
+    static Boolean TempConsoleMode { get;set; }
+    static Boolean TempLegacyConsoleMode { get;set; }
+    static Boolean UpdateGraphicsPreset { get;set; }
+    static List<String> cachedResolutions { get;set; }
+    static String SelectedCarLoader { get;set; }
+    static String TestToShow { get;set; }
+    static Int32 TutorialToLoad { get;set; }
+    static Int32 DestinationParkingLevel { get;set; }
+    static Int32 NewMileage { get;set; }
+    static Boolean CanOpenPieMenu { get;set; }
+    static String CustomTrackPathToFolder { get;set; }
+    static String CustomPhotoLocationPathToFolder { get;set; }
+    static String PhotoLocationToLoad { get;set; }
+    static GameRunType GameRunType { get;set; }
+    static Single JunkCondition { get;set; }
+    static Int32 EasyModeMoney { get;set; }
+    static Int32 SandboxModeMoney { get;set; }
+    static CultureInfo DefaultCultureInfo { get;set; }
+    static Il2CppStructArray<SettingType> SettingsManagedByPreset { get;set; }
+    static Il2CppStructArray<SettingType> SettingsToDisableOnConsole { get;set; }
+    static Vector2 MinTabIconSize { get;set; }
+    static Vector2 MaxTabIconSize { get;set; }
+    static Vector2 MinArrowSize { get;set; }
+    static Vector2 MaxArrowSize { get;set; }
+    static Vector2 MinDotSize { get;set; }
+    static Vector2 MaxDotSize { get;set; }
+    static Vector2 MinSmallArrowSize { get;set; }
+    static Vector2 MaxSmallArrowSize { get;set; }
+    static Vector2 MinShopOptionArrowSize { get;set; }
+    static Vector2 MaxShopOptionArrowSize { get;set; }
+    static Vector2 MinWheelDotSize { get;set; }
+    static Vector2 MaxWheelDotSize { get;set; }
+    static Material _xray { get;set; }
+    static Il2CppStructArray<Boolean> unlockedPositions { get;set; }
+    static Color DEFAULT_ITEM_COLOR { get;set; }
+    static Color DEFAULT_PARTS_COLOR { get;set; }
+    static Color S_HIGHLIGHTCOLOR_1 { get;set; }
+    static Color S_HIGHLIGHTCOLOR_2 { get;set; }
+    static Color S_HIGHLIGHTCOLOR_3 { get;set; }
+    static Color S_HIGHLIGHTCOLOR_4 { get;set; }
+    static Color DEFAULT { get;set; }
+    static Color32 COLOR_ORANGE { get;set; }
+    static Color32 COLOR_GRAY { get;set; }
+    static Color32 OPTION_UNLOCKED { get;set; }
+    static Color32 OPTION_LOCKED { get;set; }
+    static UInt16 CostPaintPart { get;set; }
+    static UInt16 CostPaintCar { get;set; }
+    static UInt16 CostZeroOil { get;set; }
+    static UInt16 CostZeroFluid { get;set; }
+    static UInt16 CostWashCarInPaintshopAndTinting { get;set; }
+    static UInt16 CostTintWindow { get;set; }
+    static UInt16 Cost_UseWelder { get;set; }
+    static UInt16 Cost_UseInteriorDetailingToolkit { get;set; }
+    static UInt16 Cost_BaseParkingLevel { get;set; }
+    static UInt16 Cost_TravelBarn { get;set; }
+    static UInt16 Cost_TravelJunkyard { get;set; }
+    static UInt16 Cost_TravelAuction { get;set; }
+    static UInt16 Cost_DragDyno { get;set; }
+    static Int32 UnlockedParkingLevels { get;set; }
+    static Single WashFactorLvlToClean { get;set; }
+    static Int32 CommissionSalon { get;set; }
+    static Int32 CommissionJunkyard { get;set; }
+    static Int32 CommissionBarn { get;set; }
+    static Vector2 DentCarJunkyardChance { get;set; }
+    static Vector2 DentCarBarnChance { get;set; }
+    static Vector2 DentCarAuctionChance { get;set; }
+    static Vector2 DentCarSalvageChance { get;set; }
+    static Vector2 DentCarOrderChance { get;set; }
+    static Vector2 DentPartJunkyardChance { get;set; }
+    static Vector2 DentPartBarnChance { get;set; }
+    static Vector2 DentPartAuctionChance { get;set; }
+    static Vector2 DentPartSalvageChance { get;set; }
+    static Vector2 DentPartOrderChance { get;set; }
+    static Vector2 DentValueJunkyard { get;set; }
+    static Vector2 DentValueBarn { get;set; }
+    static Vector2 DentValueAuction { get;set; }
+    static Vector2 DentValueSalvage { get;set; }
+    static Vector2 DentValueOrder { get;set; }
+    static Vector2 DustCarSalvageChance { get;set; }
+    static Vector2 DustValueSalvage { get;set; }
+    static Int32 SuspensionChanceToCompleteJunkyard { get;set; }
+    static Int32 SuspensionChanceToCompleteBarn { get;set; }
+    static Int32 SuspensionChanceToCompleteSalvage { get;set; }
+    static Int32 SuspensionMissingChanceJunkyard { get;set; }
+    static Int32 SuspensionMissingChanceBarn { get;set; }
+    static Int32 SuspensionMissingChanceSalvage { get;set; }
+    static Vector2 SuspensionMissingPartsChanceJunkyard { get;set; }
+    static Vector2 SuspensionMissingPartsChanceBarn { get;set; }
+    static Vector2 SuspensionMissingPartsChanceSalvage { get;set; }
+    static Vector2 MissingPartsChanceSalvage { get;set; }
+    static Vector2 MissingPartsAmountSalvage { get;set; }
+    static Int32 QualityChanceBarn { get;set; }
+    static Int32 Quality3ChanceBarn { get;set; }
+    static Int32 QualityChanceJunkyard { get;set; }
+    static Int32 Quality3ChanceJunkyard { get;set; }
+    static Int32 MaxQualityBarn { get;set; }
+    static Int32 MaxQualityJunkyard { get;set; }
+    static Int32 DefaultScrap { get;set; }
+    static Int32 BonusScrap { get;set; }
+    static Int32 BigBonusScrap { get;set; }
+    static Int32 PlayerMoney { get;set; }
+    static Int32 PrevPlayerMoney { get;set; }
+    static Int32 AddMoneyAmount { get;set; }
+    static Int32 PlayerScraps { get;set; }
+    static Int32 PrevPlayerScraps { get;set; }
+    static Int32 AddPlayerScrapsAmount { get;set; }
+    static Int32 PlayerExp { get;set; }
+    static Int32 PrevPlayerExp { get;set; }
+    static Int32 AddExpAmount { get;set; }
+    static Int32 CurrentAddExp { get;set; }
+    static Int32 PlayerLevel { get;set; }
+    static Int32 StartingLevelInDemo { get;set; }
+    static Int32 StartingLevelInPrologue { get;set; }
+    static Int32 MinLevelToBarn { get;set; }
+    static Int32 PrevPlayerLevel { get;set; }
+    static Int32 LevelCap { get;set; }
+    static Int32 Jobs { get;set; }
+    static Int32 PrevJobsAmount { get;set; }
+    static Int32 AddJobsAmount { get;set; }
+    static Int32 MissionsFinished { get;set; }
+    static Boolean CurrentMissionDone { get;set; }
+    static Boolean IsStoryMissionInProgress { get;set; }
+    static Int32 MissionsAmount { get;set; }
+    static Int32 _barnsAmount { get;set; }
+    static Int32 Quality1BaseCost { get;set; }
+    static Int32 Quality2BaseCost { get;set; }
+    static Int32 Quality3BaseCost { get;set; }
+    static Int32 Quality1CostMultiplier { get;set; }
+    static Int32 Quality2CostMultiplier { get;set; }
+    static Int32 Quality3CostMultiplier { get;set; }
+    static Single TrackInteriorVolumeMod { get;set; }
+    static Int16 MinEcuBarValue { get;set; }
+    static Int16 MaxEcuBarValue { get;set; }
+    static Byte MaxEcuTuningValue { get;set; }
+    static Int16 MinCarbBarValue { get;set; }
+    static Int16 MaxCarbBarValue { get;set; }
+    static Il2CppStructArray<UInt16> DragBetValuesStage1 { get;set; }
+    static Il2CppStructArray<UInt16> DragBetValuesStage2 { get;set; }
+    static Il2CppStructArray<UInt16> DragBetValuesStage3 { get;set; }
+    static Il2CppStructArray<UInt16> DragBetValuesStage4 { get;set; }
+    static Il2CppStructArray<WindowID> DragExceptions { get;set; }
+    static Int32 DragEntryFeeA { get;set; }
+    static Int32 DragEntryFeeB { get;set; }
+    static Int32 DragEntryFeeC { get;set; }
+    static Int32 DragEntryFeeD { get;set; }
+    static Int32 DragEntryFeeE { get;set; }
+    static Byte CurrentDragConfigVersion { get;set; }
+    static Int32 RealPlayerLevel { get; }
+    static Int32 BarnsAmount { get;set; }
+  -- Methods --
+    static Material GetXray()
+    static Il2CppStructArray<Boolean> GetUnlockedPositions()
+    static Void SetUnlockedPositions(Il2CppStructArray<Boolean> data)
+    static Int32 GetCommissionForScene(SceneType sceneType)
+    static Int32 GetScrapFromItem(Item item, ScrapType scrapType)
+    static Void AddPlayerMoney(Int32 money)
+    static Void SetPlayerMoney(Int32 money)
+    static Int32 GetStartingMoney(DifficultyLevel difficultyLevel)
+    static Void AddPlayerScraps(Int32 amount)
+    static Void SetPlayerScraps(Int32 scraps)
+    static Void AddPlayerExp(Int32 exp, Boolean instant)
+    static Int32 GetCurrentExp(Int32 level, Int32 exp)
+    static Int32 GetCurrentExpToNextLevel(Int32 level)
+    static Int32 GetCapToNextLvl(Int32 lvl)
+    static Int32 GetDiffToNextLvl(Int32 lvl)
+    static Void AddJob(Int32 amount)
+    static Int32 GetMissionID()
+    static Boolean CanRegenerateMission(List`1& jobs, List`1& selectedJob)
+    static Int32 GetMaxParkingPlacesAmount()
+    static Boolean Save()
+    static Void Load()
+    static Int32 GetMaxOrdersAmount()
+    static Boolean IsOrderSlotUnlocked(Int32 orderIndex, OrderSlotLockReason& lockReason, Int32& levelCap)
+    static Il2CppStringArray GetSettingsFor(SettingType settingType)
+    static String GetRebindKey(SettingType settingType)
+    static String GetRebindKey(SettingType settingType, InputManager inputManager)
+    static Int32 GetSelectedResolution(Il2CppStringArray resolutions)
+    static Int32 GetSelectedSettingsFor(SettingType settingType)
+    static Int32 GetCostForScrapUpgrade(Int32 targetQuality, Int32 itemValue)
+

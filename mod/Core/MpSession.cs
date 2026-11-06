@@ -197,12 +197,12 @@ namespace CarMecaSim.Mp.Core
                             GameState.Money = m; GameState.Exp = x; GameState.Scraps = s; GameState.Level = lvl;
                             _lastMoney = m; _lastExp = x; _lastScraps = s; _ecoInit = true;
                         }
-                        else if (kind == 1 && IsHost) // delta (client -> host): apply to the pool
+                        else if (kind == 1 && IsHost) // delta (client -> host): apply to the pool via game methods
                         {
                             int dm = r.Int(), dx = r.Int(), ds = r.Int();
-                            GameState.Money = GameState.Money + dm;
-                            GameState.Exp = GameState.Exp + dx;
-                            GameState.Scraps = GameState.Scraps + ds;
+                            GameState.AddMoney(dm);
+                            GameState.AddExp(dx);
+                            GameState.AddScraps(ds);
                             // host's next EconomyTick detects the change and broadcasts the new absolute.
                         }
                         break;

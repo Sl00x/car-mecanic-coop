@@ -16,6 +16,9 @@ namespace CarMecaSim.Mp.UI
         private readonly MpSession _s;
         public bool Visible = false;   // full panel (F6); a slim tab shows otherwise
 
+        private static readonly string Ver = "CarMecaSim v" +
+            (typeof(Overlay).Assembly.GetName().Version is { } v ? $"{v.Major}.{v.Minor}.{v.Build}" : "?");
+
         private string _lobbyInput = "";
         private string _chatInput = "";
         private Vector2 _chatScroll;
@@ -27,6 +30,7 @@ namespace CarMecaSim.Mp.UI
         {
             if (!GameRefs.InGameSession) return;      // hard gate: nothing in menus/loading
             Theme.EnsureInit();
+            GUI.Label(new Rect(Screen.width - 190, 6, 184, 20), Ver, Theme.KeyHint);   // version, top-right
             DrawNametags();
             if (Visible) DrawPanel();
             else DrawTab();
