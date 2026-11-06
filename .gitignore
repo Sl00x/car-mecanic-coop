@@ -32,3 +32,7 @@ libs/*.dll
 # OS
 Thumbs.db
 desktop.ini
+
+# Secrets
+.env
+.env.local
