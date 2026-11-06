@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
-using Il2Cpp;
+// BepInEx Il2CppInterop keeps original namespaces: game global types (GameScript, GameMode,
+// FPSCamera, CharacterMotor, SceneType, gameMode) need no using.
 
 namespace CarMecaSim.Mp.Game
 {

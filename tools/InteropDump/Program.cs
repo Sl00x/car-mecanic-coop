@@ -11,8 +11,8 @@ string gameDir = args.Length > 0 ? args[0]
 string outFile = args.Length > 1 ? args[1]
     : @"C:\Users\alexu\Documents\Projects\CarMecaSim\re\interop-signatures.txt";
 
-string interopDir = Path.Combine(gameDir, "MelonLoader", "Il2CppAssemblies");
-string mlNet6 = Path.Combine(gameDir, "MelonLoader", "net6");
+string interopDir = Path.Combine(gameDir, "BepInEx", "interop");
+string mlNet6 = Path.Combine(gameDir, "BepInEx", "core");
 string runtimeDir = RuntimeEnvironment.GetRuntimeDirectory();
 
 string[] requested = args.Length > 2 ? args[2..] : new[]
@@ -38,7 +38,7 @@ var resolver = new PathAssemblyResolver(byName.Values);
 using var mlc = new MetadataLoadContext(resolver);  // auto-detect real core assembly (mscorlib/System.Runtime)
 
 var asms = new List<Assembly>();
-foreach (var p in new[] { "Assembly-CSharp.dll", "Assembly-CSharp-firstpass.dll" })
+foreach (var p in new[] { "Assembly-CSharp.dll", "Assembly-CSharp-firstpass.dll", "UnityEngine.CoreModule.dll" })
 {
     var full = Path.Combine(interopDir, p);
     if (File.Exists(full)) { try { asms.Add(mlc.LoadFromAssemblyPath(full)); } catch (Exception e) { Console.Error.WriteLine($"load {p}: {e.Message}"); } }

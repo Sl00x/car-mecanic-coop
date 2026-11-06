@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Steamworks;
-using Il2Cpp;                 // SteamManager (game's, used only as a readiness gate)
+// SteamManager is the game's global-namespace type (readiness gate), referenced unqualified.
 
 namespace CarMecaSim.Mp.Net
 {

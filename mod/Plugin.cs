@@ -1,84 +1,89 @@
 using System;
 using System.IO;
-using MelonLoader;
-using MelonLoader.Utils;
+using BepInEx;
+using BepInEx.Logging;
+using BepInEx.Unity.IL2CPP;
+using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using CarMecaSim.Shared;
-using CarMecaSim.Mp;
 using CarMecaSim.Mp.Core;
 using CarMecaSim.Mp.Game;
 using CarMecaSim.Mp.UI;
 
-[assembly: MelonInfo(typeof(CarMecaPlugin), Constants.ModName, Constants.ModVersion, "alexu")]
-[assembly: MelonGame("Red Dot Games", "Car Mechanic Simulator 2021")]
-
 namespace CarMecaSim.Mp
 {
-    public sealed class CarMecaPlugin : MelonMod
+    [BepInPlugin("com.alexu.carmecasim.mp", Constants.ModName, Constants.ModVersion)]
+    public sealed class CarMecaPlugin : BasePlugin
     {
-        public static CarMecaPlugin Instance { get; private set; }
-        public static MelonLogger.Instance Log { get; private set; }
+        public static ManualLogSource Logger;
+        public static MpSession Session;
+        public static Overlay Overlay;
+        public static MpConfig Cfg = new();
 
-        private readonly MpSession _session = new();
-        private Overlay _overlay;
-        private MpConfig _config = new();
-        private bool _autoStarted;
-        private bool _overlayVisible = true;
-
-        public override void OnInitializeMelon()
+        public override void Load()
         {
-            Instance = this;
-            Log = LoggerInstance;
-            Log.Msg("CarMecaSim co-op initializing...");
+            Logger = Log;
+            Log.LogInfo("CarMecaSim co-op loading...");
             LoadConfig();
-            _session.Init(_config, s => Log.Msg(s));
-            _overlay = new Overlay(_session);
-            Log.Msg($"Ready. role={_config.Role} name={_config.DisplayName} lobby={_config.LobbyId}");
+
+            Session = new MpSession();
+            Session.Init(Cfg, s => Log.LogInfo(s));
+            Overlay = new Overlay(Session);
+
+            // Drive Update/OnGUI via an injected Il2Cpp MonoBehaviour (loader-independent game loop).
+            ClassInjector.RegisterTypeInIl2Cpp<MpBehaviour>();
+            var go = new GameObject("CarMecaSim_Mp");
+            go.hideFlags = HideFlags.HideAndDontSave;
+            GameObject.DontDestroyOnLoad(go);
+            go.AddComponent<MpBehaviour>();
+
+            Log.LogInfo($"Ready. role={Cfg.Role} name={Cfg.DisplayName} lobby={Cfg.LobbyId}");
         }
 
         private void LoadConfig()
         {
             try
             {
-                var path = Path.Combine(MelonEnvironment.UserDataDirectory, "CarMecaSim", "mp_config.json");
-                if (File.Exists(path)) { _config = ConfigIo.Read(path); Log.Msg("Loaded mp_config.json"); }
-                else Log.Warning("No mp_config.json; use the in-game overlay (F6) to host/join.");
+                var path = Path.Combine(Paths.ConfigPath, "CarMecaSim", "mp_config.json");
+                if (File.Exists(path)) { Cfg = ConfigIo.Read(path); Log.LogInfo("Loaded mp_config.json"); }
+                else Log.LogWarning("No mp_config.json; use the in-game overlay (F6) to host/join.");
             }
-            catch (Exception e) { Log.Error("Config load failed: " + e); }
+            catch (Exception e) { Log.LogError("Config load failed: " + e); }
         }
+    }
 
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+    /// <summary>Il2Cpp-injected MonoBehaviour that forwards the Unity loop to the mod.</summary>
+    public sealed class MpBehaviour : MonoBehaviour
+    {
+        public MpBehaviour(IntPtr ptr) : base(ptr) { }
+
+        private bool _overlayVisible = true;
+        private bool _autoStarted;
+
+        private void Update()
         {
-            GameRefs.InvalidateSceneRefs();
-        }
+            var s = CarMecaPlugin.Session;
+            if (s == null) return;
 
-        public override void OnUpdate()
-        {
-            if (Input.GetKeyDown(KeyCode.F6)) { _overlayVisible = !_overlayVisible; if (_overlay != null) _overlay.Visible = _overlayVisible; }
+            if (Input.GetKeyDown(KeyCode.F6))
+            { _overlayVisible = !_overlayVisible; if (CarMecaPlugin.Overlay != null) CarMecaPlugin.Overlay.Visible = _overlayVisible; }
 
-            // Bring Steam up (no-op once ready) and pump the session.
-            _session.EnsureSteam();
+            s.EnsureSteam();
             float dt = Time.deltaTime;
-            _session.Update(dt);
-            _session.SendPresenceTick(Time.time);
+            s.Update(dt);
+            s.SendPresenceTick(Time.time);
 
-            // Auto host/join from the launcher config the first time we reach the garage.
-            if (!_autoStarted && _config.AutoStart && _config.Role != MpRole.Menu
-                && GameRefs.InGarage && _session.EnsureSteam())
+            var cfg = CarMecaPlugin.Cfg;
+            if (!_autoStarted && cfg.AutoStart && cfg.Role != MpRole.Menu && GameRefs.InGarage && s.EnsureSteam())
             {
-                _session.StartFromConfig();
+                s.StartFromConfig();
                 _autoStarted = true;
             }
         }
 
-        public override void OnGUI()
+        private void OnGUI()
         {
-            _overlay?.Draw();
-        }
-
-        public override void OnApplicationQuit()
-        {
-            try { _session.Leave(); } catch { }
+            CarMecaPlugin.Overlay?.Draw();
         }
     }
 }

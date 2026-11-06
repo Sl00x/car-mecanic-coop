@@ -37,8 +37,8 @@ namespace CarMecaSim.Shared
         public bool AutoStart { get; set; } = true;        // act on Role automatically on reaching garage
         public string ModVersion { get; set; } = Constants.ModVersion;
 
-        /// <summary>Where the config lives, relative to the game dir (MelonLoader UserData convention).</summary>
-        public static string RelativePath => Path.Combine("UserData", "CarMecaSim", "mp_config.json");
+        /// <summary>Where the config lives, relative to the game dir (BepInEx config convention).</summary>
+        public static string RelativePath => Path.Combine("BepInEx", "config", "CarMecaSim", "mp_config.json");
 
         public static string FullPathFor(string gameDir) => Path.Combine(gameDir, RelativePath);
     }

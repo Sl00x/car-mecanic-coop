@@ -100,12 +100,12 @@ namespace CarMecaSim.Launcher
             var s = new ModInstaller(_gameDir).GetStatus();
             _status.Text =
                 $"Game: {_gameDir}\n" +
-                $"MelonLoader: {YN(s.MelonLoaderInstalled)}   Interop: {YN(s.InteropGenerated)}   " +
+                $"BepInEx: {YN(s.LoaderInstalled)}   Interop: {YN(s.InteropGenerated)}   " +
                 $"Co-op mod: {YN(s.ModInstalled)} {s.InstalledModVersion}\n" +
                 (s.FullyReady ? "Status: READY to play." : "Status: click Setup / Repair.");
             _launch.Enabled = s.FullyReady;
             _setup.Enabled = true;
-            _uninstall.Enabled = s.MelonLoaderInstalled || s.ModInstalled;
+            _uninstall.Enabled = s.LoaderInstalled || s.ModInstalled;
         }
 
         private void DoSetup()
@@ -115,7 +115,7 @@ namespace CarMecaSim.Launcher
             if (payload == null) { LogLine("ERROR: install payload not found next to launcher."); return; }
             var inst = new ModInstaller(_gameDir);
             LogLine("Setup starting...");
-            if (!inst.EnsureMelonLoader(payload, LogLine)) { LogLine("MelonLoader step failed."); return; }
+            if (!inst.EnsureLoader(payload, LogLine)) { LogLine("BepInEx step failed."); return; }
             if (!inst.GetStatus().InteropGenerated)
                 LogLine("Note: interop not generated yet — it is created automatically the first time the game launches.");
             if (!inst.InstallMod(payload, LogLine)) { LogLine("Mod install failed (is the mod built?)."); }
@@ -127,7 +127,7 @@ namespace CarMecaSim.Launcher
         private void DoUninstall()
         {
             if (_gameDir == null) return;
-            var all = MessageBox.Show("Also remove MelonLoader entirely (full vanilla restore)?",
+            var all = MessageBox.Show("Also remove BepInEx entirely (full vanilla restore)?",
                 "Uninstall", MessageBoxButtons.YesNo) == DialogResult.Yes;
             new ModInstaller(_gameDir).Uninstall(all, LogLine);
             RefreshStatus();

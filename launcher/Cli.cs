@@ -36,7 +36,7 @@ namespace CarMecaSim.Launcher
             var s = new ModInstaller(gameDir).GetStatus();
             Console.WriteLine($"Game dir            : {s.GameDir}");
             Console.WriteLine($"Game found          : {Mark(s.GameFound)}");
-            Console.WriteLine($"MelonLoader         : {Mark(s.MelonLoaderInstalled)}");
+            Console.WriteLine($"BepInEx             : {Mark(s.LoaderInstalled)}");
             Console.WriteLine($"Interop generated   : {Mark(s.InteropGenerated)}");
             Console.WriteLine($"Co-op mod installed : {Mark(s.ModInstalled)}  {s.InstalledModVersion}");
             Console.WriteLine($"steam_appid.txt     : {Mark(s.SteamAppIdFile)}");
@@ -50,7 +50,7 @@ namespace CarMecaSim.Launcher
             var payload = ModInstaller.FindPayloadRoot();
             if (payload == null) { Console.WriteLine("ERROR: install payload not found."); return 3; }
             void Log(string m) => Console.WriteLine("  " + m);
-            if (!inst.EnsureMelonLoader(payload, Log)) { Console.WriteLine("MelonLoader install FAILED."); return 4; }
+            if (!inst.EnsureLoader(payload, Log)) { Console.WriteLine("BepInEx install FAILED."); return 4; }
             if (!inst.InstallMod(payload, Log)) { Console.WriteLine("Mod install FAILED (build the mod first)."); return 5; }
             inst.EnsureAppId(Log);
             return CmdStatus(gameDir);
@@ -81,7 +81,7 @@ namespace CarMecaSim.Launcher
         private static int CmdUninstall(string gameDir, bool all)
         {
             new ModInstaller(gameDir).Uninstall(all, m => Console.WriteLine("  " + m));
-            Console.WriteLine(all ? "Removed mod + MelonLoader." : "Removed co-op mod (MelonLoader kept; pass --all to remove it too).");
+            Console.WriteLine(all ? "Removed mod + BepInEx." : "Removed co-op mod (BepInEx kept; pass --all to remove it too).");
             return 0;
         }
 
@@ -91,10 +91,10 @@ namespace CarMecaSim.Launcher
                 CarMecaSim Co-op Launcher
                   (no args)                  Open the GUI
                   --status                   Show install status
-                  --setup                    Install/verify MelonLoader + co-op mod
+                  --setup                    Install/verify BepInEx + co-op mod
                   --host [--name N] [--max N] [--type friends|public|private] [--direct]
                   --join <lobbyId> [--name N] [--direct]
-                  --uninstall [--all]        Remove mod (--all also removes MelonLoader)
+                  --uninstall [--all]        Remove mod (--all also removes BepInEx)
                   --game "<dir>"             Override game directory
                 """);
             return 0;

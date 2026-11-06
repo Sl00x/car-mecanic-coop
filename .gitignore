@@ -6,7 +6,11 @@ obj/
 # Downloaded tooling (large, re-downloadable)
 tools/Il2CppDumper/
 tools/MelonLoader*/
+tools/BepInEx_x64/
+tools/_mods_hold/
 tools/*.zip
+tools/InteropDump/bin/
+tools/InteropDump/obj/
 
 # Reverse-engineering raw dump (huge; regenerate with Il2CppDumper)
 re/output/dump.cs

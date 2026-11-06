@@ -1,0 +1,1094 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== GameScript  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_TimerTime
+    private static IntPtr NativeFieldInfoPtr_CurrentSceneType
+    private static IntPtr NativeFieldInfoPtr_currentExamineType
+    private static IntPtr NativeFieldInfoPtr_CanExit
+    private static IntPtr NativeFieldInfoPtr_canExitTutorial
+    private static IntPtr NativeFieldInfoPtr_LockGamepadMountObject
+    private static IntPtr NativeFieldInfoPtr_CanOpenPieMenu
+    private static IntPtr NativeFieldInfoPtr_timerValue
+    private static IntPtr NativeFieldInfoPtr_canCountTime
+    private static IntPtr NativeFieldInfoPtr_isLeft
+    private static IntPtr NativeFieldInfoPtr_canGoOut
+    private static IntPtr NativeFieldInfoPtr_closingNow
+    private static IntPtr NativeFieldInfoPtr_UnmountModeCameraTarget
+    private static IntPtr NativeFieldInfoPtr_raycast
+    private static IntPtr NativeFieldInfoPtr_highlighterVolume
+    private static IntPtr NativeFieldInfoPtr_UnmountGroup
+    private static IntPtr NativeFieldInfoPtr_partMouseOver
+    private static IntPtr NativeFieldInfoPtr_focusedPartScript
+    private static IntPtr NativeFieldInfoPtr_SelectedToMount
+    private static IntPtr NativeFieldInfoPtr_uiManager
+    private static IntPtr NativeFieldInfoPtr_GameMode
+    private static IntPtr NativeFieldInfoPtr_InputManager
+    private static IntPtr NativeFieldInfoPtr_groupOfItemsName
+    private static IntPtr NativeFieldInfoPtr_groupOfItemsCount
+    private static IntPtr NativeFieldInfoPtr_MachineOnMouseOverType
+    private static IntPtr NativeFieldInfoPtr_SitInsidePosition
+    private static IntPtr NativeFieldInfoPtr_IOMouseOverType
+    private static IntPtr NativeFieldInfoPtr_IOMouseOverGO
+    private static IntPtr NativeFieldInfoPtr_IOMouseOverIO
+    private static IntPtr NativeFieldInfoPtr_IOMouseOverCarLoader
+    private static IntPtr NativeFieldInfoPtr_IOMouseOverCarPart
+    private static IntPtr NativeFieldInfoPtr_carOnScene
+    private static IntPtr NativeFieldInfoPtr_lastCarLoader
+    private static IntPtr NativeFieldInfoPtr_orbitCamera
+    private static IntPtr NativeFieldInfoPtr_inInterior
+    private static IntPtr NativeFieldInfoPtr_m_instance
+    private static IntPtr NativeFieldInfoPtr_raycastOnItemName
+    private static IntPtr NativeFieldInfoPtr_raycastOnItemID
+    private static IntPtr NativeFieldInfoPtr_additionalData
+    private static IntPtr NativeFieldInfoPtr_RaycastOnItemNameBonusText
+    private static IntPtr NativeFieldInfoPtr_isExitingToGarage
+    private static IntPtr NativeFieldInfoPtr_deltaTime
+    private static IntPtr NativeFieldInfoPtr_isGuiEnabled
+    private static IntPtr NativeFieldInfoPtr_SelectedPart
+    private static IntPtr NativeFieldInfoPtr_OnEndJob
+    private static IntPtr NativeMethodInfoPtr_GetCurrentExamineType_Public_ToolType_0
+    private static IntPtr NativeMethodInfoPtr_SetCurrentExamineType_Public_Void_ToolType_0
+    private static IntPtr NativeMethodInfoPtr_get_CanExitTutorial_Public_get_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_set_CanExitTutorial_Public_set_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetHighlighterVolumePosition_Public_Void_Transform_0
+    private static IntPtr NativeMethodInfoPtr_GetPartMouseOver_Public_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetUnmountGroup_Public_Int32_0
+    private static IntPtr NativeMethodInfoPtr_get_GroupOfItemsName_Public_get_String_0
+    private static IntPtr NativeMethodInfoPtr_get_GroupOfItemsCount_Public_get_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SetGroupOfItemsName_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_IncrementGroupOfItemsCount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ResetGroupOfItems_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_IsOnMachine_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetIOMouseOverGO_Public_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_GetLastCarLoader_Public_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_SetLastCarLoader_Public_Void_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_GetActiveSlot_Public_Slot_0
+    private static IntPtr NativeMethodInfoPtr_get_InInterior_Public_get_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_Get_Public_Static_GameScript_0
+    private static IntPtr NativeMethodInfoPtr_OnDestroy_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetCarsOnSceneAmount_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SetCarOnScene_Public_Void_Int32_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_ReloadCarsOnScene_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetIOMouseOverCarLoader_Public_CarPart_0
+    private static IntPtr NativeMethodInfoPtr_GetIOMouseOverCarLoader2_Public_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_SetIOMouseOver_Public_Void_GameObject_String_InteractiveObject_0
+    private static IntPtr NativeMethodInfoPtr_SetCanCountTime_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_StartCountTimeToSetIOMouseOverNull_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_StopCountTimeToSetIOMouseOverNull_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetCarLoaderOverNull_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetIOMouseOverNull_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ClickIO_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_ShowGarageCustomization_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_GetAdditionalShopListItemData_Public_ShopListItemDataEx_0
+    private static IntPtr NativeMethodInfoPtr_GetRaycastOnItemName_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetRaycastOnItemID_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_UpdateRaycastOnItemName_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateRaycastOnItemID_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateRaycastOnItemNameBonusText_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetPartMouseOver_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_FindIOCarLoader_Public_CarLoader_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_IsPartAccessible_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_IsPartAccessible_Public_Boolean_Int32_0
+    private static IntPtr NativeMethodInfoPtr_WorkOnIO_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetGarageAssembleMode_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetBonusAssembleMode_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetPartScripts_Private_Void_GameObject_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ExamineMode_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_GarageOnFoot_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_GarageOnFootWithoutFader_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_PrepareToMount_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_BodyMount_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowSelectPartMount_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_SelectPartToMount_Public_Void_BaseItem_0
+    private static IntPtr NativeMethodInfoPtr_ChangeMusic_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_StopRadio_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CloseDoorsAfterSitInside_Private_IEnumerator_CarLoader_String_0
+    private static IntPtr NativeMethodInfoPtr_OpenDoorsBeforeExitFromInterior_Private_IEnumerator_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_SitInside_Public_IEnumerator_CarLoader_Boolean_gameMode_0
+    private static IntPtr NativeMethodInfoPtr_ExitFromInterior_Public_IEnumerator_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_HandlePlayerInput_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SwitchGUI_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetLicensePlateName_Public_String_String_0
+    private static IntPtr NativeMethodInfoPtr_HandleWindowOpening_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_HandleGameModeChange_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_HandleOpenedWindowsInput_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_HandleWindowClosing_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_HandleActiveDescriptionsInput_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SelectToMount_Public_Void_PartScript_Il2CppReferenceArray_1_MountObject_0
+    private static IntPtr NativeMethodInfoPtr_SelectToUnMount_Public_Void_PartScript_Il2CppReferenceArray_1_MountObject_0
+    private static IntPtr NativeMethodInfoPtr_FocusCameraOn_Private_Void_Transform_0
+    private static IntPtr NativeMethodInfoPtr_FocusOnPart_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_UpdateShaderParamsAll_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CleanUnfinishedUnMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CleanUnfinishedMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_PrepareItemsToMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_PrepareItemToMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_PrepareAllItemsToMount_Private_Int32_0
+    private static IntPtr NativeMethodInfoPtr_ShowAllUnMountedGroups_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowAllUnMounted_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowGroupsPreview_Private_Int32_0
+    private static IntPtr NativeMethodInfoPtr_HideAllUnMounted_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ReinitPartScriptCuller_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SwitchLod_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SellCar_Public_Void_CarLoader_Int32_0
+    private static IntPtr NativeMethodInfoPtr_SellCarCoroutine_Private_IEnumerator_CarLoader_Int32_0
+    private static IntPtr NativeMethodInfoPtr_BuyCar_Public_Void_CarLoader_Int32_0
+    private static IntPtr NativeMethodInfoPtr_EndJob_Public_Void_Job_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_EndJobCoroutine_Private_IEnumerator_Job_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Method_Private_Void_Boolean_PDM_0
+  -- Properties --
+    static Single TimerTime { get;set; }
+    SceneType CurrentSceneType { get;set; }
+    ToolType currentExamineType { get;set; }
+    Boolean CanExit { get;set; }
+    Boolean canExitTutorial { get;set; }
+    Boolean LockGamepadMountObject { get;set; }
+    Boolean CanOpenPieMenu { get;set; }
+    Single timerValue { get;set; }
+    Boolean canCountTime { get;set; }
+    Boolean isLeft { get;set; }
+    Boolean canGoOut { get;set; }
+    Boolean closingNow { get;set; }
+    Transform UnmountModeCameraTarget { get;set; }
+    Raycast raycast { get;set; }
+    CustomPassVolume highlighterVolume { get;set; }
+    Int32 UnmountGroup { get;set; }
+    PartScript partMouseOver { get;set; }
+    PartScript focusedPartScript { get;set; }
+    BaseItem SelectedToMount { get;set; }
+    UIManager uiManager { get;set; }
+    GameMode GameMode { get;set; }
+    InputManager InputManager { get;set; }
+    String groupOfItemsName { get;set; }
+    Int32 groupOfItemsCount { get;set; }
+    IOSpecialType MachineOnMouseOverType { get;set; }
+    Transform SitInsidePosition { get;set; }
+    String IOMouseOverType { get;set; }
+    GameObject IOMouseOverGO { get;set; }
+    InteractiveObject IOMouseOverIO { get;set; }
+    CarLoader IOMouseOverCarLoader { get;set; }
+    CarPart IOMouseOverCarPart { get;set; }
+    Il2CppReferenceArray<CarLoader> carOnScene { get;set; }
+    CarLoader lastCarLoader { get;set; }
+    OrbitCamera orbitCamera { get;set; }
+    Boolean inInterior { get;set; }
+    static GameScript m_instance { get;set; }
+    String raycastOnItemName { get;set; }
+    String raycastOnItemID { get;set; }
+    ShopListItemDataEx additionalData { get;set; }
+    String RaycastOnItemNameBonusText { get;set; }
+    Boolean isExitingToGarage { get;set; }
+    Single deltaTime { get;set; }
+    Boolean isGuiEnabled { get;set; }
+    PartScript SelectedPart { get;set; }
+    Action OnEndJob { get;set; }
+    Boolean CanExitTutorial { get;set; }
+    String GroupOfItemsName { get; }
+    Int32 GroupOfItemsCount { get; }
+    Boolean InInterior { get; }
+  -- Methods --
+    ToolType GetCurrentExamineType()
+    Void SetCurrentExamineType(ToolType newExamineType)
+    Void SetHighlighterVolumePosition(Transform tr)
+    PartScript GetPartMouseOver()
+    Int32 GetUnmountGroup()
+    Void SetGroupOfItemsName(String newName)
+    Void IncrementGroupOfItemsCount()
+    Void ResetGroupOfItems()
+    Boolean IsOnMachine()
+    GameObject GetIOMouseOverGO()
+    CarLoader GetLastCarLoader()
+    Void SetLastCarLoader(CarLoader carloader)
+    Slot GetActiveSlot()
+    static GameScript Get()
+    Void OnDestroy()
+    Void Awake()
+    Void SetCarsOnSceneAmount(Int32 amount)
+    Void SetCarOnScene(Int32 index, CarLoader carLoader)
+    Void ReloadCarsOnScene()
+    CarPart GetIOMouseOverCarLoader()
+    CarLoader GetIOMouseOverCarLoader2()
+    Void SetIOMouseOver(GameObject go, String type, InteractiveObject io)
+    Void SetCanCountTime(Boolean b)
+    Void StartCountTimeToSetIOMouseOverNull()
+    Void StopCountTimeToSetIOMouseOverNull()
+    Void SetCarLoaderOverNull()
+    Void SetIOMouseOverNull()
+    Void ClickIO(Int32 no)
+    IEnumerator ShowGarageCustomization()
+    ShopListItemDataEx GetAdditionalShopListItemData()
+    String GetRaycastOnItemName()
+    String GetRaycastOnItemID()
+    Void UpdateRaycastOnItemName()
+    Void UpdateRaycastOnItemID()
+    Void UpdateRaycastOnItemNameBonusText()
+    Void SetPartMouseOver(PartScript part)
+    CarLoader FindIOCarLoader(GameObject go)
+    Boolean IsPartAccessible(String id)
+    Boolean IsPartAccessible(Int32 partGroup)
+    Void WorkOnIO()
+    Void SetGarageAssembleMode()
+    Void SetBonusAssembleMode()
+    Void SetPartScripts(GameObject go, Boolean b)
+    Void ExamineMode()
+    IEnumerator GarageOnFoot()
+    Void GarageOnFootWithoutFader()
+    Void PrepareToMount()
+    Void BodyMount()
+    Void ShowSelectPartMount(String id)
+    Void SelectPartToMount(BaseItem selectToMount)
+    Void ChangeMusic()
+    Void StopRadio()
+    IEnumerator CloseDoorsAfterSitInside(CarLoader carLoader, String partName)
+    IEnumerator OpenDoorsBeforeExitFromInterior(CarLoader carLoader)
+    IEnumerator SitInside(CarLoader carLoader, Boolean left, gameMode mode)
+    IEnumerator ExitFromInterior(Boolean openDoor)
+    Void Update()
+    Boolean HandlePlayerInput()
+    Void SwitchGUI()
+    String GetLicensePlateName(String itemID)
+    Boolean HandleWindowOpening()
+    Boolean HandleGameModeChange()
+    Boolean HandleOpenedWindowsInput()
+    Boolean HandleWindowClosing()
+    Boolean HandleActiveDescriptionsInput()
+    Void SelectToMount(PartScript target, Il2CppReferenceArray<MountObject> mountObjects)
+    Void SelectToUnMount(PartScript target, Il2CppReferenceArray<MountObject> mountObjects)
+    Void FocusCameraOn(Transform tr)
+    Void FocusOnPart(PartScript part)
+    Void UpdateShaderParamsAll()
+    Void CleanUnfinishedUnMount()
+    Void CleanUnfinishedMount()
+    Void PrepareItemsToMount()
+    Void PrepareItemToMount()
+    Int32 PrepareAllItemsToMount()
+    Void ShowAllUnMountedGroups()
+    Void ShowAllUnMounted()
+    Int32 ShowGroupsPreview()
+    Void HideAllUnMounted()
+    Void ReinitPartScriptCuller()
+    Void SwitchLod(Int32 lodLevel)
+    Void SellCar(CarLoader carLoader, Int32 sellPrice)
+    IEnumerator SellCarCoroutine(CarLoader carLoader, Int32 sellPrice)
+    Void BuyCar(CarLoader carLoader, Int32 buyPrice)
+    Void EndJob(Job job, CarLoader carLoader)
+    IEnumerator EndJobCoroutine(Job job, CarLoader carLoader)
+    Void Method_Private_Void_Boolean_PDM_0(Boolean wasAccepted)
+
+==== CMS.Tutorial.SceneManager  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_TutorialInProgress
+    private static IntPtr NativeFieldInfoPtr_baseTasks
+    private static IntPtr NativeFieldInfoPtr_PlayerStartPosition
+    private static IntPtr NativeFieldInfoPtr_FPSCamera
+    private static IntPtr NativeFieldInfoPtr_CharacterController
+    private static IntPtr NativeFieldInfoPtr_currentTask
+    private static IntPtr NativeFieldInfoPtr_OrderGenerator
+    private static IntPtr NativeFieldInfoPtr_PieMenuController
+    private static IntPtr NativeFieldInfoPtr_CarLifter
+    private static IntPtr NativeFieldInfoPtr_CarLoader
+    private static IntPtr NativeFieldInfoPtr_WheelBalancer
+    private static IntPtr NativeFieldInfoPtr_TireChanger
+    private static IntPtr NativeFieldInfoPtr_GarageLook
+    private static IntPtr NativeFieldInfoPtr_BatteryCharger
+    private static IntPtr NativeFieldInfoPtr_Toolbox
+    private static IntPtr NativeFieldInfoPtr_EngineStand
+    private static IntPtr NativeFieldInfoPtr_EngineCrane
+    private static IntPtr NativeFieldInfoPtr_SpringClamp
+    private static IntPtr NativeFieldInfoPtr_Welder
+    private static IntPtr NativeFieldInfoPtr_Computer
+    private static IntPtr NativeFieldInfoPtr_Phone
+    private static IntPtr NativeFieldInfoPtr_Radio
+    private static IntPtr NativeFieldInfoPtr_HeadlampAlignmentSystem
+    private static IntPtr NativeFieldInfoPtr_Oilbin
+    private static IntPtr NativeFieldInfoPtr_WheelsAlignmentSystem
+    private static IntPtr NativeFieldInfoPtr_BrakeLathe
+    private static IntPtr NativeFieldInfoPtr_InteriorDetailingToolkit
+    private static IntPtr NativeFieldInfoPtr_m_instance
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Initialize_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_RunTask_Private_IEnumerator_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetPlaceForLoadCar_Public_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_RestartTutorial_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_IsLastTutorial_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_LoadNextTutorial_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Get_Public_Static_SceneManager_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Boolean TutorialInProgress { get;set; }
+    Il2CppReferenceArray<BaseTask> baseTasks { get;set; }
+    Transform PlayerStartPosition { get;set; }
+    FPSCamera FPSCamera { get;set; }
+    CharacterController CharacterController { get;set; }
+    Int32 currentTask { get;set; }
+    OrderGenerator OrderGenerator { get;set; }
+    PieMenuController PieMenuController { get;set; }
+    CarLifter CarLifter { get;set; }
+    CarLoader CarLoader { get;set; }
+    WheelBalancerLogic WheelBalancer { get;set; }
+    TireChangerLogic TireChanger { get;set; }
+    InteractiveObject GarageLook { get;set; }
+    BatteryChargerLogic BatteryCharger { get;set; }
+    InteractiveObject Toolbox { get;set; }
+    EngineStandLogic EngineStand { get;set; }
+    InteractiveObject EngineCrane { get;set; }
+    SpringClampLogic SpringClamp { get;set; }
+    InteractiveObject Welder { get;set; }
+    InteractiveObject Computer { get;set; }
+    InteractiveObject Phone { get;set; }
+    InteractiveObject Radio { get;set; }
+    InteractiveObject HeadlampAlignmentSystem { get;set; }
+    InteractiveObject Oilbin { get;set; }
+    InteractiveObject WheelsAlignmentSystem { get;set; }
+    InteractiveObject BrakeLathe { get;set; }
+    InteractiveObject InteriorDetailingToolkit { get;set; }
+    static SceneManager m_instance { get;set; }
+  -- Methods --
+    Void Awake()
+    IEnumerator Initialize()
+    IEnumerator RunTask(Int32 id)
+    CarLoader GetPlaceForLoadCar()
+    Void RestartTutorial()
+    Boolean IsLastTutorial()
+    Void LoadNextTutorial()
+    static SceneManager Get()
+
+==== SteamManager  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_s_EverInitialized
+    private static IntPtr NativeFieldInfoPtr_m_bInitialized
+    private static IntPtr NativeFieldInfoPtr_m_SteamAPIWarningMessageHook
+    private static IntPtr NativeMethodInfoPtr_get_Initialized_Public_Static_get_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SteamAPIDebugTextHook_Private_Static_Void_Int32_StringBuilder_0
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnEnable_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDestroy_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    static Boolean s_EverInitialized { get;set; }
+    static Boolean m_bInitialized { get;set; }
+    SteamAPIWarningMessageHook_t m_SteamAPIWarningMessageHook { get;set; }
+    static Boolean Initialized { get; }
+  -- Methods --
+    static Void SteamAPIDebugTextHook(Int32 nSeverity, StringBuilder pchDebugText)
+    Void Awake()
+    Void OnEnable()
+    Void OnDestroy()
+    Void Update()
+
+==== GameMode  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModGarage
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModGarageDisassemble
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModGarageAssemble
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModExamineCondition
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModPartSelect
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModPartSelectMount
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModPartMount
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModPartUnMount
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModGroupMount
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModGroupUnMount
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModExamineGarage
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModInteriorDisassemble
+    private static IntPtr NativeFieldInfoPtr_FillSpeedModInteriorAssemble
+    private static IntPtr NativeFieldInfoPtr_OnPartSelectMode
+    private static IntPtr NativeFieldInfoPtr_OnModeChange
+    private static IntPtr NativeFieldInfoPtr_orbitCamera
+    private static IntPtr NativeFieldInfoPtr_currentMode
+    private static IntPtr NativeFieldInfoPtr_previousMode
+    private static IntPtr NativeFieldInfoPtr_mountUnMountMode
+    private static IntPtr NativeFieldInfoPtr_BlockModeChange
+    private static IntPtr NativeFieldInfoPtr_m_instance
+    private static IntPtr NativeMethodInfoPtr_CheckMountUnMountMode_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCurrentMode_Public_gameMode_0
+    private static IntPtr NativeMethodInfoPtr_GetPreviousMode_Public_gameMode_0
+    private static IntPtr NativeMethodInfoPtr_CompareWithCurrentMode_Public_Boolean_gameMode_0
+    private static IntPtr NativeMethodInfoPtr_CompareWithPreviousMode_Public_Boolean_gameMode_0
+    private static IntPtr NativeMethodInfoPtr_SetPreviousMode_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecalculateFillSpeedForCurrentMode_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_RecalculateFillSpeedForMode_Private_Single_gameMode_0
+    private static IntPtr NativeMethodInfoPtr_SetCurrentMode_Public_Void_gameMode_0
+    private static IntPtr NativeMethodInfoPtr_SetPartSelectMode_Public_Void_Transform_0
+    private static IntPtr NativeMethodInfoPtr_EnableRaycast_Private_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_Get_Public_Static_GameMode_0
+    private static IntPtr NativeMethodInfoPtr_OnDestroy_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    static UInt16 FillSpeedModGarage { get;set; }
+    static UInt16 FillSpeedModGarageDisassemble { get;set; }
+    static UInt16 FillSpeedModGarageAssemble { get;set; }
+    static UInt16 FillSpeedModExamineCondition { get;set; }
+    static UInt16 FillSpeedModPartSelect { get;set; }
+    static UInt16 FillSpeedModPartSelectMount { get;set; }
+    static UInt16 FillSpeedModPartMount { get;set; }
+    static UInt16 FillSpeedModPartUnMount { get;set; }
+    static UInt16 FillSpeedModGroupMount { get;set; }
+    static UInt16 FillSpeedModGroupUnMount { get;set; }
+    static UInt16 FillSpeedModExamineGarage { get;set; }
+    static UInt16 FillSpeedModInteriorDisassemble { get;set; }
+    static UInt16 FillSpeedModInteriorAssemble { get;set; }
+    Action OnPartSelectMode { get;set; }
+    Action<gameMode> OnModeChange { get;set; }
+    OrbitCamera orbitCamera { get;set; }
+    gameMode currentMode { get;set; }
+    gameMode previousMode { get;set; }
+    Boolean mountUnMountMode { get;set; }
+    Boolean BlockModeChange { get;set; }
+    static GameMode m_instance { get;set; }
+  -- Methods --
+    Boolean CheckMountUnMountMode()
+    gameMode GetCurrentMode()
+    gameMode GetPreviousMode()
+    Boolean CompareWithCurrentMode(gameMode toCompare)
+    Boolean CompareWithPreviousMode(gameMode toCompare)
+    Void SetPreviousMode()
+    Void RecalculateFillSpeedForCurrentMode()
+    Single RecalculateFillSpeedForMode(gameMode gameMode)
+    Void SetCurrentMode(gameMode newGameMode)
+    Void SetPartSelectMode(Transform partTransform)
+    Void EnableRaycast(Boolean isEnabled)
+    static GameMode Get()
+    Void OnDestroy()
+
+==== PartScript  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_devRepair
+    private static IntPtr NativeFieldInfoPtr_devBroke
+    private static IntPtr NativeFieldInfoPtr_On
+    private static IntPtr NativeFieldInfoPtr_alwaysPosX
+    private static IntPtr NativeFieldInfoPtr_id
+    private static IntPtr NativeFieldInfoPtr_tunedID
+    private static IntPtr NativeFieldInfoPtr_shadersBackup
+    private static IntPtr NativeFieldInfoPtr_IsUnmounted
+    private static IntPtr NativeFieldInfoPtr_Condition
+    private static IntPtr NativeFieldInfoPtr_Quality
+    private static IntPtr NativeFieldInfoPtr_IsExamined
+    private static IntPtr NativeFieldInfoPtr_MountAnimationCompleted
+    private static IntPtr NativeFieldInfoPtr_Dust
+    private static IntPtr NativeFieldInfoPtr_oneClickUnmount
+    private static IntPtr NativeFieldInfoPtr_MountObjects
+    private static IntPtr NativeFieldInfoPtr_unblockOnUnmount
+    private static IntPtr NativeFieldInfoPtr_unblockOnUnmountName
+    private static IntPtr NativeFieldInfoPtr_wasAutomatic
+    private static IntPtr NativeFieldInfoPtr_canBeUnmount
+    private static IntPtr NativeFieldInfoPtr_enableOnUnmount
+    private static IntPtr NativeFieldInfoPtr_disableOnUnmount
+    private static IntPtr NativeFieldInfoPtr_bakPos
+    private static IntPtr NativeFieldInfoPtr_bakRot
+    private static IntPtr NativeFieldInfoPtr_partProperty
+    private static IntPtr NativeFieldInfoPtr_vol
+    private static IntPtr NativeFieldInfoPtr_unmountVector
+    private static IntPtr NativeFieldInfoPtr_unmountDirection
+    private static IntPtr NativeFieldInfoPtr_bonusMoveDirection
+    private static IntPtr NativeFieldInfoPtr_unmountSpinning
+    private static IntPtr NativeFieldInfoPtr_spinClockwise
+    private static IntPtr NativeFieldInfoPtr_sendMessage
+    private static IntPtr NativeFieldInfoPtr_sendMessageOnHide
+    private static IntPtr NativeFieldInfoPtr_checkSendMessageInEngine
+    private static IntPtr NativeFieldInfoPtr_FluidRefillLockType
+    private static IntPtr NativeFieldInfoPtr_canUpdate
+    private static IntPtr NativeFieldInfoPtr_markRed
+    private static IntPtr NativeFieldInfoPtr_markImportantPart
+    private static IntPtr NativeFieldInfoPtr_mountWasCanceled
+    private static IntPtr NativeFieldInfoPtr_markedRed
+    private static IntPtr NativeFieldInfoPtr_blockedBy
+    private static IntPtr NativeFieldInfoPtr_tuningBonus
+    private static IntPtr NativeFieldInfoPtr_blockedNo
+    private static IntPtr NativeFieldInfoPtr_ho
+    private static IntPtr NativeFieldInfoPtr_MouseOver
+    private static IntPtr NativeFieldInfoPtr_mountMode
+    private static IntPtr NativeFieldInfoPtr_replacedShader
+    private static IntPtr NativeFieldInfoPtr_customPivotForUnmount
+    private static IntPtr NativeFieldInfoPtr_hideWhenUnmontingMounting
+    private static IntPtr NativeFieldInfoPtr_forInventory
+    private static IntPtr NativeFieldInfoPtr_canMountUnmountOnlyOnCarLoader
+    private static IntPtr NativeFieldInfoPtr_canUnmountSingle
+    private static IntPtr NativeFieldInfoPtr_unmountWith
+    private static IntPtr NativeFieldInfoPtr_unmountWithMainObject
+    private static IntPtr NativeFieldInfoPtr_unmountWithSeparate
+    private static IntPtr NativeFieldInfoPtr_forcePartGroupFromParent
+    private static IntPtr NativeFieldInfoPtr_ForcePartGroup
+    private static IntPtr NativeFieldInfoPtr_cullLevel
+    private static IntPtr NativeFieldInfoPtr_GameMode
+    private static IntPtr NativeFieldInfoPtr_GameScript
+    private static IntPtr NativeFieldInfoPtr_GameInventory
+    private static IntPtr NativeFieldInfoPtr_UIManager
+    private static IntPtr NativeFieldInfoPtr_SoundManager
+    private static IntPtr NativeFieldInfoPtr_Cursor3D
+    private static IntPtr NativeFieldInfoPtr_CameraManager
+    private static IntPtr NativeFieldInfoPtr_ToolsManager
+    private static IntPtr NativeFieldInfoPtr_gamepadMountObject
+    private static IntPtr NativeFieldInfoPtr_currentColor
+    private static IntPtr NativeFieldInfoPtr_IsPainted
+    private static IntPtr NativeFieldInfoPtr_CurrentPaintType
+    private static IntPtr NativeFieldInfoPtr_CurrentPaintData
+    private static IntPtr NativeFieldInfoPtr_isFluidContainer
+    private static IntPtr NativeFieldInfoPtr_flashing
+    private static IntPtr NativeFieldInfoPtr_OnHidePart
+    private static IntPtr NativeFieldInfoPtr_OnHidePartFinished
+    private static IntPtr NativeFieldInfoPtr_OnMountFinished
+    private static IntPtr NativeFieldInfoPtr_OnSelectToUnMount
+    private static IntPtr NativeFieldInfoPtr_OnShow
+    private static IntPtr NativeMethodInfoPtr_get_TuningBonus_Public_get_Single_0
+    private static IntPtr NativeMethodInfoPtr_set_TuningBonus_Public_set_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_IsBlocked_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetMouseOver_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetHideWhenUnmontingMounting_Public_Il2CppReferenceArray_1_GameObject_0
+    private static IntPtr NativeMethodInfoPtr_SetForInventory_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetCanUnmountSingle_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetCanUnmountSingle_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_AddToUnmountWith_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetUnmountWith_Public_List_1_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_AddUnmountWithMainObject_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetUnmountWithMainObject_Public_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_IsFromObject_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetUnmountWithSeparate_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsUnmountWithSeparate_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsOnCarLoader_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShouldUnmountWith_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetIDWithTuned_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetID_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_GetTunedID_Public_String_0
+    private static IntPtr NativeMethodInfoPtr_SetTunedID_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_IsTuned_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetID_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_GetColor_Public_Color_0
+    private static IntPtr NativeMethodInfoPtr_SetColor_Public_Void_Color_0
+    private static IntPtr NativeMethodInfoPtr_SetAllowedColor_Public_Void_AllowedColor_0
+    private static IntPtr NativeMethodInfoPtr_SetDefaultColor_Private_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_IsRepaired_Public_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetShowCondition_Private_Single_0
+    private static IntPtr NativeMethodInfoPtr_LookForPart_Public_PartScript_String_0
+    private static IntPtr NativeMethodInfoPtr_Clone_Public_Void_PartData_0
+    private static IntPtr NativeMethodInfoPtr_UpdateDust_Public_Void_Single_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetMountObjectData_Public_Void_MountObjectData_0
+    private static IntPtr NativeMethodInfoPtr_GetMountObjectDataForSave_Public_MountObjectData_0
+    private static IntPtr NativeMethodInfoPtr_UnblockBlockParts_Private_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ActionAutomatic_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_CancelUnmountAnim_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_UnMountByGroup_Public_IEnumerator_Boolean_Boolean_Single_0
+    private static IntPtr NativeMethodInfoPtr_MountByGroup_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ShowPreviewToMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowGroupPreview_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowPreview_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_HidePreview_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_HideBySavegame_Public_Void_Boolean_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_ShowBySaveGame_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetLayerRecursively_Public_Void_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetNextMountObject_Public_Transform_0
+    private static IntPtr NativeMethodInfoPtr_AddToBlockedBy_Public_Void_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_GetUnmountDir_Private_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_CalcUnmountDir_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_UndoMounting_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UndoUnMounting_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_UnBlockPart_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_BlockPart_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetConditionNormal_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetCondition_Public_Void_Single_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_UpdateShaderParams_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SwitchSolidColor_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_FlashRed_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_SetMouseOver_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_MouseOverGroup_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_SwitchActive_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Start_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_CustomStart_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_NullInPart_Private_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_AddHO_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ResizeWheel_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ChangeOnTunePartIfShould_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_TunePart_Public_Boolean_String_0
+    private static IntPtr NativeMethodInfoPtr_TunePart_Public_Boolean_String_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ChangeTireType_Public_Void_String_0
+    private static IntPtr NativeMethodInfoPtr_FastUnmount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Examine_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_FastMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDestroy_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ActionUnMount_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_CheckSendMessage_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_EnableGamepadMountObject_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_ActionMount_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_DoMount_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_ShowMountAnimation_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ReplaceShader_Public_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_DeleteShaderBackup_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ShowMounted_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_Alpha1_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Alpha0_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Show_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Hide_Public_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_GetFluidId_Private_Int32_0
+    private static IntPtr NativeMethodInfoPtr_CheckOnSendMessage_Private_Boolean_FluidRefillLockType_byref_String_0
+    private static IntPtr NativeMethodInfoPtr_CheckMessageOnHide_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_HideTest_Private_Void_PartScript_PartScript_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_CheckIsFluidContainer_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_IsFluidContainer_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CanDrainFluid_Public_Boolean_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_ZeroFluid_Public_Boolean_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_OnDisable_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDrawGizmosSelected_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_GetGameObjectPath_Private_String_0
+    private static IntPtr NativeMethodInfoPtr_GetGameObjectPathWithoutRoot_Public_String_StringBuilder_0
+    private static IntPtr NativeMethodInfoPtr_Flashing_Public_Void_Boolean_Nullable_1_Color_0
+    private static IntPtr NativeMethodInfoPtr_ResizeWheel_Public_Void_CarLoader_Wheel_0
+    private static IntPtr NativeMethodInfoPtr_GetUniqueIDFromPartName_Public_Int32_String_String_0
+    private static IntPtr NativeMethodInfoPtr_GetUniqueID_Public_Int32_String_String_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr__ShowMountAnimation_b__152_0_Private_Void_Object_0
+  -- Properties --
+    Boolean devRepair { get;set; }
+    Boolean devBroke { get;set; }
+    Boolean On { get;set; }
+    Boolean alwaysPosX { get;set; }
+    String id { get;set; }
+    String tunedID { get;set; }
+    ShadersBackup shadersBackup { get;set; }
+    Boolean IsUnmounted { get;set; }
+    Single Condition { get;set; }
+    Int32 Quality { get;set; }
+    Boolean IsExamined { get;set; }
+    Boolean MountAnimationCompleted { get;set; }
+    Single Dust { get;set; }
+    Boolean oneClickUnmount { get;set; }
+    Il2CppReferenceArray<MountObject> MountObjects { get;set; }
+    Il2CppReferenceArray<PartScript> unblockOnUnmount { get;set; }
+    Il2CppStringArray unblockOnUnmountName { get;set; }
+    Boolean wasAutomatic { get;set; }
+    Boolean canBeUnmount { get;set; }
+    Il2CppReferenceArray<GameObject> enableOnUnmount { get;set; }
+    Il2CppReferenceArray<GameObject> disableOnUnmount { get;set; }
+    Vector3 bakPos { get;set; }
+    Quaternion bakRot { get;set; }
+    PartProperty partProperty { get;set; }
+    Single vol { get;set; }
+    Vector3 unmountVector { get;set; }
+    direction unmountDirection { get;set; }
+    direction bonusMoveDirection { get;set; }
+    Boolean unmountSpinning { get;set; }
+    Boolean spinClockwise { get;set; }
+    String sendMessage { get;set; }
+    String sendMessageOnHide { get;set; }
+    Boolean checkSendMessageInEngine { get;set; }
+    FluidRefillLockType FluidRefillLockType { get;set; }
+    Boolean canUpdate { get;set; }
+    Boolean markRed { get;set; }
+    Boolean markImportantPart { get;set; }
+    Boolean mountWasCanceled { get;set; }
+    Boolean markedRed { get;set; }
+    List<PartScript> blockedBy { get;set; }
+    Single tuningBonus { get;set; }
+    Int32 blockedNo { get;set; }
+    Highlighter ho { get;set; }
+    Boolean MouseOver { get;set; }
+    Boolean mountMode { get;set; }
+    Boolean replacedShader { get;set; }
+    Transform customPivotForUnmount { get;set; }
+    Il2CppReferenceArray<GameObject> hideWhenUnmontingMounting { get;set; }
+    Boolean forInventory { get;set; }
+    Boolean canMountUnmountOnlyOnCarLoader { get;set; }
+    Boolean canUnmountSingle { get;set; }
+    List<PartScript> unmountWith { get;set; }
+    PartScript unmountWithMainObject { get;set; }
+    Boolean unmountWithSeparate { get;set; }
+    PartScript forcePartGroupFromParent { get;set; }
+    Int32 ForcePartGroup { get;set; }
+    Int32 cullLevel { get;set; }
+    GameMode GameMode { get;set; }
+    GameScript GameScript { get;set; }
+    GameInventory GameInventory { get;set; }
+    UIManager UIManager { get;set; }
+    SoundManager SoundManager { get;set; }
+    Cursor3D Cursor3D { get;set; }
+    CameraManager CameraManager { get;set; }
+    ToolsManager ToolsManager { get;set; }
+    GamepadMountObject gamepadMountObject { get;set; }
+    Color currentColor { get;set; }
+    Boolean IsPainted { get;set; }
+    PaintType CurrentPaintType { get;set; }
+    PaintData CurrentPaintData { get;set; }
+    Boolean isFluidContainer { get;set; }
+    Boolean flashing { get;set; }
+    Action OnHidePart { get;set; }
+    Action OnHidePartFinished { get;set; }
+    Action OnMountFinished { get;set; }
+    Action OnSelectToUnMount { get;set; }
+    Action OnShow { get;set; }
+    Single TuningBonus { get;set; }
+  -- Methods --
+    Boolean IsBlocked()
+    Void SetMouseOver(Boolean b)
+    Il2CppReferenceArray<GameObject> GetHideWhenUnmontingMounting()
+    Void SetForInventory(Boolean b)
+    Void SetCanUnmountSingle(Boolean b)
+    Boolean GetCanUnmountSingle()
+    Void AddToUnmountWith(PartScript p)
+    List<PartScript> GetUnmountWith()
+    Void AddUnmountWithMainObject(PartScript p)
+    PartScript GetUnmountWithMainObject()
+    Boolean IsFromObject()
+    Void SetUnmountWithSeparate(Boolean b)
+    Boolean IsUnmountWithSeparate()
+    Boolean IsOnCarLoader()
+    Boolean ShouldUnmountWith()
+    String GetIDWithTuned()
+    String GetID()
+    String GetTunedID()
+    Void SetTunedID(String newTunedID)
+    Boolean IsTuned()
+    Void SetID(String no)
+    Color GetColor()
+    Void SetColor(Color newColor)
+    Void SetAllowedColor(AllowedColor allowedColor)
+    Void SetDefaultColor(String partId)
+    Boolean IsRepaired(Single minCondition)
+    Single GetShowCondition()
+    PartScript LookForPart(String _name)
+    Void Clone(PartData partData)
+    Void UpdateDust(Single newDust, Boolean forceSet)
+    Void SetMountObjectData(MountObjectData data)
+    MountObjectData GetMountObjectDataForSave()
+    Void UnblockBlockParts(Boolean unblock)
+    IEnumerator ActionAutomatic()
+    Void CancelUnmountAnim()
+    IEnumerator UnMountByGroup(Boolean b, Boolean instant, Single delay)
+    Void MountByGroup(Boolean instantSet)
+    Void ShowPreviewToMount()
+    Void ShowGroupPreview()
+    Void ShowPreview()
+    Void HidePreview()
+    Void HideBySavegame(Boolean withUnmountWith, CarLoader carLoader)
+    Void ShowBySaveGame()
+    Void SetLayerRecursively(Int32 newLayer)
+    Transform GetNextMountObject()
+    Void AddToBlockedBy(PartScript obj)
+    Vector3 GetUnmountDir()
+    Void CalcUnmountDir()
+    Void UndoMounting()
+    Void UndoUnMounting()
+    Void UnBlockPart()
+    Void BlockPart()
+    Void SetConditionNormal(Single newCondition)
+    Void SetCondition(Single newCondition, Boolean updateSolidValue)
+    Void UpdateShaderParams(Boolean updateSolidValue)
+    Void SwitchSolidColor(Boolean b)
+    Void FlashRed(Boolean b)
+    Void SetMouseOver()
+    Void MouseOverGroup()
+    Void SwitchActive(Boolean b)
+    Void Awake()
+    Void Start()
+    Void CustomStart()
+    Void NullInPart(String msg)
+    Void AddHO()
+    Void ResizeWheel()
+    Void ChangeOnTunePartIfShould()
+    Boolean TunePart(String tunePart)
+    Boolean TunePart(String tunePart, Boolean shouldResizeWheel)
+    Void ChangeTireType(String tireName)
+    Void FastUnmount()
+    Void Examine(Boolean instant)
+    Void FastMount()
+    Void OnDestroy()
+    Void ActionUnMount()
+    Boolean CheckSendMessage()
+    Void EnableGamepadMountObject(Boolean enable)
+    Void ActionMount(Boolean showMenu)
+    IEnumerator DoMount()
+    Void ShowMountAnimation()
+    Void ReplaceShader(Boolean unactive)
+    Void DeleteShaderBackup()
+    IEnumerator ShowMounted()
+    Void Alpha1()
+    Void Alpha0()
+    Void Show()
+    IEnumerator Hide()
+    Int32 GetFluidId()
+    Boolean CheckOnSendMessage(FluidRefillLockType fluidToCheck, String& missingPart)
+    Void CheckMessageOnHide()
+    Void HideTest(PartScript part, PartScript from)
+    Void Update()
+    Void CheckIsFluidContainer()
+    Boolean IsFluidContainer()
+    Boolean CanDrainFluid(CarLoader carLoader)
+    Boolean ZeroFluid(CarLoader carLoader)
+    Void OnDisable()
+    Void OnDrawGizmosSelected()
+    String GetGameObjectPath()
+    String GetGameObjectPathWithoutRoot(StringBuilder stringBuilder)
+    Void Flashing(Boolean on, Nullable<Color> color)
+    Void ResizeWheel(CarLoader carLoader, Wheel wheel)
+    Int32 GetUniqueIDFromPartName(String carName, String engineName)
+    Int32 GetUniqueID(String carName, String engineName)
+    Void _ShowMountAnimation_b__152_0(Object x)
+
+==== FPSCamera  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_HeadHeight
+    private static IntPtr NativeFieldInfoPtr_readInput
+    private static IntPtr NativeFieldInfoPtr_fpc
+    private static IntPtr NativeFieldInfoPtr_isCrouching
+    private static IntPtr NativeFieldInfoPtr_timer1
+    private static IntPtr NativeFieldInfoPtr_timer2
+    private static IntPtr NativeFieldInfoPtr_bobbingSpeed
+    private static IntPtr NativeFieldInfoPtr_bobbingAmount
+    private static IntPtr NativeFieldInfoPtr_bobShift
+    private static IntPtr NativeFieldInfoPtr_bobbingHorizontalSpeed
+    private static IntPtr NativeFieldInfoPtr_bobbingHorizontalAmount
+    private static IntPtr NativeFieldInfoPtr_FPSCharacterController
+    private static IntPtr NativeFieldInfoPtr_FPSCharacterMotor
+    private static IntPtr NativeFieldInfoPtr_MainCamera
+    private static IntPtr NativeFieldInfoPtr_mouseLookSensitivity
+    private static IntPtr NativeFieldInfoPtr_mouseLookSmoothSteps
+    private static IntPtr NativeFieldInfoPtr_mouseLookSmoothWeight
+    private static IntPtr NativeFieldInfoPtr_mouseLookAcceleration
+    private static IntPtr NativeFieldInfoPtr_mouseLookAccelerationThreshold
+    private static IntPtr NativeFieldInfoPtr_mouseLookInvert
+    private static IntPtr NativeFieldInfoPtr_mMouseLookSmoothMove
+    private static IntPtr NativeFieldInfoPtr_mMouseLookSmoothBuffer
+    private static IntPtr NativeFieldInfoPtr_mLastMouseLookFrame
+    private static IntPtr NativeFieldInfoPtr_mCurrentMouseLook
+    private static IntPtr NativeFieldInfoPtr_m_Yaw
+    private static IntPtr NativeFieldInfoPtr_m_Pitch
+    private static IntPtr NativeFieldInfoPtr_m_Roll
+    private static IntPtr NativeFieldInfoPtr_lastCorrectYaw
+    private static IntPtr NativeFieldInfoPtr_lastCorrectPitch
+    private static IntPtr NativeFieldInfoPtr_RotationYawLimit
+    private static IntPtr NativeFieldInfoPtr_RotationPitchLimit
+    private static IntPtr NativeFieldInfoPtr_motorMaxForwardSpeed
+    private static IntPtr NativeFieldInfoPtr_motorMaxSidewaysSpeed
+    private static IntPtr NativeFieldInfoPtr_motorMaxBackwardsSpeed
+    private static IntPtr NativeFieldInfoPtr_crouchHeight
+    private static IntPtr NativeFieldInfoPtr_MaxCrouchForwardSpeed
+    private static IntPtr NativeFieldInfoPtr_MaxCrouchSidewaysSpeed
+    private static IntPtr NativeFieldInfoPtr_MaxCrouchBackwardsSpeed
+    private static IntPtr NativeFieldInfoPtr_DiferenceInHeight
+    private static IntPtr NativeFieldInfoPtr_CrouchOffset
+    private static IntPtr NativeFieldInfoPtr_fpsVelocity
+    private static IntPtr NativeFieldInfoPtr_waveslice
+    private static IntPtr NativeFieldInfoPtr_waveslice2
+    private static IntPtr NativeFieldInfoPtr_maxCameraHeight
+    private static IntPtr NativeFieldInfoPtr_cameraOffset
+    private static IntPtr NativeFieldInfoPtr_headBobbingActive
+    private static IntPtr NativeFieldInfoPtr_crouchingActive
+    private static IntPtr NativeFieldInfoPtr_originalFOV
+    private static IntPtr NativeFieldInfoPtr_originalRoll
+    private static IntPtr NativeFieldInfoPtr_originalCrouchOffset
+    private static IntPtr NativeFieldInfoPtr_originalIsCrouching
+    private static IntPtr NativeFieldInfoPtr_cameraX
+    private static IntPtr NativeFieldInfoPtr_InputManager
+    private static IntPtr NativeFieldInfoPtr_IsReady
+    private static IntPtr NativeFieldInfoPtr_isAudioPlaying
+    private static IntPtr NativeFieldInfoPtr_modifier
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Prepare_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_EnablePhotoMode_Public_Void_Boolean_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_UpdateHeight_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_SetFOV_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_UpdateRotation_Public_Void_Single_0
+    private static IntPtr NativeMethodInfoPtr_GetDoFDistance_Public_Single_0
+    private static IntPtr NativeMethodInfoPtr_SaveCamera_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ResetCamera_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnEnable_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_OnDisable_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_HeadBobVertical_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_HeadBobHorizontal_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateInput_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_SetRotationToCharacter_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_LookAt_Public_Void_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_SetSavedRotation_Public_Void_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_GetCameraLook_Private_Vector2_0
+    private static IntPtr NativeMethodInfoPtr_NaNSafeVector2_Private_Vector2_Vector2_Vector2_0
+    private static IntPtr NativeMethodInfoPtr_LoadData_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_ClampAngle_Private_Single_Single_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_ChangeMotorValueIfCrunching_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ChangeMotorValueIfNotCrunching_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_LoadCharacterMotorSettings_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_tweenOnUpdateCallBack_Private_Void_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_Crouch_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateCrouchingState_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Single HeadHeight { get;set; }
+    Boolean readInput { get;set; }
+    GameObject fpc { get;set; }
+    static Boolean isCrouching { get;set; }
+    Single timer1 { get;set; }
+    Single timer2 { get;set; }
+    Single bobbingSpeed { get;set; }
+    Single bobbingAmount { get;set; }
+    Single bobShift { get;set; }
+    Single bobbingHorizontalSpeed { get;set; }
+    Single bobbingHorizontalAmount { get;set; }
+    CharacterController FPSCharacterController { get;set; }
+    CharacterMotor FPSCharacterMotor { get;set; }
+    Camera MainCamera { get;set; }
+    Vector2 mouseLookSensitivity { get;set; }
+    Int32 mouseLookSmoothSteps { get;set; }
+    Single mouseLookSmoothWeight { get;set; }
+    Boolean mouseLookAcceleration { get;set; }
+    Single mouseLookAccelerationThreshold { get;set; }
+    Boolean mouseLookInvert { get;set; }
+    Vector2 mMouseLookSmoothMove { get;set; }
+    List<Vector2> mMouseLookSmoothBuffer { get;set; }
+    Int32 mLastMouseLookFrame { get;set; }
+    Vector2 mCurrentMouseLook { get;set; }
+    Single m_Yaw { get;set; }
+    Single m_Pitch { get;set; }
+    Single m_Roll { get;set; }
+    Single lastCorrectYaw { get;set; }
+    Single lastCorrectPitch { get;set; }
+    Vector2 RotationYawLimit { get;set; }
+    Vector2 RotationPitchLimit { get;set; }
+    Single motorMaxForwardSpeed { get;set; }
+    Single motorMaxSidewaysSpeed { get;set; }
+    Single motorMaxBackwardsSpeed { get;set; }
+    Single crouchHeight { get;set; }
+    Single MaxCrouchForwardSpeed { get;set; }
+    Single MaxCrouchSidewaysSpeed { get;set; }
+    Single MaxCrouchBackwardsSpeed { get;set; }
+    Single DiferenceInHeight { get;set; }
+    Single CrouchOffset { get;set; }
+    Single fpsVelocity { get;set; }
+    Single waveslice { get;set; }
+    Single waveslice2 { get;set; }
+    Single maxCameraHeight { get;set; }
+    Single cameraOffset { get;set; }
+    Boolean headBobbingActive { get;set; }
+    Boolean crouchingActive { get;set; }
+    Single originalFOV { get;set; }
+    Single originalRoll { get;set; }
+    Single originalCrouchOffset { get;set; }
+    Boolean originalIsCrouching { get;set; }
+    Single cameraX { get;set; }
+    InputManager InputManager { get;set; }
+    Boolean IsReady { get;set; }
+    Boolean isAudioPlaying { get;set; }
+    Single modifier { get;set; }
+  -- Methods --
+    Void Awake()
+    IEnumerator Prepare()
+    Void Update()
+    Void EnablePhotoMode(Boolean enable, Boolean setCameraSettings)
+    Void UpdateHeight(Single value)
+    Void SetFOV(Single value)
+    Void UpdateRotation(Single value)
+    Single GetDoFDistance()
+    Void SaveCamera()
+    Void ResetCamera()
+    Void OnEnable()
+    Void OnDisable()
+    Void HeadBobVertical()
+    Void HeadBobHorizontal()
+    Void UpdateInput()
+    Void SetRotationToCharacter()
+    Void LookAt(CarLoader carLoader)
+    Void SetSavedRotation(Vector3 newRotation)
+    Vector2 GetCameraLook()
+    Vector2 NaNSafeVector2(Vector2 vector, Vector2 prevVector)
+    Void LoadData()
+    Single ClampAngle(Single angle, Single min, Single max)
+    Void ChangeMotorValueIfCrunching()
+    Void ChangeMotorValueIfNotCrunching()
+    Void LoadCharacterMotorSettings()
+    Void tweenOnUpdateCallBack(Single newValue, Single ratio)
+    Void Crouch()
+    Void UpdateCrouchingState()
+
+==== CharacterMotor  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_canControl
+    private static IntPtr NativeFieldInfoPtr_useFixedUpdate
+    private static IntPtr NativeFieldInfoPtr_inputMoveDirection
+    private static IntPtr NativeFieldInfoPtr_inputJump
+    private static IntPtr NativeFieldInfoPtr_movement
+    private static IntPtr NativeFieldInfoPtr_jumping
+    private static IntPtr NativeFieldInfoPtr_movingPlatform
+    private static IntPtr NativeFieldInfoPtr_sliding
+    private static IntPtr NativeFieldInfoPtr_grounded
+    private static IntPtr NativeFieldInfoPtr_groundNormal
+    private static IntPtr NativeFieldInfoPtr_groundType
+    private static IntPtr NativeFieldInfoPtr_tr
+    private static IntPtr NativeFieldInfoPtr_controller
+    private static IntPtr NativeFieldInfoPtr_ray
+    private static IntPtr NativeFieldInfoPtr_results
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_UpdateFunction_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_FixedUpdate_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Update_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_ApplyInputVelocityChange_Private_Vector3_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_ApplyGravityAndJumping_Private_Vector3_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_UpdateSound_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_SubtractNewPlatformVelocity_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_MoveWithPlatform_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetDesiredHorizontalVelocity_Private_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_AdjustGroundVelocityToNormal_Private_Vector3_Vector3_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_IsGroundedTest_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetMaxAcceleration_Private_Single_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_CalculateJumpVerticalSpeed_Private_Single_Single_0
+    private static IntPtr NativeMethodInfoPtr_IsJumping_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsSliding_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsTouchingCeiling_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_IsGrounded_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_TooSteep_Private_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_GetDirection_Private_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_SetControllable_Private_Void_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_MaxSpeedInDirection_Private_Single_Vector3_0
+    private static IntPtr NativeMethodInfoPtr_SetVelocity_Private_Void_Vector3_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Boolean canControl { get;set; }
+    Boolean useFixedUpdate { get;set; }
+    Vector3 inputMoveDirection { get;set; }
+    Boolean inputJump { get;set; }
+    CharacterMotorMovement movement { get;set; }
+    CharacterMotorJumping jumping { get;set; }
+    CharacterMotorMovingPlatform movingPlatform { get;set; }
+    CharacterMotorSliding sliding { get;set; }
+    Boolean grounded { get;set; }
+    Vector3 groundNormal { get;set; }
+    GroundType groundType { get;set; }
+    Transform tr { get;set; }
+    CharacterController controller { get;set; }
+    Ray ray { get;set; }
+    Il2CppStructArray<RaycastHit> results { get;set; }
+  -- Methods --
+    Void Awake()
+    Void UpdateFunction()
+    Void FixedUpdate()
+    Void Update()
+    Vector3 ApplyInputVelocityChange(Vector3 velocity)
+    Vector3 ApplyGravityAndJumping(Vector3 velocity)
+    Void UpdateSound()
+    IEnumerator SubtractNewPlatformVelocity()
+    Boolean MoveWithPlatform()
+    Vector3 GetDesiredHorizontalVelocity()
+    Vector3 AdjustGroundVelocityToNormal(Vector3 hVelocity, Vector3 groundNormal)
+    Boolean IsGroundedTest()
+    Single GetMaxAcceleration(Boolean grounded)
+    Single CalculateJumpVerticalSpeed(Single targetJumpHeight)
+    Boolean IsJumping()
+    Boolean IsSliding()
+    Boolean IsTouchingCeiling()
+    Boolean IsGrounded()
+    Boolean TooSteep()
+    Vector3 GetDirection()
+    Void SetControllable(Boolean controllable)
+    Single MaxSpeedInDirection(Vector3 desiredMovementDirection)
+    Void SetVelocity(Vector3 velocity)
+

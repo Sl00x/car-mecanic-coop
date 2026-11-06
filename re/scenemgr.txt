@@ -1,0 +1,82 @@
+# Il2CppInterop signatures for CMS2021 co-op mod
+# Generated from MelonLoader/Il2CppAssemblies. Fields are exposed as shown below.
+
+==== Il2CppCMS.Tutorial.SceneManager  :  MonoBehaviour  ====
+     assembly: Assembly-CSharp-firstpass
+  -- Fields --
+    private static IntPtr NativeFieldInfoPtr_TutorialInProgress
+    private static IntPtr NativeFieldInfoPtr_baseTasks
+    private static IntPtr NativeFieldInfoPtr_PlayerStartPosition
+    private static IntPtr NativeFieldInfoPtr_FPSCamera
+    private static IntPtr NativeFieldInfoPtr_CharacterController
+    private static IntPtr NativeFieldInfoPtr_currentTask
+    private static IntPtr NativeFieldInfoPtr_OrderGenerator
+    private static IntPtr NativeFieldInfoPtr_PieMenuController
+    private static IntPtr NativeFieldInfoPtr_CarLifter
+    private static IntPtr NativeFieldInfoPtr_CarLoader
+    private static IntPtr NativeFieldInfoPtr_WheelBalancer
+    private static IntPtr NativeFieldInfoPtr_TireChanger
+    private static IntPtr NativeFieldInfoPtr_GarageLook
+    private static IntPtr NativeFieldInfoPtr_BatteryCharger
+    private static IntPtr NativeFieldInfoPtr_Toolbox
+    private static IntPtr NativeFieldInfoPtr_EngineStand
+    private static IntPtr NativeFieldInfoPtr_EngineCrane
+    private static IntPtr NativeFieldInfoPtr_SpringClamp
+    private static IntPtr NativeFieldInfoPtr_Welder
+    private static IntPtr NativeFieldInfoPtr_Computer
+    private static IntPtr NativeFieldInfoPtr_Phone
+    private static IntPtr NativeFieldInfoPtr_Radio
+    private static IntPtr NativeFieldInfoPtr_HeadlampAlignmentSystem
+    private static IntPtr NativeFieldInfoPtr_Oilbin
+    private static IntPtr NativeFieldInfoPtr_WheelsAlignmentSystem
+    private static IntPtr NativeFieldInfoPtr_BrakeLathe
+    private static IntPtr NativeFieldInfoPtr_InteriorDetailingToolkit
+    private static IntPtr NativeFieldInfoPtr_m_instance
+    private static IntPtr NativeMethodInfoPtr_Awake_Private_Void_0
+    private static IntPtr NativeMethodInfoPtr_Initialize_Private_IEnumerator_0
+    private static IntPtr NativeMethodInfoPtr_RunTask_Private_IEnumerator_Int32_0
+    private static IntPtr NativeMethodInfoPtr_GetPlaceForLoadCar_Public_CarLoader_0
+    private static IntPtr NativeMethodInfoPtr_RestartTutorial_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_IsLastTutorial_Public_Boolean_0
+    private static IntPtr NativeMethodInfoPtr_LoadNextTutorial_Public_Void_0
+    private static IntPtr NativeMethodInfoPtr_Get_Public_Static_SceneManager_0
+    private static IntPtr NativeMethodInfoPtr__ctor_Public_Void_0
+  -- Properties --
+    Boolean TutorialInProgress { get;set; }
+    Il2CppReferenceArray<BaseTask> baseTasks { get;set; }
+    Transform PlayerStartPosition { get;set; }
+    FPSCamera FPSCamera { get;set; }
+    CharacterController CharacterController { get;set; }
+    Int32 currentTask { get;set; }
+    OrderGenerator OrderGenerator { get;set; }
+    PieMenuController PieMenuController { get;set; }
+    CarLifter CarLifter { get;set; }
+    CarLoader CarLoader { get;set; }
+    WheelBalancerLogic WheelBalancer { get;set; }
+    TireChangerLogic TireChanger { get;set; }
+    InteractiveObject GarageLook { get;set; }
+    BatteryChargerLogic BatteryCharger { get;set; }
+    InteractiveObject Toolbox { get;set; }
+    EngineStandLogic EngineStand { get;set; }
+    InteractiveObject EngineCrane { get;set; }
+    SpringClampLogic SpringClamp { get;set; }
+    InteractiveObject Welder { get;set; }
+    InteractiveObject Computer { get;set; }
+    InteractiveObject Phone { get;set; }
+    InteractiveObject Radio { get;set; }
+    InteractiveObject HeadlampAlignmentSystem { get;set; }
+    InteractiveObject Oilbin { get;set; }
+    InteractiveObject WheelsAlignmentSystem { get;set; }
+    InteractiveObject BrakeLathe { get;set; }
+    InteractiveObject InteriorDetailingToolkit { get;set; }
+    static SceneManager m_instance { get;set; }
+  -- Methods --
+    Void Awake()
+    IEnumerator Initialize()
+    IEnumerator RunTask(Int32 id)
+    CarLoader GetPlaceForLoadCar()
+    Void RestartTutorial()
+    Boolean IsLastTutorial()
+    Void LoadNextTutorial()
+    static SceneManager Get()
+

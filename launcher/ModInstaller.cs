@@ -9,32 +9,35 @@ namespace CarMecaSim.Launcher
     {
         public bool GameFound;
         public string? GameDir;
-        public bool MelonLoaderInstalled;
-        public bool InteropGenerated;
+        public bool LoaderInstalled;       // BepInEx present
+        public bool InteropGenerated;      // BepInEx/interop generated (first launch)
         public bool ModInstalled;
         public string? InstalledModVersion;
         public bool SteamAppIdFile;
 
-        public bool FullyReady => GameFound && MelonLoaderInstalled && InteropGenerated && ModInstalled;
+        public bool FullyReady => GameFound && LoaderInstalled && ModInstalled; // interop auto-generates on first launch
     }
 
-    /// <summary>Installs/verifies/removes MelonLoader + the co-op mod in the game install.</summary>
+    /// <summary>Installs/verifies/removes BepInEx + the co-op plugin in the game install.</summary>
     public sealed class ModInstaller
     {
         private readonly string _gameDir;
         public ModInstaller(string gameDir) => _gameDir = gameDir;
 
-        private string MlVersionDll => Path.Combine(_gameDir, "version.dll");
-        private string MlDir        => Path.Combine(_gameDir, "MelonLoader");
-        private string InteropDir   => Path.Combine(MlDir, "Il2CppAssemblies");
-        private string ModsDir      => Path.Combine(_gameDir, "Mods");
-        private string ModDll       => Path.Combine(ModsDir, "CarMecaSim.Mp.dll");
-        private string AppIdFile    => Path.Combine(_gameDir, "steam_appid.txt");
+        private string Winhttp    => Path.Combine(_gameDir, "winhttp.dll");
+        private string BepInExDir => Path.Combine(_gameDir, "BepInEx");
+        private string InteropDir => Path.Combine(BepInExDir, "interop");
+        private string PluginsDir => Path.Combine(BepInExDir, "plugins");
+        private string ModDll     => Path.Combine(PluginsDir, "CarMecaSim", "CarMecaSim.Mp.dll");
+        private string AppIdFile  => Path.Combine(_gameDir, "steam_appid.txt");
+
+        private static readonly string[] ShipDlls =
+            { "CarMecaSim.Mp.dll", "CarMecaSim.Shared.dll", "Steamworks.NET.dll" };
 
         public InstallStatus GetStatus()
         {
             var s = new InstallStatus { GameDir = _gameDir, GameFound = GameLocator.IsGameDir(_gameDir) };
-            s.MelonLoaderInstalled = File.Exists(MlVersionDll) && Directory.Exists(MlDir);
+            s.LoaderInstalled = File.Exists(Winhttp) && Directory.Exists(BepInExDir);
             s.InteropGenerated = Directory.Exists(InteropDir) &&
                                  File.Exists(Path.Combine(InteropDir, "Assembly-CSharp.dll"));
             s.ModInstalled = File.Exists(ModDll);
@@ -47,61 +50,58 @@ namespace CarMecaSim.Launcher
             return s;
         }
 
-        /// <summary>Locate the install payload (MelonLoader + mod). Works from a shipped layout or the dev repo.</summary>
+        /// <summary>Locate the install payload (BepInEx + plugin). Works from a shipped layout or the dev repo.</summary>
         public static string? FindPayloadRoot()
         {
             var baseDir = AppContext.BaseDirectory;
             var shipped = Path.Combine(baseDir, "payload");
-            if (Directory.Exists(Path.Combine(shipped, "MelonLoader_x64"))) return shipped;
+            if (Directory.Exists(Path.Combine(shipped, "BepInEx_x64"))) return shipped;
 
-            // Dev fallback: climb to repo root (marked by the solution file, .sln or .slnx)
+            // Dev fallback: climb to repo root (marked by the solution file), payload = <repo>/tools
             var dir = new DirectoryInfo(baseDir);
             while (dir != null
                    && !File.Exists(Path.Combine(dir.FullName, "CarMecaSim.sln"))
                    && !File.Exists(Path.Combine(dir.FullName, "CarMecaSim.slnx")))
                 dir = dir.Parent;
-            if (dir != null && Directory.Exists(Path.Combine(dir.FullName, "tools", "MelonLoader_x64")))
-                return Path.Combine(dir.FullName, "tools"); // tools/MelonLoader_x64 lives here
+            if (dir != null && Directory.Exists(Path.Combine(dir.FullName, "tools", "BepInEx_x64")))
+                return Path.Combine(dir.FullName, "tools");
             return null;
         }
 
-        /// <summary>Install MelonLoader if missing. Returns true if present after the call.</summary>
-        public bool EnsureMelonLoader(string payloadRoot, Action<string>? log = null)
+        /// <summary>Install BepInEx if missing. Returns true if present after the call.</summary>
+        public bool EnsureLoader(string payloadRoot, Action<string>? log = null)
         {
-            if (File.Exists(MlVersionDll) && Directory.Exists(MlDir)) { log?.Invoke("MelonLoader already installed."); return true; }
-            var mlPayload = Path.Combine(payloadRoot, "MelonLoader_x64");
-            if (!Directory.Exists(mlPayload)) { log?.Invoke("ERROR: MelonLoader payload not found at " + mlPayload); return false; }
-            log?.Invoke("Installing MelonLoader...");
-            CopyDir(mlPayload, _gameDir, log);
-            return File.Exists(MlVersionDll);
+            if (File.Exists(Winhttp) && Directory.Exists(BepInExDir)) { log?.Invoke("BepInEx already installed."); return true; }
+            var payload = Path.Combine(payloadRoot, "BepInEx_x64");
+            if (!Directory.Exists(payload)) { log?.Invoke("ERROR: BepInEx payload not found at " + payload); return false; }
+            log?.Invoke("Installing BepInEx...");
+            CopyDir(payload, _gameDir, log);
+            return File.Exists(Winhttp);
         }
 
-        /// <summary>Install/update the co-op mod dll and its managed dependencies into Mods/.</summary>
+        /// <summary>Install/update the co-op plugin into BepInEx/plugins.</summary>
         public bool InstallMod(string payloadRoot, Action<string>? log = null)
         {
-            Directory.CreateDirectory(ModsDir);
-            // Mod dll + deps can come from payload/Mods, or dev: mod/bin/*/net6.0
+            Directory.CreateDirectory(PluginsDir);
             var sources = new[]
             {
-                Path.Combine(payloadRoot, "Mods"),
+                Path.Combine(payloadRoot, "plugins"),
                 RepoModBin(payloadRoot, "Release"),
                 RepoModBin(payloadRoot, "Debug"),
             };
             var src = sources.FirstOrDefault(p => p != null && File.Exists(Path.Combine(p!, "CarMecaSim.Mp.dll")));
-            if (src == null) { log?.Invoke("ERROR: built mod (CarMecaSim.Mp.dll) not found in any of: " + string.Join("; ", sources)); return false; }
+            if (src == null) { log?.Invoke("ERROR: built plugin (CarMecaSim.Mp.dll) not found in: " + string.Join("; ", sources)); return false; }
 
-            log?.Invoke("Installing mod from " + src);
-            foreach (var dll in Directory.GetFiles(src, "*.dll"))
+            log?.Invoke("Installing plugin from " + src);
+            var dst = Path.Combine(PluginsDir, "CarMecaSim");
+            Directory.CreateDirectory(dst);
+            foreach (var name in ShipDlls)
             {
-                // Skip interop/MelonLoader assemblies (already in game); ship only the mod + Steamworks.NET.
-                var name = Path.GetFileName(dll);
-                if (name.StartsWith("Il2Cpp", StringComparison.OrdinalIgnoreCase)) continue;
-                if (name.StartsWith("UnityEngine", StringComparison.OrdinalIgnoreCase)) continue;
-                if (name is "MelonLoader.dll" or "0Harmony.dll") continue;
-                File.Copy(dll, Path.Combine(ModsDir, name), overwrite: true);
+                var from = Path.Combine(src!, name);
+                if (File.Exists(from)) File.Copy(from, Path.Combine(dst, name), overwrite: true);
             }
             EnsureAppId(log);
-            return File.Exists(ModDll);
+            return File.Exists(Path.Combine(dst, "CarMecaSim.Mp.dll"));
         }
 
         public void EnsureAppId(Action<string>? log = null)
@@ -113,27 +113,27 @@ namespace CarMecaSim.Launcher
             }
         }
 
-        public void Uninstall(bool removeMelonLoader, Action<string>? log = null)
+        public void Uninstall(bool removeLoader, Action<string>? log = null)
         {
-            if (File.Exists(ModDll)) { File.Delete(ModDll); log?.Invoke("Removed mod dll."); }
-            var sw = Path.Combine(ModsDir, "Steamworks.NET.dll");
-            if (File.Exists(sw)) File.Delete(sw);
-            if (removeMelonLoader)
+            var pluginDir = Path.Combine(PluginsDir, "CarMecaSim");
+            if (Directory.Exists(pluginDir)) { Directory.Delete(pluginDir, true); log?.Invoke("Removed co-op plugin."); }
+            if (File.Exists(ModDll)) File.Delete(ModDll); // legacy flat layout
+
+            if (removeLoader)
             {
-                foreach (var m in new[] { "version.dll", "MelonLoader", "dobby.dll", "Latest.log", "Logs" })
+                foreach (var m in new[] { "winhttp.dll", "BepInEx", "dotnet", "doorstop_config.ini", ".doorstop_version", ".doorstop_version.txt" })
                 {
                     var p = Path.Combine(_gameDir, m);
                     if (File.Exists(p)) File.Delete(p);
                     else if (Directory.Exists(p)) Directory.Delete(p, true);
                 }
-                log?.Invoke("Removed MelonLoader. Game restored to vanilla.");
+                log?.Invoke("Removed BepInEx. Game restored to vanilla.");
             }
         }
 
         private static string? RepoModBin(string payloadRoot, string config)
         {
-            // payloadRoot in dev = <repo>/tools ; mod bin = <repo>/mod/bin/<config>/net6.0
-            var repo = Directory.GetParent(payloadRoot)?.FullName;
+            var repo = Directory.GetParent(payloadRoot)?.FullName; // payloadRoot(dev) = <repo>/tools
             if (repo == null) return null;
             return Path.Combine(repo, "mod", "bin", config, "net6.0");
         }
