@@ -35,6 +35,9 @@ namespace CarMecaSim.Launcher
         private static readonly string[] PluginDlls =
             { "CarMecaSim.Mp.dll", "CarMecaSim.Shared.dll", "Steamworks.NET.dll" };
 
+        // Non-DLL data assets that also live next to the mod (the ripped mechanic AssetBundle).
+        private static readonly string[] DataAssets = { "mechanics" };
+
         private static HttpClient Http()
         {
             var h = new HttpClient();
@@ -88,6 +91,13 @@ namespace CarMecaSim.Launcher
                     foreach (var a in dllAssets)
                     {
                         log($"Téléchargement {a.Name}…");
+                        var bytes = await http.GetByteArrayAsync(a.Url);
+                        await File.WriteAllBytesAsync(Path.Combine(dst, a.Name), bytes);
+                    }
+                    // Optional data assets (the mechanic AssetBundle), when the release ships them.
+                    foreach (var a in info.Assets.Where(a => DataAssets.Contains(a.Name, StringComparer.OrdinalIgnoreCase)))
+                    {
+                        log($"Téléchargement {a.Name} (personnages 3D)…");
                         var bytes = await http.GetByteArrayAsync(a.Url);
                         await File.WriteAllBytesAsync(Path.Combine(dst, a.Name), bytes);
                     }

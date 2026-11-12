@@ -23,9 +23,14 @@ namespace CarMecaSim.Mp.Core
         public float LastUpdate;
 
         private GameObject _root, _head, _torso, _armL, _armR;
+        private GameObject _body;          // ripped mechanic model (when the bundle is present)
+        private Animator _animator;        // its Mecanim animator (locomotion params)
         private Transform _tr;
         private Vector3 _pos;
         private float _yaw;
+
+        // eye (presence) position is ~this high above the feet, where the character model is rooted.
+        private const float EyeHeight = 1.65f;
 
         public Vector3 WorldPos => _tr != null ? _tr.position : TargetPos;
 
@@ -34,25 +39,40 @@ namespace CarMecaSim.Mp.Core
             if (_root != null) return;
             try
             {
-                var col = ColorFor(PlayerId);
-                var skin = new Color(0.86f, 0.70f, 0.56f);
-                var dark = new Color(0.14f, 0.14f, 0.16f);
-
                 _root = new GameObject("CMS_Avatar_" + PlayerId);
                 _tr = _root.transform;
-
-                // head is near the eye position; body hangs below.
-                _head  = Part(PrimitiveType.Sphere,   new Vector3(0f, -0.14f, 0.04f), new Vector3(0.26f, 0.26f, 0.26f), skin);
-                Part(PrimitiveType.Cube,   new Vector3(0f, -0.02f, 0.02f), new Vector3(0.30f, 0.14f, 0.30f), col, _head.transform); // cap
-                _torso = Part(PrimitiveType.Capsule, new Vector3(0f, -0.56f, 0f), new Vector3(0.42f, 0.34f, 0.30f), col);
-                _armL  = Part(PrimitiveType.Capsule, new Vector3(-0.27f, -0.52f, 0.02f), new Vector3(0.13f, 0.26f, 0.13f), col);
-                _armR  = Part(PrimitiveType.Capsule, new Vector3( 0.27f, -0.52f, 0.02f), new Vector3(0.13f, 0.26f, 0.13f), col);
-                Part(PrimitiveType.Capsule, new Vector3(-0.12f, -1.04f, 0f), new Vector3(0.15f, 0.30f, 0.15f), dark); // legs
-                Part(PrimitiveType.Capsule, new Vector3( 0.12f, -1.04f, 0f), new Vector3(0.15f, 0.30f, 0.15f), dark);
-
                 _pos = TargetPos; _yaw = TargetYaw;
+
+                // Prefer the real mechanic model from the CMS 2026/2027 bundle; fall back to primitives.
+                _body = CharacterModel.Instantiate(PlayerId, out _animator);
+                if (_body != null)
+                {
+                    var bt = _body.transform;
+                    bt.SetParent(_tr, false);
+                    bt.localPosition = new Vector3(0f, -EyeHeight, 0f);  // model rooted at feet; eye is up high
+                    bt.localRotation = Quaternion.identity;
+                    return;
+                }
+
+                BuildPrimitiveAvatar();
             }
             catch { /* rendering unavailable */ }
+        }
+
+        private void BuildPrimitiveAvatar()
+        {
+            var col = ColorFor(PlayerId);
+            var skin = new Color(0.86f, 0.70f, 0.56f);
+            var dark = new Color(0.14f, 0.14f, 0.16f);
+
+            // head is near the eye position; body hangs below.
+            _head  = Part(PrimitiveType.Sphere,   new Vector3(0f, -0.14f, 0.04f), new Vector3(0.26f, 0.26f, 0.26f), skin);
+            Part(PrimitiveType.Cube,   new Vector3(0f, -0.02f, 0.02f), new Vector3(0.30f, 0.14f, 0.30f), col, _head.transform); // cap
+            _torso = Part(PrimitiveType.Capsule, new Vector3(0f, -0.56f, 0f), new Vector3(0.42f, 0.34f, 0.30f), col);
+            _armL  = Part(PrimitiveType.Capsule, new Vector3(-0.27f, -0.52f, 0.02f), new Vector3(0.13f, 0.26f, 0.13f), col);
+            _armR  = Part(PrimitiveType.Capsule, new Vector3( 0.27f, -0.52f, 0.02f), new Vector3(0.13f, 0.26f, 0.13f), col);
+            Part(PrimitiveType.Capsule, new Vector3(-0.12f, -1.04f, 0f), new Vector3(0.15f, 0.30f, 0.15f), dark); // legs
+            Part(PrimitiveType.Capsule, new Vector3( 0.12f, -1.04f, 0f), new Vector3(0.15f, 0.30f, 0.15f), dark);
         }
 
         private static Shader _hdrpLit;
@@ -89,16 +109,43 @@ namespace CarMecaSim.Mp.Core
         public void Despawn()
         {
             try { if (_root != null) UnityEngine.Object.Destroy(_root); } catch { }
-            _root = _head = _torso = _armL = _armR = null; _tr = null;
+            _root = _head = _torso = _armL = _armR = _body = null; _animator = null; _tr = null;
         }
 
         public void Update(float dt)
         {
             if (_tr == null) return;
+            var prev = _pos;
             // smooth follow
             _pos = Vector3.Lerp(_pos, TargetPos, Mathf.Clamp01(dt * 12f));
             _yaw = Mathf.LerpAngle(_yaw, TargetYaw, Mathf.Clamp01(dt * 12f));
 
+            // ground speed (horizontal) from how far the avatar moved this frame
+            float speed = 0f;
+            if (dt > 0f) { var d = _pos - prev; d.y = 0f; speed = d.magnitude / dt; }
+
+            if (_body != null) { UpdateModel(speed); return; }   // real mechanic model → drive its Animator
+            UpdatePrimitive();                                    // fallback capsule avatar
+        }
+
+        private void UpdateModel(float speed)
+        {
+            _tr.position = _pos;                                  // model rooted at feet; no fake bob
+            _tr.rotation = Quaternion.Euler(0f, _yaw, 0f);
+            if (_animator == null) return;
+            try
+            {
+                // PlayerAnimatorController params: Speed/MotionX/MotionZ (float), Crouch (bool).
+                _animator.SetFloat("Speed", speed);
+                _animator.SetFloat("MotionZ", Mathf.Clamp(speed, 0f, 6f));
+                _animator.SetFloat("MotionX", 0f);
+                _animator.SetBool("Crouch", false);
+            }
+            catch { /* param names differ on an unexpected controller — ignore */ }
+        }
+
+        private void UpdatePrimitive()
+        {
             float t = Time.unscaledTime;
             float bob = Mathf.Sin(t * 2f) * 0.02f;
             _tr.position = _pos + new Vector3(0f, bob, 0f);

@@ -35,6 +35,10 @@ dotnet build $csproj -c Release -v quiet -nologo | Out-Null
 $bin = Join-Path $Root "mod\bin\Release\net6.0"
 $dlls = @("CarMecaSim.Mp.dll", "CarMecaSim.Shared.dll", "Steamworks.NET.dll") | ForEach-Object { Join-Path $bin $_ }
 
+# Ship the ripped mechanic AssetBundle too, if it has been built (tools\char-bundle\mechanics).
+$bundle = Join-Path $Root "tools\char-bundle\mechanics"
+if (Test-Path $bundle) { $dlls += $bundle; Write-Host "Including character bundle: $bundle" }
+
 # 2. Replace any existing release/tag with this version, then create a fresh one
 $tag = "v$Version"
 try {
