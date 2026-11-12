@@ -90,6 +90,8 @@ namespace CarMecaSim.Mp
                 var ov = CarMecaPlugin.Overlay;
                 if (ov != null) { ov.Visible = !ov.Visible; SetFrozen(ov.Visible); }
             }
+            // F9 toggles the read-only network/state debug overlay (any time).
+            if (Input.GetKeyDown(KeyCode.F9)) UI.NetDebugOverlay.Visible = !UI.NetDebugOverlay.Visible;
             // Safety: never stay frozen if we lose the session or the panel closed another way.
             if (_frozen && (!GameRefs.InGameSession || CarMecaPlugin.Overlay == null || !CarMecaPlugin.Overlay.Visible))
                 SetFrozen(false);
@@ -182,6 +184,7 @@ namespace CarMecaSim.Mp
         private void OnGUI()
         {
             CarMecaPlugin.Overlay?.Draw();        // in-game co-op panel (F6)
+            UI.NetDebugOverlay.Draw(CarMecaPlugin.Session);   // network/state debug (F9)
         }
     }
 }

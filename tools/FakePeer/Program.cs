@@ -40,6 +40,7 @@ namespace CarMecaSim.FakePeer
 
         static int Main(string[] args)
         {
+            if (args.Length > 0 && args[0] == "unittest") return CoopTests.Run();
             if (args.Length > 0 && args[0] == "selftest") return SelfTest.Run();
             int port = args.Length > 0 && int.TryParse(args[0], out var p) ? p : 48900;
             string name = args.Length > 1 ? args[1] : "FakePeer";

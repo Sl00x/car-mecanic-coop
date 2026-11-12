@@ -13,4 +13,8 @@
     <Compile Include="..\..\mod\Net\Proto.cs" />
     <Compile Include="..\..\mod\Net\PacketBuf.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Pure co-op model (identity, canonical state, hash, locks) — unit-tested here, outside Unity (§20.1). -->
+    <ProjectReference Include="..\..\shared\CarMecaSim.Shared.csproj" />
+  </ItemGroup>
 </Project>

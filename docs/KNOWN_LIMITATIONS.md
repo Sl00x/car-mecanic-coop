@@ -2,6 +2,14 @@
 
 Honest status against the master-prompt spec. Updated as work lands.
 
+## ✅ Verified by automated tests (no game)
+
+- **Pure co-op model — 26/26 unit tests** (`FakePeer -- unittest`): deterministic identity
+  (VehicleKey/PartSlot), canonical `VehiclePartState` + monotonic revisions, deterministic reconciliation
+  hash (convergence + divergence + order-independence + part-data sensitivity), `InteractionLockManager`
+  (acquire/conflict/lease-expiry/release/prune), `MutationOrigin` scope. (§5, §6, §10, §11.2, §14.2)
+- **Transport/selftest** green (chunked snapshot reassembly + full message exchange).
+
 ## ✅ Verified live in-game (host ↔ FakePeer loopback peer)
 
 - Full garage transfer: a joining peer receives the host's real save (`profile0.cms21b`, 34 KB) with all
@@ -24,16 +32,28 @@ Honest status against the master-prompt spec. Updated as work lands.
   and no-op. The spec's spawn state machine (NotPresent→…→Ready) is the fix. FakePeer (headless) doesn't
   expose this.
 
+## 🟡 Modelled + wired, but partial
+
+- **Entity identity (§5):** `VehicleKey`/`PartSlot` built, unit-tested, and `PartSync` keys its canonical
+  state by `VehicleKey`. Holds for one car on the lift; garage *move* re-keys (host registry TODO).
+- **Canonical state + revisions + hash (§6/§14):** `VehiclePartState` is now the authoritative store in
+  `PartSync` (revision bumps per mutation, hash exposed on the F9 overlay). NOT yet wired: networked hash
+  *reporting* between peers (EntityHashReport) and automatic targeted *repair*.
+- **Concurrency locks (§10):** `InteractionLockManager` is wired (a remover claims the part; `Tick`
+  prunes leases; F9 shows active locks). It is **advisory** — it does not yet BLOCK a conflicting removal,
+  because that needs an interaction-START hook (we only have the post-removal hook). Model is unit-tested.
+- **F9 debug overlay (§19):** role/peers/RTT/vehicle/revision/removed-count/state-hash/locks + removed
+  slot list, from real measurements.
+
 ## ❌ Not implemented (spec scope still open)
 
 - **Part install (visual):** `TakeOnCarPartFromSave` is state-only (confirmed: hood did not reappear).
   The runtime visual-mount method is not yet identified (candidates: `SwitchCarPart`, an inventory mount).
-- **Part DATA:** condition / variant / tuning / color / dimensions are NOT synced — only the part key.
-  Two clients may show the same slot empty/filled but not identical part stats. (Spec §6, §15.)
-- **Entity identity:** no `NetworkVehicleId` / `PartInstanceId` / `PartSlotId` yet — we key by car config
-  name + bare part name, which only holds for a single car on the lift. (Spec §5.)
-- **Concurrency control:** no per-part lock — two players could remove the same part. (Spec §10.)
-- **Reconciliation:** no revisions, no canonical hash, no desync detection/repair. (Spec §14.)
+- **Part DATA capture:** `PartData` (condition/variant/props) is modelled + hashed, but not yet *extracted*
+  from the game on removal/install nor carried on the wire — only the part key is sent. (Spec §6, §15.)
+- **Host-validated command flow (§8):** removals are captured post-hoc and broadcast; not yet routed as
+  request→validate→commit through the host. True conflict rejection + rollback depend on this.
+- **Reconciliation repair (§14.4):** divergence is *detectable* (hash) but not auto-repaired over the net.
 - **Openables:** doors / hood / trunk open-state not synced. (Spec §9.)
 - **Garage fixtures:** lifts, engine stands, tools/machines not synced. (Spec §16.)
 - **Fresh-save trigger:** snapshot uses the last on-disk save; unsaved live changes beyond tracked part
