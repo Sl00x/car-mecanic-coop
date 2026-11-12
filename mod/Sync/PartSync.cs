@@ -130,6 +130,9 @@ namespace CarMecaSim.Mp.Sync
         public static bool LockedByOther(string key)
             => S != null && _locks.IsLockedByOther(key, S.LocalPlayerId, Time.unscaledTime);
 
+        /// <summary>A player left — free every part they were holding (§10.3) so it isn't stuck locked.</summary>
+        public static void OnPeerLeft(byte playerId) => _locks.ReleaseAll(playerId);
+
         /// <summary>Periodic upkeep: expire stale leases.</summary>
         public static void Tick()
         {

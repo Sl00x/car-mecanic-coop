@@ -98,6 +98,7 @@ namespace CarMecaSim.Mp.Core
         private void OnPeerLeft(CSteamID who)
         {
             if (_peers.TryGetValue(who.m_SteamID, out var p)) { p.Despawn(); _peers.Remove(who.m_SteamID); }
+            Sync.PartSync.OnPeerLeft(PlayerIdOf(who));   // free any parts they were holding (§10.3)
             AddChat($"* {Net.NameOf(who)} disconnected");
         }
 
