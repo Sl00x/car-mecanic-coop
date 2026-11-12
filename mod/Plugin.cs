@@ -103,7 +103,8 @@ namespace CarMecaSim.Mp
             // Use UNSCALED time so networking/chat keep running even while the game is frozen (timeScale 0).
             s.Update(Time.unscaledDeltaTime);
             s.SendPresenceTick(Time.unscaledTime);
-            UI.NativeCoopMenu.Tick(s);   // native "MULTIJOUEUR" button on the main menu
+            UI.MenuSkin.Tick(s);   // custom "TORQUE 2026" skin on the main menu
+            if (Input.GetKeyDown(KeyCode.F8)) UI.MenuSkin.Toggle();   // safety: fall back to native menu
 
             var cfg = CarMecaPlugin.Cfg;
             if (!_autoStarted && cfg.AutoStart && cfg.Role != MpRole.Menu && s.EnsureSteam())
