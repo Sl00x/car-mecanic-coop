@@ -24,6 +24,7 @@ namespace CarMecaSim.Mp.Sync
         {
             if (Applying) return;              // snapshot application, not a user action
             PartSync.ClearRemoved();           // a different car is on the lift → the session part-delta is void
+            CarPartSync.Invalidate();          // rebuild the positional part refs for the new car
             if (!Active || !S.IsHost) return;
             S.MarkGarageChanged();
         }

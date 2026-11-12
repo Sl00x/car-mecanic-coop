@@ -29,6 +29,20 @@ namespace CarMecaSim.Mp.Sync
         private static void Postfix(CarLoader __instance, string __0) { HookDiag.Log("TakeOffCarPart(str,bool) " + __0); PartSync.OnLocalTakeOff(__instance, __0); }
     }
 
+    // Mechanical part MOUNTED (engine/suspension/other/driveshaft) — positional identity (CMS21-Together).
+    [HarmonyPatch(typeof(PartScript), nameof(PartScript.DoMount))]
+    internal static class Patch_DoMount
+    {
+        private static void Postfix(PartScript __instance) { HookDiag.Log("PartScript.DoMount"); CarPartSync.OnDoMount(__instance); }
+    }
+
+    // Mechanical part UNMOUNTED — the no-arg Hide() is the reliable unmount signal (CMS21-Together).
+    [HarmonyPatch(typeof(PartScript), nameof(PartScript.Hide), new Type[0])]
+    internal static class Patch_PartHide
+    {
+        private static void Postfix(PartScript __instance) { CarPartSync.OnHide(__instance); }
+    }
+
     // A car is loaded -> replicate it so everyone sees the same vehicle on the lift.
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
     internal static class Patch_LoadCar

@@ -159,6 +159,15 @@ namespace CarMecaSim.Mp.Core
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
+        /// <summary>Broadcast a mechanical part mount/unmount by positional identity (type,key,index).</summary>
+        public void SendPartState(byte type, int key, int index, bool mounted)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.PartState);
+            w.Byte(type).Int(key).Int(index).Bool(mounted);
+            Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
         /// <summary>Send one part action to a SINGLE peer (used for late-join mechanical catch-up).</summary>
         public void SendPartActionTo(CSteamID target, byte action, string key, int boltIdx)
         {
@@ -335,6 +344,12 @@ namespace CarMecaSim.Mp.Core
                             if (rtt >= 0 && rtt < 10000) p.PingMs = rtt;
                             p.LastUpdate = Time.unscaledTime;
                         }
+                        break;
+                    }
+                    case PacketType.PartState:
+                    {
+                        byte type = r.Byte(); int key = r.Int(); int index = r.Int(); bool mounted = r.Bool();
+                        Sync.CarPartSync.ApplyRemote(type, key, index, mounted);
                         break;
                     }
                     case PacketType.EntityHash:

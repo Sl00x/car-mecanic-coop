@@ -9,6 +9,8 @@ drop the others; failures are logged, the game still starts.
 | `CarLoader.TakeOffCarPart(string, bool)` | Postfix | same removal via the coroutine overload | HIGH (see above) | V |
 | `CarLoader.LoadCar(string)` | Postfix | host garage changed → delta snapshot; reset canonical part state for the new car | loads during RespawnGarage use `LoadCarFromFile`, NOT `LoadCar`, so no feedback loop | V |
 | `CarLoader.DeleteCar()` (empty `Type[0]`) | Postfix | car removed → garage delta (explicit `Type[0]` avoids the ambiguous overload that would drop all patches) | — | V |
+| `PartScript.DoMount()` | Postfix | mechanical part MOUNTED → `CarPartSync.OnDoMount` → positional id (type,key,index) (CMS21-Together) | coroutine: fires at enumerator creation, not completion | S (needs in-game) |
+| `PartScript.Hide()` (empty `Type[0]`) | Postfix | mechanical part UNMOUNTED (the reliable unmount signal) → `CarPartSync.OnHide` | many `Hide` overloads — `Type[0]` selects the no-arg one | S (needs in-game) |
 
 ## Capture vs apply (§11.1)
 We hook **after** the real operation (postfix) so we replicate a genuine, succeeded removal — not a UI

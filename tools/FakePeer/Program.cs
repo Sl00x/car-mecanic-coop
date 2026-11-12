@@ -261,6 +261,15 @@ namespace CarMecaSim.FakePeer
                         break;
                     }
 
+                    case PacketType.PartState:
+                    {
+                        byte type = r.Byte(); int key = r.Int(); int index = r.Int(); bool mounted = r.Bool();
+                        string[] tn = { "engine", "suspension", "other", "driveshaft", "body" };
+                        _gotPartAction = true;
+                        Console.WriteLine($"[fakepeer] <- PART MÉCA TEMPS RÉEL: {(mounted ? "MONTÉ" : "DÉMONTÉ")} {(type < tn.Length ? tn[type] : type.ToString())} key={key} idx={index}");
+                        break;
+                    }
+
                     case PacketType.EntityHash:
                     {
                         // Rebuild the host's canonical state from the keys WE received, then compare hashes

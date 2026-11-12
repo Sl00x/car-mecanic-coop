@@ -47,10 +47,21 @@ Honest status against the master-prompt spec. Updated as work lands.
 - **F9 debug overlay (§19):** role/peers/RTT/vehicle/revision/removed-count/state-hash/locks + removed
   slot list, from real measurements.
 
+## 🟡 Ported from CMS21-Together (MIT) — built, needs in-game verification
+
+- **Positional part identity** (`CarPartRefs`): engine/suspension/other/driveshaft/body reference tables
+  built from the car's structural roots (`e_engine_h`/`ds_h`/`s_*_h`/`Parts`/`carParts`). All interop types
+  resolve + compile. Identity = (type, key, index) — stable across machines, replaces fragile strings.
+- **Mechanical part sync** (`CarPartSync`): hooks `PartScript.DoMount` (mount) + `PartScript.Hide`
+  (unmount), sends `PartState(type,key,index,mounted)`, applies on the peer with the real visual sequence
+  (`ShowBySaveGame`/`Show`/`ShowMountAnimation` to mount; `HideBySavegame(false, carLoader)` to unmount).
+  Compiles + installed. **Needs an in-game run** to confirm the refs build, hooks fire, and parts move.
+- **Body-part mount fix**: `TakeOnCarPartFromSave` + `UpdateCarBodyPart(CarPart)` (the refresh we missed).
+
 ## ❌ Not implemented (spec scope still open)
 
-- **Part install (visual):** `TakeOnCarPartFromSave` is state-only (confirmed: hood did not reappear).
-  The runtime visual-mount method is not yet identified (candidates: `SwitchCarPart`, an inventory mount).
+- **Part DATA** on mechanical sync: condition/paint/tuning/dust not yet carried (CMS21-Together copies
+  them in UpdatePartScript — next step). Only mount/unmount state is sent.
 - **Part DATA capture:** `PartData` (condition/variant/props) is modelled + hashed, but not yet *extracted*
   from the game on removal/install nor carried on the wire — only the part key is sent. (Spec §6, §15.)
 - **Host-validated command flow (§8):** removals are captured post-hoc and broadcast; not yet routed as
