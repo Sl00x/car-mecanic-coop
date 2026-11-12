@@ -7,112 +7,57 @@ using CarMecaSim.Mp.Game;
 namespace CarMecaSim.Mp.Sync
 {
     /// <summary>
-    /// Shared-car co-op: replicates part install/remove + bolt steps across players, and enforces
-    /// a per-part lock so two players can't work on the SAME part (but can work on different ones).
-    /// Keyed by the part's GameObject path (stable across machines for the same car).
+    /// Real-time shared-car co-op: replicates taking parts on/off the car across players. In CMS2021 the
+    /// actual removal entry point is CarLoader.TakeOffCarPart(string key) (NOT PartScript.ActionUnMount),
+    /// and the key is a clean machine-stable string ("car_vallsen2040-hood"). We broadcast the key and the
+    /// peer replays it instantly via CarLoader.TakeOffCarPartFromSave / TakeOnCarPartFromSave — so the same
+    /// part comes off / goes on the other player's identical car, live.
     /// </summary>
     public static class PartSync
     {
+        // action ids on the wire: 0=mount(install) 1=unmount(remove) 2=bolt 3=release-lock
         public const byte ActMount = 0, ActUnmount = 1, ActBolt = 2, ActRelease = 3;
 
-        /// <summary>True while we apply a remote action locally (so our Harmony hooks don't re-broadcast it).</summary>
+        /// <summary>True while applying a remote action, so our Harmony hooks don't re-broadcast it.</summary>
         public static bool Applying;
-
-        private static readonly Dictionary<string, byte> Locks = new();   // partKey -> owner playerId
-        private static readonly Dictionary<string, float> Touched = new(); // partKey -> last activity time
 
         private static MpSession S => CarMecaPlugin.Session;
         private static bool Active => S != null && S.InLobby && GameRefs.InGameSession;
 
-        public static string LockOwnerName(string key)
+        // The Void and IEnumerator TakeOffCarPart overloads can both fire for one removal — dedup by key.
+        private static readonly Dictionary<string, float> _lastSent = new();
+        private static CarLoader _lastCar;   // the car the local player last worked on (reliable handle)
+
+        /// <summary>Local player took a part off the car (Harmony postfix) -> broadcast to peers.</summary>
+        public static void OnLocalTakeOff(CarLoader cl, string partKey)
         {
-            if (S == null || !Locks.TryGetValue(key, out var id) || id == S.LocalPlayerId) return null;
-            foreach (var p in S.Peers) if (S.PlayerIdOf(p.Id) == id) return p.Name;
-            return "un autre joueur";
+            if (cl != null) _lastCar = cl;
+            if (Applying || !Active || string.IsNullOrEmpty(partKey)) return;
+            float now = Time.unscaledTime;
+            if (_lastSent.TryGetValue(partKey, out var t) && now - t < 0.5f) return;   // collapse double-fire
+            _lastSent[partKey] = now;
+            S.SendPartAction(ActUnmount, partKey, -1);
+            CarMecaPlugin.Logger?.LogInfo($"[part] local take-off '{partKey}' -> broadcast");
         }
 
-        // ---- local actions (from Harmony prefixes). Return false to BLOCK the local action. ----
-        private static bool _loggedHook, _loggedRemote;
-
-        public static bool TryLocalPart(PartScript part, byte action)
-        {
-            if (Applying || !Active || part == null) return true;
-            var key = CarRefs.PathOf(part);
-            if (string.IsNullOrEmpty(key)) return true;
-            if (!_loggedHook) { _loggedHook = true; CarMecaPlugin.Logger?.LogInfo($"[diag] part hook fired (action {action}) key={key}"); }
-            if (IsLockedByOther(key)) { Notify(key); return false; }
-            Claim(key);
-            S.SendPartAction(action, key, -1);
-            return true;
-        }
-
-        public static bool TryLocalBolt(MountObject mo)
-        {
-            if (Applying || !Active || mo == null) return true;
-            if (!CarRefs.FindBolt(mo, out var owner, out var idx)) return true;
-            var key = CarRefs.PathOf(owner);
-            if (string.IsNullOrEmpty(key)) return true;
-            if (IsLockedByOther(key)) { Notify(key); return false; }
-            Claim(key);
-            S.SendPartAction(ActBolt, key, idx);
-            return true;
-        }
-
-        // ---- remote actions ----
+        /// <summary>Apply a peer's part action to OUR copy of the car (instant, no animation).</summary>
         public static void ApplyRemote(byte fromPlayer, byte action, string key, int boltIdx)
         {
-            if (action == ActRelease) { Release(key); return; }
-            if (!_loggedRemote) { _loggedRemote = true; CarMecaPlugin.Logger?.LogInfo($"[diag] remote part action {action} key={key}"); }
-            Locks[key] = fromPlayer; Touched[key] = Now;          // remote owns this part now
-
-            var part = CarRefs.FindByPath(key);
-            if (part == null) return;
+            if (string.IsNullOrEmpty(key)) return;
+            CarLoader cl = CarRefs.LoadedCar();
+            if (cl == null && _lastCar != null) { try { if (_lastCar.IsCarLoaded()) cl = _lastCar; } catch { } }
+            if (cl == null) { CarMecaPlugin.Logger?.LogWarning($"[part] remote '{key}' but no current car loaded"); return; }
             Applying = true;
             try
             {
-                switch (action)
-                {
-                    case ActMount: part.FastMount(); break;
-                    case ActUnmount: part.FastUnmount(); break;
-                    case ActBolt:
-                        var mos = part.MountObjects;
-                        if (mos != null && boltIdx >= 0 && boltIdx < mos.Length && mos[boltIdx] != null)
-                            mos[boltIdx].Action();
-                        break;
-                }
+                if (action == ActUnmount) { cl.TakeOffCarPartFromSave(key); CarMecaPlugin.Logger?.LogInfo($"[part] applied remote TAKE-OFF '{key}'"); }
+                else if (action == ActMount) { cl.TakeOnCarPartFromSave(key); CarMecaPlugin.Logger?.LogInfo($"[part] applied remote PUT-ON '{key}'"); }
             }
-            catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("apply part: " + e.Message); }
+            catch (Exception e) { CarMecaPlugin.Logger?.LogWarning($"[part] apply '{key}' failed: " + e.Message); }
             Applying = false;
         }
 
-        // ---- lock bookkeeping ----
-        private static float Now => Time.unscaledTime;
-        private static void Claim(string key) { if (S != null) { Locks[key] = S.LocalPlayerId; Touched[key] = Now; } }
-        public static bool IsLockedByOther(string key)
-            => S != null && Locks.TryGetValue(key, out var o) && o != S.LocalPlayerId;
-        private static void Release(string key) { Locks.Remove(key); Touched.Remove(key); }
-
-        private static float _lastNotify;
-        private static void Notify(string key)
-        {
-            if (Now - _lastNotify < 1.2f) return; _lastNotify = Now;
-            var who = LockOwnerName(key) ?? "un autre joueur";
-            CarMecaPlugin.Session?.LocalChat($"🔒 Pièce utilisée par {who}");
-        }
-
-        /// <summary>Release my own locks after a few seconds of inactivity.</summary>
-        public static void Tick()
-        {
-            if (!Active) return;
-            List<string> stale = null;
-            foreach (var kv in Touched)
-                if (Now - kv.Value > 4f) (stale ??= new()).Add(kv.Key);
-            if (stale == null) return;
-            foreach (var k in stale)
-            {
-                if (Locks.TryGetValue(k, out var o) && o == S.LocalPlayerId) S.SendPartAction(ActRelease, k, -1);
-                Release(k);
-            }
-        }
+        /// <summary>Periodic upkeep (lock expiry, etc.) — reserved for later.</summary>
+        public static void Tick() { }
     }
 }

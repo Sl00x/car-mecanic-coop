@@ -24,6 +24,26 @@ namespace CarMecaSim.Mp.Game
             catch { return null; }
         }
 
+        /// <summary>The car actually loaded on the lift — robust against GetLastCarLoader() returning null:
+        /// falls back to scanning CarLoadersInScene for one whose car is loaded.</summary>
+        public static CarLoader LoadedCar()
+        {
+            try { var c = CurrentCar(); if (c != null && c.IsCarLoaded()) return c; } catch { }
+            try
+            {
+                var gm = Mgr();
+                var loaders = gm != null ? gm.CarLoadersInScene : null;
+                if (loaders != null)
+                    for (int i = 0; i < loaders.Count; i++)
+                    {
+                        var l = loaders[i];
+                        try { if (l != null && l.IsCarLoaded()) return l; } catch { }
+                    }
+            }
+            catch { }
+            return null;
+        }
+
         public static Il2CppReferenceArray<PartScript> Parts(CarLoader car)
         {
             if (car == null) return null;

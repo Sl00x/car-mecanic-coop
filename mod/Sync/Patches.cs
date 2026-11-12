@@ -3,25 +3,30 @@ using HarmonyLib;
 
 namespace CarMecaSim.Mp.Sync
 {
-    // Player installs a part -> replicate + lock. Return false to block (part used by someone else).
-    [HarmonyPatch(typeof(PartScript), nameof(PartScript.ActionMount), new Type[] { typeof(bool) })]
-    internal static class Patch_ActionMount
+    /// <summary>Temporary diagnostics: logs each part/bolt hook firing (counter-capped) so we can see
+    /// exactly which game method a user's bolt-turn / part-removal actually calls.</summary>
+    internal static class HookDiag
     {
-        private static bool Prefix(PartScript __instance) => PartSync.TryLocalPart(__instance, PartSync.ActMount);
+        private static int _n;
+        public static void Log(string what)
+        {
+            if (_n++ < 40) CarMecaPlugin.Logger?.LogInfo($"[hook] {what}");
+        }
     }
 
-    // Player removes a part.
-    [HarmonyPatch(typeof(PartScript), nameof(PartScript.ActionUnMount))]
-    internal static class Patch_ActionUnMount
+    // Player takes a part OFF the car. This — not PartScript.ActionUnMount — is the real removal entry
+    // point in CMS2021 (confirmed via the game's own "[Inventory] -> Add() car-part" log). The part key
+    // is a clean, machine-stable string ("car_vallsen2040-hood"). Two overloads: Void and IEnumerator.
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.TakeOffCarPart), new Type[] { typeof(string) })]
+    internal static class Patch_TakeOff
     {
-        private static bool Prefix(PartScript __instance) => PartSync.TryLocalPart(__instance, PartSync.ActUnmount);
+        private static void Postfix(CarLoader __instance, string __0) { HookDiag.Log("TakeOffCarPart(str) " + __0); PartSync.OnLocalTakeOff(__instance, __0); }
     }
 
-    // Player turns a bolt one step.
-    [HarmonyPatch(typeof(MountObject), nameof(MountObject.Action))]
-    internal static class Patch_Bolt
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.TakeOffCarPart), new Type[] { typeof(string), typeof(bool) })]
+    internal static class Patch_TakeOffCo
     {
-        private static bool Prefix(MountObject __instance) => PartSync.TryLocalBolt(__instance);
+        private static void Postfix(CarLoader __instance, string __0) { HookDiag.Log("TakeOffCarPart(str,bool) " + __0); PartSync.OnLocalTakeOff(__instance, __0); }
     }
 
     // A car is loaded -> replicate it so everyone sees the same vehicle on the lift.
