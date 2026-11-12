@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CarMecaSim.FakePeer</RootNamespace>
+    <AssemblyName>FakePeer</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Keep the wire format identical to the mod by compiling its own protocol sources. -->
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\mod\Net\Proto.cs" />
+    <Compile Include="..\..\mod\Net\PacketBuf.cs" />
+  </ItemGroup>
+</Project>

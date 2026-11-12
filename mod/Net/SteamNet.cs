@@ -10,7 +10,7 @@ namespace CarMecaSim.Mp.Net
     /// Steam P2P transport: a lobby for discovery + SteamNetworkingMessages for data.
     /// Reuses the game's already-initialized Steam client; never blocks the game.
     /// </summary>
-    public sealed class SteamNet
+    public sealed class SteamNet : INet
     {
         public bool Ready { get; private set; }
         public CSteamID LocalId { get; private set; }
@@ -18,12 +18,12 @@ namespace CarMecaSim.Mp.Net
         public CSteamID LobbyOwner { get; private set; }
         public bool IsLobbyOwner => Ready && LobbyId.IsValid() && LobbyOwner == LocalId;
 
-        // events
-        public Action<CSteamID> OnLobbyEntered;     // we joined/created a lobby
-        public Action<CSteamID> OnPeerJoined;
-        public Action<CSteamID> OnPeerLeft;
-        public Action<CSteamID, byte[], int> OnData; // sender, payload, channel
-        public Action<string> OnStatus;
+        // events (properties so INet can expose them)
+        public Action<CSteamID> OnLobbyEntered { get; set; }     // we joined/created a lobby
+        public Action<CSteamID> OnPeerJoined { get; set; }
+        public Action<CSteamID> OnPeerLeft { get; set; }
+        public Action<CSteamID, byte[], int> OnData { get; set; } // sender, payload, channel
+        public Action<string> OnStatus { get; set; }
 
         private Callback<LobbyChatUpdate_t> _cbChat;
         private Callback<LobbyDataUpdate_t> _cbData;

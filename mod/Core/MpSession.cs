@@ -15,7 +15,7 @@ namespace CarMecaSim.Mp.Core
     /// </summary>
     public sealed class MpSession
     {
-        public readonly SteamNet Net = new();
+        public INet Net { get; private set; } = new SteamNet();
         public MpConfig Config = new();
         public bool InLobby { get; private set; }
         public bool IsHost => Net.IsLobbyOwner;
@@ -33,6 +33,8 @@ namespace CarMecaSim.Mp.Core
         public void Init(MpConfig cfg, Action<string> log)
         {
             Config = cfg; _log = log;
+            // TEST-ONLY: swap in the local TCP loopback transport so tools/FakePeer can be player 2.
+            if (cfg.LoopbackPort > 0) { Net = new LoopbackNet(cfg.LoopbackPort); log?.Invoke($"[net] LOOPBACK test transport on 127.0.0.1:{cfg.LoopbackPort}"); }
             Net.OnStatus = s => { _log?.Invoke("[net] " + s); };
             Net.OnLobbyEntered = OnLobbyEntered;
             Net.OnPeerJoined = OnPeerJoined;

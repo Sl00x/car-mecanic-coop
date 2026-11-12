@@ -37,6 +37,11 @@ namespace CarMecaSim.Shared
         public bool AutoStart { get; set; } = true;        // act on Role automatically on reaching garage
         public string ModVersion { get; set; } = Constants.ModVersion;
 
+        /// <summary>TEST ONLY: when &gt; 0, the mod uses a local TCP loopback transport on
+        /// 127.0.0.1:&lt;port&gt; instead of Steam P2P, so a headless peer (tools/FakePeer) can act as a
+        /// second player on the same machine. 0 = normal Steam networking.</summary>
+        public int LoopbackPort { get; set; } = 0;
+
         /// <summary>Where the config lives, relative to the game dir (BepInEx config convention).</summary>
         public static string RelativePath => Path.Combine("BepInEx", "config", "CarMecaSim", "mp_config.json");
 
