@@ -20,11 +20,23 @@ namespace CarMecaSim.Mp.Sync
 
         private static CarPartRefs _refs;
         private static CarLoader _refsCar;
+        private static int _capN;
 
-        /// <summary>(Re)build the positional reference table if the car on the lift changed.</summary>
-        public static CarPartRefs EnsureRefs()
+        /// <summary>The car to sync parts against. Prefer the loader that OWNS the fired part; else any loader
+        /// that actually has parts cached; else the last-car fallback. This is the fix for GetLastCarLoader()
+        /// returning an empty '#CarLoaderN' placeholder (cache=0, empty roots).</summary>
+        private static CarLoader ResolveCar(PartScript hint)
         {
-            var cl = CarRefs.LoadedCar();
+            var owner = CarRefs.OwnerOf(hint);
+            if (owner != null) return owner;
+            var withParts = CarRefs.CarWithParts();
+            if (withParts != null) return withParts;
+            return CarRefs.LoadedCar();
+        }
+
+        /// <summary>(Re)build the positional reference table if the car changed.</summary>
+        public static CarPartRefs EnsureRefs(CarLoader cl)
+        {
             if (cl == null) return null;
             if (_refs == null || _refsCar == null || !_refsCar.Pointer.Equals(cl.Pointer))
             {
@@ -44,7 +56,20 @@ namespace CarMecaSim.Mp.Sync
         private static void Capture(PartScript ps, bool mounted)
         {
             if (Applying || !Active || ps == null) return;
-            var refs = EnsureRefs();
+            var car = ResolveCar(ps);
+
+            // Diagnostic (first dozen): the part's real hierarchy + which loader we resolved, so if the owner
+            // scheme still misses we can see exactly where the parts live.
+            if (_capN++ < 12)
+            {
+                string path = CarRefs.PathOf(ps);
+                string owner = "null"; int ocache = 0;
+                try { if (car != null) owner = car.name; } catch { }
+                try { var c = CarRefs.Parts(car); ocache = c != null ? c.Length : 0; } catch { }
+                CarMecaPlugin.Logger?.LogInfo($"[cpart] capture ps='{path}' resolvedCar='{owner}' cache={ocache} mounted={mounted}");
+            }
+
+            var refs = EnsureRefs(car);
             if (refs == null) return;
             if (!refs.Find(ps, out var type, out var key, out var index)) return;   // body parts handled elsewhere
             S.SendPartState(type, key, index, mounted);
@@ -54,7 +79,7 @@ namespace CarMecaSim.Mp.Sync
         // ---- apply a peer's mechanical part change on OUR car ----
         public static void ApplyRemote(byte type, int key, int index, bool mounted)
         {
-            var refs = EnsureRefs();
+            var refs = EnsureRefs(ResolveCar(null));
             if (refs == null) { CarMecaPlugin.Logger?.LogWarning("[cpart] remote part but no car/refs"); return; }
             var reference = refs.Get(type, key, index);
             if (reference == null) { CarMecaPlugin.Logger?.LogWarning($"[cpart] remote type={type} key={key} idx={index} not found"); return; }

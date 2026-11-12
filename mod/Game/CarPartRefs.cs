@@ -4,62 +4,106 @@ using UnityEngine;
 namespace CarMecaSim.Mp.Game
 {
     /// <summary>
-    /// Positional part identity, ported from CMS21-Together (Fozkais, MIT). A part is identified by its
-    /// ordinal position inside fixed structural roots of the car model — stable across machines because
-    /// both load the same prefab → same child order. Far more robust than fragile string names.
-    /// identity = (type, key, index).
+    /// Positional part identity. A part is identified by its ordinal position in the car model — stable
+    /// across machines because both load the same prefab → same part order. identity = (type, key, index).
+    ///
+    /// Two population schemes, tried in order:
+    ///  1. Structural roots (ported from CMS21-Together, MIT): e_engine_h / ds_h / s_*_h / Parts / carParts.
+    ///  2. FLAT fallback: CarLoader.GetPartScriptCache() — the game's own cached, deterministic list of EVERY
+    ///     PartScript on the car (this is what the working string-path uses). If the roots come back empty
+    ///     (null roots, or IL2CPP's generic GetComponentsInChildren returning nothing), the flat cache still
+    ///     gives every mechanical part a stable index. Both machines run the same code+prefab, so whichever
+    ///     scheme populates, it populates identically on both → the identity agrees.
     /// </summary>
     public sealed class CarPartRefs
     {
-        public const byte TEngine = 0, TSuspension = 1, TOther = 2, TDriveshaft = 3, TBody = 4;
+        public const byte TEngine = 0, TSuspension = 1, TOther = 2, TDriveshaft = 3, TBody = 4, TFlat = 5;
 
         public readonly Dictionary<int, PartScript> Engine = new();
         public readonly Dictionary<int, PartScript> Driveshaft = new();
         public readonly Dictionary<int, List<PartScript>> Suspension = new();
         public readonly Dictionary<int, List<PartScript>> Other = new();
         public readonly Dictionary<int, CarPart> Body = new();
+        public readonly Dictionary<int, PartScript> Flat = new();   // fallback: index in GetPartScriptCache()
 
         public static CarPartRefs Build(CarLoader cl)
         {
             var r = new CarPartRefs();
-            if (cl == null) return r;
-            try { AddSingles(cl.e_engine_h, r.Engine); } catch { }
-            try { AddSingles(cl.ds_h, r.Driveshaft); } catch { }
-            try
+            if (cl == null) { Log("build: cl is null"); return r; }
+
+            string clName = "?"; bool loaded = false;
+            try { clName = cl.name; } catch { }
+            try { loaded = cl.IsCarLoaded(); } catch { }
+
+            // --- scheme 1: structural roots ---
+            r.Engine.Clear();
+            AddSingles("e_engine_h", Safe(() => cl.e_engine_h), r.Engine);
+            AddSingles("ds_h", Safe(() => cl.ds_h), r.Driveshaft);
+            var suspRoots = new (string, GameObject)[]
             {
-                var susp = new[] { cl.s_frontCenter_h, cl.s_frontLeft_h, cl.s_frontRight_h, cl.s_rearCenter_h, cl.s_rearLeft_h, cl.s_rearRight_h };
-                for (int i = 0; i < susp.Length; i++) AddGroup(susp[i], i, r.Suspension);
-            }
-            catch { }
+                ("s_frontCenter_h", Safe(() => cl.s_frontCenter_h)),
+                ("s_frontLeft_h",   Safe(() => cl.s_frontLeft_h)),
+                ("s_frontRight_h",  Safe(() => cl.s_frontRight_h)),
+                ("s_rearCenter_h",  Safe(() => cl.s_rearCenter_h)),
+                ("s_rearLeft_h",    Safe(() => cl.s_rearLeft_h)),
+                ("s_rearRight_h",   Safe(() => cl.s_rearRight_h)),
+            };
+            for (int i = 0; i < suspRoots.Length; i++) AddGroup(suspRoots[i].Item1, suspRoots[i].Item2, i, r.Suspension);
             try
             {
                 var parts = cl.Parts;
-                if (parts != null) for (int i = 0; i < parts.Count; i++) AddGroup(parts[i].p_handle, i, r.Other);
+                if (parts != null) for (int i = 0; i < parts.Count; i++) AddGroup($"Parts[{i}]", Safe(() => parts[i].p_handle), i, r.Other);
             }
-            catch { }
+            catch (System.Exception e) { Log("Parts walk threw: " + e.Message); }
             try
             {
                 var bp = cl.carParts;
                 if (bp != null) for (int i = 0; i < bp.Count; i++) r.Body[i] = bp[i];
             }
-            catch { }
+            catch (System.Exception e) { Log("carParts walk threw: " + e.Message); }
+
+            // --- scheme 2: flat cache fallback (the game's own part list) ---
+            int cacheLen = 0;
+            try
+            {
+                var cache = CarRefs.Parts(cl);   // GetPartScriptCache() / CachePartScripts()
+                if (cache != null)
+                {
+                    cacheLen = cache.Length;
+                    for (int i = 0; i < cache.Length; i++) if (cache[i] != null) r.Flat[i] = cache[i];
+                }
+            }
+            catch (System.Exception e) { Log("flat cache threw: " + e.Message); }
+
+            Log($"diag cl='{clName}' loaded={loaded} cache={cacheLen} | {r}");
             return r;
         }
 
-        private static void AddSingles(GameObject root, Dictionary<int, PartScript> dict)
+        private static GameObject Safe(System.Func<GameObject> f) { try { return f(); } catch { return null; } }
+        private static void Log(string m) => CarMecaPlugin.Logger?.LogInfo("[cpart] " + m);
+
+        private static void AddSingles(string tag, GameObject root, Dictionary<int, PartScript> dict)
         {
-            if (root == null) return;
-            var ps = root.GetComponentsInChildren<PartScript>();
-            for (int i = 0; i < ps.Length; i++) dict[i] = ps[i];
+            if (root == null) { return; }
+            try
+            {
+                var ps = root.GetComponentsInChildren<PartScript>();
+                for (int i = 0; i < ps.Length; i++) dict[i] = ps[i];
+            }
+            catch (System.Exception e) { Log($"{tag}.GetComponentsInChildren threw: " + e.Message); }
         }
 
-        private static void AddGroup(GameObject root, int key, Dictionary<int, List<PartScript>> dict)
+        private static void AddGroup(string tag, GameObject root, int key, Dictionary<int, List<PartScript>> dict)
         {
             if (root == null) return;
-            var ps = root.GetComponentsInChildren<PartScript>();
-            var list = new List<PartScript>(ps.Length);
-            for (int i = 0; i < ps.Length; i++) list.Add(ps[i]);
-            dict[key] = list;
+            try
+            {
+                var ps = root.GetComponentsInChildren<PartScript>();
+                var list = new List<PartScript>(ps.Length);
+                for (int i = 0; i < ps.Length; i++) list.Add(ps[i]);
+                dict[key] = list;
+            }
+            catch (System.Exception e) { Log($"{tag}.GetComponentsInChildren threw: " + e.Message); }
         }
 
         /// <summary>Reverse lookup: a PartScript → its stable (type, key, index). False if not found.</summary>
@@ -72,6 +116,7 @@ namespace CarMecaSim.Mp.Game
             foreach (var kv in Driveshaft) if (kv.Value != null && kv.Value.Pointer == p) { type = TDriveshaft; key = kv.Key; return true; }
             foreach (var kv in Suspension) { var l = kv.Value; for (int i = 0; i < l.Count; i++) if (l[i] != null && l[i].Pointer == p) { type = TSuspension; key = kv.Key; index = i; return true; } }
             foreach (var kv in Other) { var l = kv.Value; for (int i = 0; i < l.Count; i++) if (l[i] != null && l[i].Pointer == p) { type = TOther; key = kv.Key; index = i; return true; } }
+            foreach (var kv in Flat) if (kv.Value != null && kv.Value.Pointer == p) { type = TFlat; key = kv.Key; return true; }
             return false;
         }
 
@@ -86,6 +131,7 @@ namespace CarMecaSim.Mp.Game
                     case TDriveshaft: return Driveshaft.TryGetValue(key, out var d) ? d : null;
                     case TSuspension: return Suspension.TryGetValue(key, out var s) && index >= 0 && index < s.Count ? s[index] : null;
                     case TOther: return Other.TryGetValue(key, out var o) && index >= 0 && index < o.Count ? o[index] : null;
+                    case TFlat: return Flat.TryGetValue(key, out var f) ? f : null;
                 }
             }
             catch { }
@@ -95,7 +141,7 @@ namespace CarMecaSim.Mp.Game
         public CarPart GetBody(int key) => Body.TryGetValue(key, out var b) ? b : null;
 
         private int Count(Dictionary<int, List<PartScript>> d) { int n = 0; foreach (var kv in d) n += kv.Value.Count; return n; }
-        public int Total => Engine.Count + Driveshaft.Count + Count(Suspension) + Count(Other) + Body.Count;
-        public override string ToString() => $"engine={Engine.Count} driveshaft={Driveshaft.Count} suspension={Count(Suspension)} other={Count(Other)} body={Body.Count}";
+        public int Total => Engine.Count + Driveshaft.Count + Count(Suspension) + Count(Other) + Body.Count + Flat.Count;
+        public override string ToString() => $"engine={Engine.Count} driveshaft={Driveshaft.Count} suspension={Count(Suspension)} other={Count(Other)} body={Body.Count} flat={Flat.Count}";
     }
 }

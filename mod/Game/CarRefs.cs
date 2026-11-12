@@ -44,6 +44,35 @@ namespace CarMecaSim.Mp.Game
             return null;
         }
 
+        /// <summary>The loader that ACTUALLY has parts cached. The garage has several CarLoader slots and
+        /// GetLastCarLoader()/IsCarLoaded can point at an empty placeholder (observed: '#CarLoader1' with
+        /// cache=0). Scan every loader and return the first whose part cache is non-empty.</summary>
+        public static CarLoader CarWithParts()
+        {
+            try
+            {
+                var gm = Mgr();
+                var loaders = gm != null ? gm.CarLoadersInScene : null;
+                if (loaders != null)
+                    for (int i = 0; i < loaders.Count; i++)
+                    {
+                        var l = loaders[i];
+                        if (l == null) continue;
+                        try { var c = Parts(l); if (c != null && c.Length > 0) return l; } catch { }
+                    }
+            }
+            catch { }
+            return null;
+        }
+
+        /// <summary>The CarLoader that owns a given part (its component-in-parent), or null.</summary>
+        public static CarLoader OwnerOf(PartScript ps)
+        {
+            if (ps == null) return null;
+            try { var o = ps.GetComponentInParent<CarLoader>(); if (o != null) return o; } catch { }
+            return null;
+        }
+
         public static Il2CppReferenceArray<PartScript> Parts(CarLoader car)
         {
             if (car == null) return null;

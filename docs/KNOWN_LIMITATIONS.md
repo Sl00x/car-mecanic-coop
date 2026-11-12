@@ -19,6 +19,16 @@ Honest status against the master-prompt spec. Updated as work lands.
   is captured via `CarLoader.TakeOffCarPart` and received by the peer instantly with its key.
 - Client→host **apply**: a peer's removal is applied on the host's car via runtime `TakeOffCarPart`
   (the host log shows `applied remote TAKE-OFF ... (runtime)`).
+- **Mechanical part sync — capture + wire** (ported from CMS21-Together): removing engine/suspension/other
+  parts (radiator, timing belts, pulleys, …) fires `PartScript.Hide`, resolves the owning CarLoader, builds
+  the positional reference table (`engine=59 driveshaft=1 suspension=84 other=34 body=33`), and broadcasts
+  `(type,key,index)`. Verified host→peer: host `[cpart] local UNMOUNT type=0 key=38` → peer
+  `<- PART MÉCA … engine key=38`. The **visual apply** on a second rendered client (`ApplyRemote`:
+  `ShowBySaveGame`/`HideBySavegame`) still needs a two-client test — FakePeer is headless.
+- **CarLoader resolution fix:** the garage holds several `#CarLoaderN` slots and `GetLastCarLoader()` can
+  return an empty placeholder (observed `#CarLoader1`, cache=0). Parts are now resolved from the fired
+  `PartScript` via `GetComponentInParent<CarLoader>()` (→ the real `#CarLoader4`, cache=178), with a
+  "loader that actually has parts" fallback. This was the whole cause of the earlier empty ref tables.
 
 ## 🟡 Implemented, NOT yet confirmed in a live game session
 
@@ -55,7 +65,8 @@ Honest status against the master-prompt spec. Updated as work lands.
 - **Mechanical part sync** (`CarPartSync`): hooks `PartScript.DoMount` (mount) + `PartScript.Hide`
   (unmount), sends `PartState(type,key,index,mounted)`, applies on the peer with the real visual sequence
   (`ShowBySaveGame`/`Show`/`ShowMountAnimation` to mount; `HideBySavegame(false, carLoader)` to unmount).
-  Compiles + installed. **Needs an in-game run** to confirm the refs build, hooks fire, and parts move.
+  **Capture + wire now VERIFIED in-game** (see the verified-live section). Only the on-screen apply on a
+  second rendered client remains to confirm (needs two real clients).
 - **Body-part mount fix**: `TakeOnCarPartFromSave` + `UpdateCarBodyPart(CarPart)` (the refresh we missed).
 
 ## ❌ Not implemented (spec scope still open)
