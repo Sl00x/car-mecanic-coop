@@ -43,6 +43,12 @@ namespace CarMecaSim.FakePeer
         {
             if (args.Length > 0 && args[0] == "unittest") return CoopTests.Run();
             if (args.Length > 0 && args[0] == "selftest") return SelfTest.Run();
+            if (args.Length > 0 && args[0] == "ghostmech")
+            {
+                int gp = args.Length > 1 && int.TryParse(args[1], out var gpp) ? gpp : 48900;
+                int gs = args.Length > 2 && int.TryParse(args[2], out var gss) ? gss : 25;
+                return RunGhostMech(gp, gs);
+            }
             int port = args.Length > 0 && int.TryParse(args[0], out var p) ? p : 48900;
             string name = args.Length > 1 ? args[1] : "FakePeer";
             int seconds = args.Length > 2 && int.TryParse(args[2], out var s) ? s : 30;
@@ -150,6 +156,36 @@ namespace CarMecaSim.FakePeer
             try { lock (_writeLock) { s.Write(head, 0, 5); s.Write(payload, 0, len); s.Flush(); } } catch { }
         }
 
+        /// <summary>Visual proof of the mechanical apply WITHOUT a second rendered client: connect to the
+        /// live host and send a wave of mechanical UNMOUNTs. The host runs ApplyRemote (HideBySavegame) on
+        /// its own rendered car → the player watches engine/suspension parts come off by themselves. This is
+        /// the exact code that would move a part on a real player 2's screen.</summary>
+        public static int RunGhostMech(int port, int seconds)
+        {
+            Console.WriteLine($"[ghostmech] connexion 127.0.0.1:{port} pour {seconds}s (joueur 2 fantôme)...");
+            TcpClient client;
+            try { client = new TcpClient(); client.Connect("127.0.0.1", port); client.NoDelay = true; }
+            catch (Exception e) { Console.WriteLine("[ghostmech] connexion échouée: " + e.Message + "\n  -> l'hôte est-il au garage, LoopbackPort actif ?"); return 2; }
+            _stream = client.GetStream();
+            var reader = new Thread(() => ReadLoop(client)) { IsBackground = true }; reader.Start();
+            SendHello("Joueur2"); SendPing();
+            Thread.Sleep(1500);
+
+            Console.WriteLine("[ghostmech] >>> REGARDE LE MOTEUR : des pièces vont se démonter toutes seules <<<");
+            int sent = 0;
+            // engine parts (type 0, single per key) — spaced so they visibly come off one by one
+            for (int key = 0; key < 45; key++) { SendPartState(0, key, -1, false); sent++; Thread.Sleep(130); }
+            // suspension (type 1, grouped: key = root 0..5, index 0..11)
+            for (int root = 0; root < 6; root++) for (int idx = 0; idx < 12; idx++) { SendPartState(1, root, idx, false); sent++; }
+            Console.WriteLine($"[ghostmech] {sent} démontages mécaniques envoyés. (recharge ta save pour tout remettre)");
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            while (sw.Elapsed.TotalSeconds < seconds) Thread.Sleep(200);
+            SendBye();
+            Console.WriteLine("[ghostmech] terminé.");
+            return 0;
+        }
+
         static void SendHello(string name)
         { using var w = new PacketWriter(PacketType.Hello); w.Str(name).Int(Protocol.Version); Frame(w.ToArray(), Channels.Reliable); }
 
@@ -167,6 +203,10 @@ namespace CarMecaSim.FakePeer
 
         static void SendPartAction(byte action, string key, int boltIdx)
         { using var w = new PacketWriter(PacketType.PartAction); w.Byte(action).Str(key).Int(boltIdx); Frame(w.ToArray(), Channels.Reliable); }
+
+        // Mechanical part mount/unmount by positional identity — the host applies it visually (ApplyRemote).
+        static void SendPartState(byte type, int key, int index, bool mounted)
+        { using var w = new PacketWriter(PacketType.PartState); w.Byte(type).Int(key).Int(index).Bool(mounted); Frame(w.ToArray(), Channels.Reliable); }
 
         static string ActName(byte a) => a == ActMount ? "MONTER" : a == ActUnmount ? "DÉMONTER" : a == ActBolt ? "BOULON" : "RELEASE";
 

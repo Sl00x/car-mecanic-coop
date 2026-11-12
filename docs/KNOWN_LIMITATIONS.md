@@ -23,8 +23,12 @@ Honest status against the master-prompt spec. Updated as work lands.
   parts (radiator, timing belts, pulleys, …) fires `PartScript.Hide`, resolves the owning CarLoader, builds
   the positional reference table (`engine=59 driveshaft=1 suspension=84 other=34 body=33`), and broadcasts
   `(type,key,index)`. Verified host→peer: host `[cpart] local UNMOUNT type=0 key=38` → peer
-  `<- PART MÉCA … engine key=38`. The **visual apply** on a second rendered client (`ApplyRemote`:
-  `ShowBySaveGame`/`HideBySavegame`) still needs a two-client test — FakePeer is headless.
+  `<- PART MÉCA … engine key=38`.
+- **Mechanical VISUAL apply — CONFIRMED** (FakePeer `ghostmech` → live host): a peer sent 106 mechanical
+  unmounts (45 engine + 61 suspension); the host's `ApplyRemote` → `HideBySavegame` ran with **0 errors**
+  and the parts **visibly disappeared on screen**. This is the identical code path a rendered client runs
+  when it receives a host's action — so client-side apply is validated by proxy. (Two SEPARATE rendered
+  clients on one PC is blocked by the game's single-instance guard — see constraints.)
 - **CarLoader resolution fix:** the garage holds several `#CarLoaderN` slots and `GetLastCarLoader()` can
   return an empty placeholder (observed `#CarLoader1`, cache=0). Parts are now resolved from the fired
   `PartScript` via `GetComponentInParent<CarLoader>()` (→ the real `#CarLoader4`, cache=178), with a
@@ -100,4 +104,8 @@ Honest status against the master-prompt spec. Updated as work lands.
 - The WinForms launcher (old build) rewrites `mp_config.json` on launch, wiping `LoopbackPort`
   → during loopback tests, launch the game from Steam directly, not via the launcher.
 - Testing two *rendered* clients needs two game instances / two Steam accounts — FakePeer validates the
-  data/protocol only.
+  data/protocol only. **Two game instances on ONE PC is NOT possible**: launching the exe a second time
+  (even with `steam_appid.txt` present) exits cleanly (code 0) in ~1 s — the game/Steam single-instance
+  guard. `LoopbackNet` gained a client mode (first process binds 48900 = host, second connects = client)
+  for this, but it can't be exercised locally for that reason. The visual apply was instead confirmed by
+  pointing a peer's mechanical unmounts at the host's own rendered car (`FakePeer ghostmech`).
