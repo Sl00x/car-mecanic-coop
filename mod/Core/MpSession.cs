@@ -160,11 +160,17 @@ namespace CarMecaSim.Mp.Core
         }
 
         /// <summary>Broadcast a mechanical part mount/unmount by positional identity (type,key,index).</summary>
-        public void SendPartState(byte type, int key, int index, bool mounted)
+        public void SendPartState(byte type, int key, int index, bool mounted, Sync.MechData data)
         {
             if (!InLobby) return;
             using var w = new PacketWriter(PacketType.PartState);
             w.Byte(type).Int(key).Int(index).Bool(mounted);
+            if (mounted)
+            {
+                byte flags = (byte)((data.Examined ? 1 : 0) | (data.Painted ? 2 : 0));
+                w.Float(data.Condition).Float(data.Dust).Int(data.Quality).Byte(flags).Byte(data.PaintType)
+                 .Float(data.R).Float(data.G).Float(data.B).Float(data.A).Str(data.TunedId ?? "");
+            }
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
@@ -349,7 +355,16 @@ namespace CarMecaSim.Mp.Core
                     case PacketType.PartState:
                     {
                         byte type = r.Byte(); int key = r.Int(); int index = r.Int(); bool mounted = r.Bool();
-                        Sync.CarPartSync.ApplyRemote(type, key, index, mounted);
+                        var md = Sync.MechData.Default;
+                        if (mounted)
+                        {
+                            md.Condition = r.Float(); md.Dust = r.Float(); md.Quality = r.Int();
+                            byte flags = r.Byte(); md.Examined = (flags & 1) != 0; md.Painted = (flags & 2) != 0;
+                            md.PaintType = r.Byte();
+                            md.R = r.Float(); md.G = r.Float(); md.B = r.Float(); md.A = r.Float();
+                            md.TunedId = r.Str();
+                        }
+                        Sync.CarPartSync.ApplyRemote(type, key, index, mounted, md);
                         break;
                     }
                     case PacketType.EntityHash:

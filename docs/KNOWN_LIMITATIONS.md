@@ -29,6 +29,22 @@ Honest status against the master-prompt spec. Updated as work lands.
   and the parts **visibly disappeared on screen**. This is the identical code path a rendered client runs
   when it receives a host's action — so client-side apply is validated by proxy. (Two SEPARATE rendered
   clients on one PC is blocked by the game's single-instance guard — see constraints.)
+- **Part DATA on mechanical mount — CONFIRMED (capture + wire)**: a MOUNT now carries the part's
+  condition/dust/quality/paint(type+rgba)/tuning. Verified host `[cpart] local MOUNT … cond=0.79` → peer
+  `MONTÉ … cond=0,79 rgba=(…)`. Read via `PartScript.Condition/Dust/Quality/IsPainted/CurrentPaintType/
+  currentColor/tunedID`, applied via `SetCondition/UpdateDust/SetColor/TunePart` (ported from CMS21-Together
+  ModPartScript). The on-screen data apply on a 2nd rendered client is unverifiable here (single-instance).
+- **Openables (hood / trunk / doors / clamshells) — CONFIRMED (capture + wire + apply)**: opening/closing
+  is `CarLoader.SwitchCarPart(carPart, open)` (state = `carPart.Switched`). Captured via a `SwitchCarPart`
+  hook, sent on the string channel (`ActSwitch`), applied via `SwitchCarPart(cp, false, switched)`. Verified
+  host `[part] local SWITCH 'hood' open=False` → peer `OUVRANT 'hood' FERMÉ`, and host applied a peer's
+  switch for hood/trunk/engine_cover/clamshells with 0 errors.
+- **Desync detection — now ACCURATE**: the EntityHash used an empty VehicleKey (`@-1`, the #CarLoaderN
+  placeholder bug) and ignored mechanical removals. Fixed: `PartSync.RealCar()` resolves the real car
+  (`car_vallsen2040@3`), mechanical changes are recorded into the ONE canonical `VehiclePartState`
+  (slot `m:type:key:index`), and a re-mount returns the slot to stock (`Unset`) so the hash is a pure
+  "set of currently-removed parts". Verified live: a connected peer reports `HASH … => SYNC OK`, and the
+  canonical state resets correctly on a car change (observed `removed=[bumper_front,…,m:0:38:-1,…]`).
 - **CarLoader resolution fix:** the garage holds several `#CarLoaderN` slots and `GetLastCarLoader()` can
   return an empty placeholder (observed `#CarLoader1`, cache=0). Parts are now resolved from the fired
   `PartScript` via `GetComponentInParent<CarLoader>()` (→ the real `#CarLoader4`, cache=178), with a
@@ -75,14 +91,13 @@ Honest status against the master-prompt spec. Updated as work lands.
 
 ## ❌ Not implemented (spec scope still open)
 
-- **Part DATA** on mechanical sync: condition/paint/tuning/dust not yet carried (CMS21-Together copies
-  them in UpdatePartScript — next step). Only mount/unmount state is sent.
-- **Part DATA capture:** `PartData` (condition/variant/props) is modelled + hashed, but not yet *extracted*
-  from the game on removal/install nor carried on the wire — only the part key is sent. (Spec §6, §15.)
+- **Part DATA — custom paint + fluids:** standard paint (type + rgba), condition, dust, quality, tuning are
+  now carried on a mechanical mount (see confirmed section). NOT yet: custom-paint `CurrentPaintData`,
+  body-part data on the string path, and fluids (`FluidsData.SetLevelAndCondition`). (Spec §6, §15.)
 - **Host-validated command flow (§8):** removals are captured post-hoc and broadcast; not yet routed as
   request→validate→commit through the host. True conflict rejection + rollback depend on this.
-- **Reconciliation repair (§14.4):** divergence is *detectable* (hash) but not auto-repaired over the net.
-- **Openables:** doors / hood / trunk open-state not synced. (Spec §9.)
+- **Reconciliation repair (§14.4):** divergence is now *detected accurately* (hash `SYNC OK`/`DESYNC`) and
+  a client re-pulls the whole snapshot on mismatch; TARGETED per-part repair is not done.
 - **Garage fixtures:** lifts, engine stands, tools/machines not synced. (Spec §16.)
 - **Fresh-save trigger:** snapshot uses the last on-disk save; unsaved live changes beyond tracked part
   removals aren't in it. Needs the `SaveGame()` owning type (unknown). (RE map TODO.)

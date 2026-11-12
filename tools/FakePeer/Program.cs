@@ -179,6 +179,11 @@ namespace CarMecaSim.FakePeer
             for (int root = 0; root < 6; root++) for (int idx = 0; idx < 12; idx++) { SendPartState(1, root, idx, false); sent++; }
             Console.WriteLine($"[ghostmech] {sent} démontages mécaniques envoyés. (recharge ta save pour tout remettre)");
 
+            // Openables (tâche 2): ouvrir capot/coffre -> l'hôte applique SwitchCarPart -> ça s'ouvre à l'écran.
+            Console.WriteLine("[ghostmech] >>> et des OUVRANTS (capot/coffre) vont s'ouvrir tout seuls <<<");
+            foreach (var o in new[] { "hood", "trunk", "engine_cover_openable", "clamshell_front_openable", "clamshell_rear_openable" })
+            { SendPartAction(4 /*ActSwitch*/, o, 1); System.Threading.Thread.Sleep(250); }
+
             var sw = System.Diagnostics.Stopwatch.StartNew();
             while (sw.Elapsed.TotalSeconds < seconds) Thread.Sleep(200);
             SendBye();
@@ -202,7 +207,12 @@ namespace CarMecaSim.FakePeer
         { using var w = new PacketWriter(PacketType.Economy); w.Byte(1).Int(dMoney).Int(dExp).Int(dScraps); Frame(w.ToArray(), Channels.Reliable); }
 
         static void SendPartAction(byte action, string key, int boltIdx)
-        { using var w = new PacketWriter(PacketType.PartAction); w.Byte(action).Str(key).Int(boltIdx); Frame(w.ToArray(), Channels.Reliable); }
+        {
+            // Mirror a real client: what WE remove/mount, we also track in our reconstructed set so our
+            // desync hash reflects our own actions (not just the host's). Switch (4) isn't a removal.
+            lock (_partLock) { if (action == ActUnmount) _removedParts.Add(key); else if (action == ActMount) _removedParts.Remove(key); }
+            using var w = new PacketWriter(PacketType.PartAction); w.Byte(action).Str(key).Int(boltIdx); Frame(w.ToArray(), Channels.Reliable);
+        }
 
         // Mechanical part mount/unmount by positional identity — the host applies it visually (ApplyRemote).
         static void SendPartState(byte type, int key, int index, bool mounted)
@@ -271,7 +281,10 @@ namespace CarMecaSim.FakePeer
                         _gotPartAction = true;
                         if (act == ActUnmount) lock (_partLock) { _removedParts.Add(key); }
                         else if (act == ActMount) lock (_partLock) { _removedParts.Remove(key); }
-                        Console.WriteLine($"[fakepeer] <- PART TEMPS RÉEL: hôte a fait {ActName(act)} sur \"{key}\"" + (act == ActBolt ? $" (boulon #{bolt})" : ""));
+                        if (act == 4 /*ActSwitch — openable open/close*/)
+                            Console.WriteLine($"[fakepeer] <- OUVRANT '{key}' {(bolt != 0 ? "OUVERT" : "FERMÉ")}");
+                        else
+                            Console.WriteLine($"[fakepeer] <- PART TEMPS RÉEL: hôte a fait {ActName(act)} sur \"{key}\"" + (act == ActBolt ? $" (boulon #{bolt})" : ""));
                         break;
                     }
 
@@ -304,9 +317,22 @@ namespace CarMecaSim.FakePeer
                     case PacketType.PartState:
                     {
                         byte type = r.Byte(); int key = r.Int(); int index = r.Int(); bool mounted = r.Bool();
-                        string[] tn = { "engine", "suspension", "other", "driveshaft", "body" };
+                        float condition = 0f, dust = 0f; int quality = 0; byte flags = 0, paintType = 0;
+                        float cr = 0f, cg = 0f, cb = 0f, ca = 0f; string tunedId = "";
+                        if (mounted)
+                        {
+                            // part DATA, same field order the mod writes on a MOUNT
+                            condition = r.Float(); dust = r.Float(); quality = r.Int(); flags = r.Byte(); paintType = r.Byte();
+                            cr = r.Float(); cg = r.Float(); cb = r.Float(); ca = r.Float(); tunedId = r.Str();
+                        }
+                        string[] tn = { "engine", "suspension", "other", "driveshaft", "body", "flat" };
+                        string typeName = type < tn.Length ? tn[type] : type.ToString();
+                        // mechanical slot key for the canonical-hash reconstruction (matches the mod's "m:type:key:index")
+                        string slot = $"m:{type}:{key}:{index}";
+                        lock (_partLock) { if (mounted) _removedParts.Remove(slot); else _removedParts.Add(slot); }
                         _gotPartAction = true;
-                        Console.WriteLine($"[fakepeer] <- PART MÉCA TEMPS RÉEL: {(mounted ? "MONTÉ" : "DÉMONTÉ")} {(type < tn.Length ? tn[type] : type.ToString())} key={key} idx={index}");
+                        Console.WriteLine($"[fakepeer] <- PART MÉCA TEMPS RÉEL: {(mounted ? "MONTÉ" : "DÉMONTÉ")} {typeName} key={key} idx={index}" +
+                                          (mounted ? $" cond={condition:0.00} dust={dust:0.00} q={quality} paint={(((flags & 2) != 0) ? paintType.ToString() : "-")} tuned={tunedId} rgba=({cr:0.0},{cg:0.0},{cb:0.0},{ca:0.0})" : ""));
                         break;
                     }
 

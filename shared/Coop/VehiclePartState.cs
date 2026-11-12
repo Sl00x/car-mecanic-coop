@@ -75,6 +75,15 @@ namespace CarMecaSim.Shared.Coop
             return ++Revision;
         }
 
+        /// <summary>Return a slot to stock/assembled (absent from the map) — e.g. a part was re-installed.
+        /// The hash then ignores it, matching a peer that simply drops it from its removed-set. This keeps
+        /// the canonical hash a pure "which parts are currently off" checksum (order-independent, exact).</summary>
+        public int Unset(string slot)
+        {
+            if (string.IsNullOrEmpty(slot)) return Revision;
+            return _slots.Remove(slot) ? ++Revision : Revision;
+        }
+
         public bool IsRemoved(string slot) => _slots.TryGetValue(slot, out var p) && !p.Installed;
 
         /// <summary>All currently-removed slot keys (what a late-joiner must take off).</summary>

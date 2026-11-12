@@ -19,8 +19,8 @@ namespace CarMecaSim.Mp.Sync
     /// </summary>
     public static class PartSync
     {
-        // action ids on the wire: 0=mount(install) 1=unmount(remove) 2=bolt 3=release-lock
-        public const byte ActMount = 0, ActUnmount = 1, ActBolt = 2, ActRelease = 3;
+        // action ids on the wire: 0=mount(install) 1=unmount(remove) 2=bolt 3=release-lock 4=switch(open/close)
+        public const byte ActMount = 0, ActUnmount = 1, ActBolt = 2, ActRelease = 3, ActSwitch = 4;
 
         /// <summary>True while applying a remote action, so our Harmony hooks don't re-broadcast it.</summary>
         public static bool Applying;
@@ -57,6 +57,16 @@ namespace CarMecaSim.Mp.Sync
             return new VehicleKey(cfg, place);
         }
 
+        /// <summary>The real car to key canonical state on — the garage's #CarLoaderN placeholder (empty roots,
+        /// cache=0) makes carToLoad/GetPlaceNo bogus; prefer the loader that actually has parts.</summary>
+        private static CarLoader RealCar(CarLoader hint)
+        {
+            if (hint != null) { try { if (hint.IsCarLoaded()) { var c = CarRefs.Parts(hint); if (c != null && c.Length > 0) return hint; } } catch { } }
+            var withParts = CarRefs.CarWithParts();
+            if (withParts != null) return withParts;
+            return hint ?? CarRefs.LoadedCar() ?? _lastCar;
+        }
+
         /// <summary>Local player took a part off the car (Harmony postfix) -> record + broadcast to peers.</summary>
         public static void OnLocalTakeOff(CarLoader cl, string partKey)
         {
@@ -65,7 +75,7 @@ namespace CarMecaSim.Mp.Sync
             float now = Time.unscaledTime;
             if (_lastSent.TryGetValue(partKey, out var t) && now - t < 0.5f) return;   // collapse double-fire
             _lastSent[partKey] = now;
-            var st = Ensure(cl);
+            var st = Ensure(RealCar(cl));
             // claim the lock for ourselves (so a peer's concurrent attempt on this exact part is rejected)
             _locks.TryAcquire(partKey, S.LocalPlayerId, now);
             int rev = st.SetRemoved(partKey);
@@ -94,8 +104,7 @@ namespace CarMecaSim.Mp.Sync
         public static void ApplyRemote(byte fromPlayer, byte action, string key, int boltIdx)
         {
             if (string.IsNullOrEmpty(key)) return;
-            CarLoader cl = CarRefs.LoadedCar();
-            if (cl == null && _lastCar != null) { try { if (_lastCar.IsCarLoaded()) cl = _lastCar; } catch { } }
+            CarLoader cl = RealCar(null);
             if (cl == null) { CarMecaPlugin.Logger?.LogWarning($"[part] remote '{key}' but no current car loaded"); return; }
             var st = Ensure(cl);
             using (ReplicationContext.As(MutationOrigin.RemoteReplication))
@@ -124,11 +133,18 @@ namespace CarMecaSim.Mp.Sync
                             if (cp != null) cl.UpdateCarBodyPart(cp);
                         }
                         catch (Exception me) { CarMecaPlugin.Logger?.LogWarning("[part] mount refresh failed: " + me.Message); }
-                        st.SetInstalled(key, new CoopPartData { TypeId = key });
+                        st.Unset(key);   // re-mounted body part returns to stock (keeps the hash a pure removed-set)
                         _locks.Release(key, fromPlayer);
                         CarMecaPlugin.Logger?.LogInfo($"[part] applied remote PUT-ON '{key}' (+UpdateCarBodyPart, rev={st.Revision})");
                     }
                     else if (action == ActRelease) _locks.Release(key, fromPlayer);
+                    else if (action == ActSwitch)
+                    {
+                        // Openable (hood/trunk/engine_cover/clamshell) open-close — set the state, no animation.
+                        try { var cp = cl.GetCarPart(key); if (cp != null) cl.SwitchCarPart(cp, false, boltIdx != 0); }
+                        catch (Exception se) { CarMecaPlugin.Logger?.LogWarning("[part] switch apply failed: " + se.Message); }
+                        CarMecaPlugin.Logger?.LogInfo($"[part] applied remote SWITCH '{key}' open={boltIdx != 0}");
+                    }
                 }
                 catch (Exception e) { CarMecaPlugin.Logger?.LogWarning($"[part] apply '{key}' failed: " + e.Message); }
                 Applying = false;
@@ -147,6 +163,31 @@ namespace CarMecaSim.Mp.Sync
         {
             if (!Active) return;
             _locks.PruneExpired(Time.unscaledTime);
+        }
+
+        /// <summary>Record a mechanical part change into the canonical state so the desync hash is accurate.
+        /// Mechanical parts get a positional slot key "m:type:key:index" (body parts use their string name).</summary>
+        public static void RecordMechanical(CarLoader car, byte type, int key, int index, bool mounted, MechData data)
+        {
+            if (S == null || !S.InLobby) return;
+            var st = Ensure(RealCar(car));
+            string slot = $"m:{type}:{key}:{index}";
+            // A re-mounted part returns to stock (slot removed from the hash), matching a peer that drops it
+            // from its removed-set. Part DATA (condition/paint/tuning) still rides the wire on mount (T1); it
+            // is just not part of the desync hash, which stays a pure "set of currently-removed parts".
+            if (mounted) st.Unset(slot);
+            else st.SetRemoved(slot);
+        }
+
+        /// <summary>Local player opened/closed an openable (hood/trunk/…) — broadcast it (string channel).</summary>
+        public static void OnLocalSwitch(CarLoader cl, CarPart part, bool open)
+        {
+            if (Applying || !Active || part == null) return;
+            string name = null; try { name = part.name; } catch { }
+            if (string.IsNullOrEmpty(name)) return;
+            if (cl != null) _lastCar = cl;
+            S.SendPartAction(ActSwitch, name, open ? 1 : 0);
+            CarMecaPlugin.Logger?.LogInfo($"[part] local SWITCH '{name}' open={open} -> broadcast");
         }
 
         // ---- diagnostics (F9 overlay / desync reporting) ----

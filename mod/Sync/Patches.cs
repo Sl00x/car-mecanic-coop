@@ -58,6 +58,15 @@ namespace CarMecaSim.Mp.Sync
         private static void Postfix(PartScript __instance) => HookDiag.Safe("PartScript.Hide", () => CarPartSync.OnHide(__instance));
     }
 
+    // Openable (hood / trunk / engine_cover / clamshell) opened or closed -> sync open/close state.
+    // The 2-arg SwitchCarPart(CarPart, bool) is the animated path a player's click uses (the 3-arg overload
+    // SwitchCarPart(CarPart, bool animate, bool switched) is the no-animation setter we use to APPLY).
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.SwitchCarPart), new Type[] { typeof(CarPart), typeof(bool) })]
+    internal static class Patch_Switch
+    {
+        private static void Postfix(CarLoader __instance, CarPart __0, bool __1) => HookDiag.Safe("SwitchCarPart", () => PartSync.OnLocalSwitch(__instance, __0, __1));
+    }
+
     // A car is loaded -> replicate it so everyone sees the same vehicle on the lift.
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
     internal static class Patch_LoadCar
