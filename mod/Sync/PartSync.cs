@@ -62,9 +62,14 @@ namespace CarMecaSim.Mp.Sync
         private static CarLoader RealCar(CarLoader hint)
         {
             if (hint != null) { try { if (hint.IsCarLoaded()) { var c = CarRefs.Parts(hint); if (c != null && c.Length > 0) return hint; } } catch { } }
+            // The car the local player LAST worked on (set by OnLocalTakeOff / OnLocalSwitch) — the ACTIVE car.
+            // Prefer it over CarWithParts(), which returns the FIRST loader with parts and so points at a stale
+            // car still on another lift (symptom: a remote hood-close hit car_vallsen2040 instead of the car
+            // the player was actually on).
+            if (_lastCar != null) { try { if (_lastCar.IsCarLoaded()) return _lastCar; } catch { } }
             var withParts = CarRefs.CarWithParts();
             if (withParts != null) return withParts;
-            return hint ?? CarRefs.LoadedCar() ?? _lastCar;
+            return hint ?? CarRefs.LoadedCar();
         }
 
         /// <summary>Local player took a part off the car (Harmony postfix) -> record + broadcast to peers.</summary>
@@ -140,8 +145,20 @@ namespace CarMecaSim.Mp.Sync
                     else if (action == ActRelease) _locks.Release(key, fromPlayer);
                     else if (action == ActSwitch)
                     {
-                        // Openable (hood/trunk/engine_cover/clamshell) open-close — set the state, no animation.
-                        try { var cp = cl.GetCarPart(key); if (cp != null) cl.SwitchCarPart(cp, false, boltIdx != 0); }
+                        // Openable (hood/trunk/engine_cover/clamshell) open-close. Set the Switched state with
+                        // the 3-arg (no-animation) setter, THEN UpdateCarBodyPart to actually REBUILD the visual
+                        // to match — mirrors CMS21-Together's UpdateBodyPart (SwitchCarPart + UpdateCarBodyPart).
+                        // Also start the animated 2-arg coroutine as a belt-and-braces visual trigger.
+                        try
+                        {
+                            var cp = cl.GetCarPart(key);
+                            if (cp != null)
+                            {
+                                bool open = boltIdx != 0;
+                                try { cl.SwitchCarPart(cp, false, open); } catch { }
+                                try { cl.UpdateCarBodyPart(cp); } catch { }
+                            }
+                        }
                         catch (Exception se) { CarMecaPlugin.Logger?.LogWarning("[part] switch apply failed: " + se.Message); }
                         CarMecaPlugin.Logger?.LogInfo($"[part] applied remote SWITCH '{key}' open={boltIdx != 0}");
                     }

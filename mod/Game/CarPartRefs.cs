@@ -26,14 +26,29 @@ namespace CarMecaSim.Mp.Game
         public readonly Dictionary<int, CarPart> Body = new();
         public readonly Dictionary<int, PartScript> Flat = new();   // fallback: index in GetPartScriptCache()
 
-        public static CarPartRefs Build(CarLoader cl)
+        public static GameObject CarRootOf(PartScript ps)
+        {
+            if (ps == null) return null;
+            try { var t = ps.transform; while (t != null && t.parent != null) t = t.parent; return t != null ? t.gameObject : null; }
+            catch { return null; }
+        }
+
+        public static CarPartRefs Build(CarLoader cl, PartScript hint = null)
         {
             var r = new CarPartRefs();
-            if (cl == null) { Log("build: cl is null"); return r; }
+            if (cl == null && hint == null) { Log("build: cl is null"); return r; }
 
-            string clName = "?"; bool loaded = false;
-            try { clName = cl.name; } catch { }
-            try { loaded = cl.IsCarLoaded(); } catch { }
+            string clName = "?"; bool loaded = false; string cfg = "?";
+            try { if (cl != null) clName = cl.name; } catch { }
+            try { if (cl != null) loaded = cl.IsCarLoaded(); } catch { }
+            try { if (cl != null) cfg = cl.carToLoad; } catch { }
+            // Garage loader SLOTS are reused across cars (same #CarLoaderN pointer, different car) and the
+            // loader's carToLoad/part-cache go STALE — the reliable source of THIS car's parts is the fired
+            // part's own hierarchy root (the car GameObject), not the loader's cache. Force a cache refresh
+            // too, best-effort.
+            try { cl?.CachePartScripts(); } catch { }
+            var carRoot = CarRootOf(hint);
+            try { if (carRoot != null) cfg = carRoot.name; } catch { }
 
             // --- scheme 1: structural roots ---
             r.Engine.Clear();
@@ -62,20 +77,23 @@ namespace CarMecaSim.Mp.Game
             }
             catch (System.Exception e) { Log("carParts walk threw: " + e.Message); }
 
-            // --- scheme 2: flat cache fallback (the game's own part list) ---
-            int cacheLen = 0;
+            // --- scheme 2: FLAT by the part's own car-root hierarchy (reliable across loader-slot reuse),
+            // falling back to the loader's part cache when we have no part hint. ---
+            int cacheLen = 0; string flatSrc = "none";
             try
             {
-                var cache = CarRefs.Parts(cl);   // GetPartScriptCache() / CachePartScripts()
-                if (cache != null)
+                Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppArrayBase<PartScript> comps = null;
+                if (carRoot != null) { comps = carRoot.GetComponentsInChildren<PartScript>(true); flatSrc = "car-root"; }
+                if (comps == null || comps.Length == 0) { comps = CarRefs.Parts(cl); flatSrc = "loader-cache"; }
+                if (comps != null)
                 {
-                    cacheLen = cache.Length;
-                    for (int i = 0; i < cache.Length; i++) if (cache[i] != null) r.Flat[i] = cache[i];
+                    cacheLen = comps.Length;
+                    for (int i = 0; i < comps.Length; i++) { var p = comps[i]; if (p != null) r.Flat[i] = p; }
                 }
             }
-            catch (System.Exception e) { Log("flat cache threw: " + e.Message); }
+            catch (System.Exception e) { Log("flat build threw: " + e.Message); }
 
-            Log($"diag cl='{clName}' loaded={loaded} cache={cacheLen} | {r}");
+            Log($"diag cl='{clName}' car='{cfg}' loaded={loaded} flat={cacheLen}({flatSrc}) | {r}");
             return r;
         }
 

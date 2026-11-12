@@ -38,6 +38,7 @@ namespace CarMecaSim.Mp.Sync
 
         private static CarPartRefs _refs;
         private static CarLoader _refsCar;
+        private static string _refsConfig;
         private static int _capN;
 
         private static CarLoader ResolveCar(PartScript hint)
@@ -49,19 +50,36 @@ namespace CarMecaSim.Mp.Sync
             return CarRefs.LoadedCar();
         }
 
-        public static CarPartRefs EnsureRefs(CarLoader cl)
+        public static CarPartRefs EnsureRefs(CarLoader cl, PartScript hint = null)
         {
-            if (cl == null) return null;
-            if (_refs == null || _refsCar == null || !_refsCar.Pointer.Equals(cl.Pointer))
+            // CAPTURE (we have the fired part): key the ref cache by the part's car-root GameObject NAME —
+            // the reliable car identity. Loader carToLoad/pointer are unreliable (slots are reused and the
+            // field goes stale). Rebuild when that car id changes.
+            if (hint != null)
             {
-                _refs = CarPartRefs.Build(cl);
-                _refsCar = cl;
-                CarMecaPlugin.Logger?.LogInfo($"[cpart] built refs for current car: {_refs}");
+                string carId = null;
+                var root = CarPartRefs.CarRootOf(hint);
+                if (root != null) { try { carId = root.name; } catch { } }
+                if (string.IsNullOrEmpty(carId)) { try { carId = cl?.carToLoad ?? ""; } catch { } }
+                if (_refs == null || _refsConfig != carId)
+                {
+                    _refs = CarPartRefs.Build(cl, hint);
+                    _refsCar = cl; _refsConfig = carId;
+                    CarMecaPlugin.Logger?.LogInfo($"[cpart] built refs for car '{carId}': {_refs}");
+                }
+                return _refs;
+            }
+            // APPLY (no part hint): reuse the refs the last local capture built (correct car). Only build from
+            // the loader as a last resort when we have none yet.
+            if (_refs == null && cl != null)
+            {
+                _refs = CarPartRefs.Build(cl, null); _refsCar = cl;
+                CarMecaPlugin.Logger?.LogInfo($"[cpart] built refs (apply, no hint): {_refs}");
             }
             return _refs;
         }
 
-        public static void Invalidate() { _refs = null; _refsCar = null; }
+        public static void Invalidate() { _refs = null; _refsCar = null; _refsConfig = null; }
 
         // ---- capture (Harmony postfix) ----
         public static void OnDoMount(PartScript ps) => Capture(ps, true);
@@ -80,9 +98,16 @@ namespace CarMecaSim.Mp.Sync
                 CarMecaPlugin.Logger?.LogInfo($"[cpart] capture ps='{path}' resolvedCar='{owner}' cache={ocache} mounted={mounted}");
             }
 
-            var refs = EnsureRefs(car);
+            var refs = EnsureRefs(car, ps);
             if (refs == null) return;
-            if (!refs.Find(ps, out var type, out var key, out var index)) return;   // body parts handled elsewhere
+            if (!refs.Find(ps, out var type, out var key, out var index))
+            {
+                // Not found — the refs may be stale (car changed in a reused loader slot). Force one rebuild
+                // from THIS part's hierarchy and retry (a genuine body part still won't be found → elsewhere).
+                Invalidate();
+                refs = EnsureRefs(car, ps);
+                if (refs == null || !refs.Find(ps, out type, out key, out index)) return;
+            }
 
             MechData data = mounted ? ReadData(ps) : default;
             S.SendPartState(type, key, index, mounted, data);
@@ -110,6 +135,7 @@ namespace CarMecaSim.Mp.Sync
                     {
                         reference.ShowBySaveGame();
                         reference.Show();
+                        MountVisual(reference);               // the renderer re-enable the mesh needs to REAPPEAR
                         try { reference.ShowMountAnimation(); } catch { }
                     }
                     ApplyConditionDust(reference, data);      // condition/dust after it's shown (per reference)
@@ -171,6 +197,39 @@ namespace CarMecaSim.Mp.Sync
             try { ps.SetCondition(d.Condition); } catch { }
             try { ps.SetConditionNormal(d.Condition); } catch { }
             try { ps.UpdateDust(d.Dust, true); } catch { }
+        }
+
+        /// <summary>Make a re-mounted part REAPPEAR (ported from CMS21-Together CustomPartScriptMethod.ShowMounted,
+        /// MIT). ShowBySaveGame/Show alone don't re-enable the mesh — this toggles the renderers/colliders and
+        /// hides the "removed" placeholders. Done synchronously (the reference's 0.5s coroutine wait is cosmetic).</summary>
+        private static void MountVisual(PartScript ps)
+        {
+            try { ps.IsUnmounted = false; } catch { }
+            try { if (ps.ShouldUnmountWith()) { var uw = ps.unmountWith; if (uw != null) for (int i = 0; i < uw.Count; i++) { try { uw[i].MountByGroup(true); } catch { } } } } catch { }
+            try { ps.UnblockBlockParts(false); } catch { }
+            try { var a = ps.enableOnUnmount; if (a != null) for (int i = 0; i < a.Length; i++) { try { if (a[i] != null) a[i].SetActive(false); } catch { } } } catch { }
+            try
+            {
+                var a = ps.disableOnUnmount;
+                if (a != null) for (int i = 0; i < a.Length; i++)
+                {
+                    var go = a[i]; if (go == null) continue;
+                    try { var mr = go.GetComponent<MeshRenderer>(); if (mr != null) mr.enabled = true; } catch { }
+                    try { var mc = go.GetComponent<MeshCollider>(); if (mc != null) mc.enabled = true; } catch { }
+                }
+            }
+            catch { }
+            try
+            {
+                var a = ps.hideWhenUnmontingMounting;
+                if (a != null) for (int i = 0; i < a.Length; i++)
+                {
+                    var go = a[i]; if (go == null) continue;
+                    try { var rr = go.GetComponent<Renderer>(); if (rr != null) rr.enabled = true; } catch { }
+                }
+            }
+            catch { }
+            try { ps.OnMountFinished?.Invoke(); } catch { }
         }
     }
 }

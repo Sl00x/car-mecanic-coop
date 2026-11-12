@@ -49,6 +49,28 @@ namespace CarMecaSim.FakePeer
                 int gs = args.Length > 2 && int.TryParse(args[2], out var gss) ? gss : 25;
                 return RunGhostMech(gp, gs);
             }
+            if (args.Length > 0 && args[0] == "ghostclose")
+            {
+                int gp = args.Length > 1 && int.TryParse(args[1], out var gpp) ? gpp : 48900;
+                int gs = args.Length > 2 && int.TryParse(args[2], out var gss) ? gss : 25;
+                return RunGhostClose(gp, gs);
+            }
+            // switchone <port> <name> <open0or1> : open/close one openable by name
+            if (args.Length >= 4 && args[0] == "switchone")
+            {
+                int sp = int.TryParse(args[1], out var spp) ? spp : 48900;
+                int so = int.TryParse(args[3], out var soo) ? soo : 0;
+                return RunSwitchOne(sp, args[2], so);
+            }
+            // mountone <port> <type> <key> <index> : send a single targeted MOUNT (host re-shows that exact part)
+            if (args.Length >= 5 && args[0] == "mountone")
+            {
+                int mp = int.TryParse(args[1], out var mpp) ? mpp : 48900;
+                byte mt = byte.TryParse(args[2], out var mtt) ? mtt : (byte)0;
+                int mk = int.TryParse(args[3], out var mkk) ? mkk : 0;
+                int mi = int.TryParse(args[4], out var mii) ? mii : -1;
+                return RunMountOne(mp, mt, mk, mi);
+            }
             int port = args.Length > 0 && int.TryParse(args[0], out var p) ? p : 48900;
             string name = args.Length > 1 ? args[1] : "FakePeer";
             int seconds = args.Length > 2 && int.TryParse(args[2], out var s) ? s : 30;
@@ -191,6 +213,79 @@ namespace CarMecaSim.FakePeer
             return 0;
         }
 
+        /// <summary>The reverse of ghostmech: re-MOUNT mechanical parts (so a removed throttle body / parts
+        /// come back) and CLOSE the openables (hood/trunk/…). The host applies it on its own rendered car.</summary>
+        public static int RunGhostClose(int port, int seconds)
+        {
+            Console.WriteLine($"[ghostclose] connexion 127.0.0.1:{port} pour {seconds}s (joueur 2 fantôme)...");
+            TcpClient client;
+            try { client = new TcpClient(); client.Connect("127.0.0.1", port); client.NoDelay = true; }
+            catch (Exception e) { Console.WriteLine("[ghostclose] connexion échouée: " + e.Message); return 2; }
+            _stream = client.GetStream();
+            var reader = new Thread(() => ReadLoop(client)) { IsBackground = true }; reader.Start();
+            SendHello("Joueur2"); SendPing();
+            Thread.Sleep(1500);
+
+            Console.WriteLine("[ghostclose] >>> REGARDE : des pièces vont se REMONTER (dont le papillon) <<<");
+            int sent = 0;
+            for (int key = 0; key < 59; key++) { SendPartState(0, key, -1, true); sent++; Thread.Sleep(90); }           // engine
+            for (int k = 0; k < 34; k++) for (int idx = 0; idx < 4; idx++) { SendPartState(2, k, idx, true); sent++; } // other (papillon est souvent 'other')
+            Console.WriteLine($"[ghostclose] {sent} remontages envoyés.");
+
+            Console.WriteLine("[ghostclose] >>> et le CAPOT / COFFRE vont se FERMER <<<");
+            foreach (var o in new[] { "hood", "trunk", "engine_cover_openable", "clamshell_front_openable", "clamshell_rear_openable" })
+            { SendPartAction(4 /*ActSwitch*/, o, 0 /*fermé*/); System.Threading.Thread.Sleep(250); }
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            while (sw.Elapsed.TotalSeconds < seconds) Thread.Sleep(200);
+            SendBye();
+            Console.WriteLine("[ghostclose] terminé.");
+            return 0;
+        }
+
+        /// <summary>Open/close engine-area openables (the player's "capot moteur"): tries hood + the common
+        /// engine-cover names in one go. open=1 opens, open=0 closes.</summary>
+        public static int RunSwitchOne(int port, string name, int open)
+        {
+            Console.WriteLine($"[switchone] connexion 127.0.0.1:{port} — ouvrant '{name}' open={open}...");
+            TcpClient client;
+            try { client = new TcpClient(); client.Connect("127.0.0.1", port); client.NoDelay = true; }
+            catch (Exception e) { Console.WriteLine("[switchone] connexion échouée: " + e.Message); return 2; }
+            _stream = client.GetStream();
+            var reader = new Thread(() => ReadLoop(client)) { IsBackground = true }; reader.Start();
+            SendHello("Joueur2"); SendPing();
+            Thread.Sleep(1500);
+            Console.WriteLine($"[switchone] >>> REGARDE le capot moteur ({(open != 0 ? "ouverture" : "fermeture")}) <<<");
+            // "all" → close/open every engine-area openable; otherwise just the named one.
+            if (name == "all")
+                foreach (var o in new[] { "hood", "engine_cover_openable", "clamshell_front_openable" })
+                { SendPartAction(4, o, open); Thread.Sleep(300); }
+            else SendPartAction(4, name, open);
+            Thread.Sleep(6000);
+            SendBye();
+            Console.WriteLine("[switchone] terminé.");
+            return 0;
+        }
+
+        /// <summary>Send ONE targeted mechanical MOUNT — the host re-shows exactly that (type,key,index) part.</summary>
+        public static int RunMountOne(int port, byte type, int key, int index)
+        {
+            Console.WriteLine($"[mountone] connexion 127.0.0.1:{port} — remontage ciblé type={type} key={key} idx={index}...");
+            TcpClient client;
+            try { client = new TcpClient(); client.Connect("127.0.0.1", port); client.NoDelay = true; }
+            catch (Exception e) { Console.WriteLine("[mountone] connexion échouée: " + e.Message); return 2; }
+            _stream = client.GetStream();
+            var reader = new Thread(() => ReadLoop(client)) { IsBackground = true }; reader.Start();
+            SendHello("Joueur2"); SendPing();
+            Thread.Sleep(1500);
+            Console.WriteLine("[mountone] >>> REGARDE : la pièce ciblée doit réapparaître <<<");
+            SendPartState(type, key, index, true);
+            Thread.Sleep(8000);
+            SendBye();
+            Console.WriteLine("[mountone] terminé.");
+            return 0;
+        }
+
         static void SendHello(string name)
         { using var w = new PacketWriter(PacketType.Hello); w.Str(name).Int(Protocol.Version); Frame(w.ToArray(), Channels.Reliable); }
 
@@ -215,8 +310,16 @@ namespace CarMecaSim.FakePeer
         }
 
         // Mechanical part mount/unmount by positional identity — the host applies it visually (ApplyRemote).
-        static void SendPartState(byte type, int key, int index, bool mounted)
-        { using var w = new PacketWriter(PacketType.PartState); w.Byte(type).Int(key).Int(index).Bool(mounted); Frame(w.ToArray(), Channels.Reliable); }
+        // On a MOUNT we MUST append the data fields (condition/dust/quality/flags/paintType/rgba/tunedId) in
+        // the exact order the mod reads them, else the host reads past the packet.
+        static void SendPartState(byte type, int key, int index, bool mounted, float cond = 1f)
+        {
+            using var w = new PacketWriter(PacketType.PartState);
+            w.Byte(type).Int(key).Int(index).Bool(mounted);
+            if (mounted)
+                w.Float(cond).Float(0f).Int(0).Byte(0).Byte(0).Float(1f).Float(0f).Float(1f).Float(1f).Str("");
+            Frame(w.ToArray(), Channels.Reliable);
+        }
 
         static string ActName(byte a) => a == ActMount ? "MONTER" : a == ActUnmount ? "DÉMONTER" : a == ActBolt ? "BOULON" : "RELEASE";
 
