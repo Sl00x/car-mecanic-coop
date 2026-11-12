@@ -14,4 +14,8 @@
     <ProjectReference Include="..\shared\CarMecaSim.Shared.csproj" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\garage_bg.jpg" />
+    <EmbeddedResource Include="assets\fonts\*.ttf" />
+  </ItemGroup>
 </Project>
