@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>CarMecaSim.Mp</RootNamespace>
     <AssemblyName>CarMecaSim.Mp</AssemblyName>
-    <Version>0.2.5</Version>
+    <Version>0.2.6</Version>
     <Product>CarMecaSim.Mp</Product>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -35,6 +35,7 @@
     </Reference>
   </ItemGroup>
 </Project>
+
 
 
 

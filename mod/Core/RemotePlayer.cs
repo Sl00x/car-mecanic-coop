@@ -23,8 +23,8 @@ namespace CarMecaSim.Mp.Core
         public float LastUpdate;
 
         private GameObject _root, _head, _torso, _armL, _armR;
-        private GameObject _body;          // ripped mechanic model (when the bundle is present)
-        private Animator _animator;        // its Mecanim animator (locomotion params)
+        private GameObject _body;          // ripped mechanic model (when mechanic.cmch is present)
+        private CharacterRig _rig;         // its skeleton, for procedural posing/animation
         private Transform _tr;
         private Vector3 _pos;
         private float _yaw;
@@ -43,8 +43,8 @@ namespace CarMecaSim.Mp.Core
                 _tr = _root.transform;
                 _pos = TargetPos; _yaw = TargetYaw;
 
-                // Prefer the real mechanic model from the CMS 2026/2027 bundle; fall back to primitives.
-                _body = CharacterModel.Instantiate(PlayerId, out _animator);
+                // Prefer the real mechanic model (mechanic.cmch); fall back to primitives.
+                _body = CharacterModel.Instantiate(PlayerId, out _rig);
                 if (_body != null)
                 {
                     var bt = _body.transform;
@@ -109,7 +109,7 @@ namespace CarMecaSim.Mp.Core
         public void Despawn()
         {
             try { if (_root != null) UnityEngine.Object.Destroy(_root); } catch { }
-            _root = _head = _torso = _armL = _armR = _body = null; _animator = null; _tr = null;
+            _root = _head = _torso = _armL = _armR = _body = null; _rig = null; _tr = null;
         }
 
         public void Update(float dt)
@@ -132,16 +132,9 @@ namespace CarMecaSim.Mp.Core
         {
             _tr.position = _pos;                                  // model rooted at feet; no fake bob
             _tr.rotation = Quaternion.Euler(0f, _yaw, 0f);
-            if (_animator == null) return;
-            try
-            {
-                // PlayerAnimatorController params: Speed/MotionX/MotionZ (float), Crouch (bool).
-                _animator.SetFloat("Speed", speed);
-                _animator.SetFloat("MotionZ", Mathf.Clamp(speed, 0f, 6f));
-                _animator.SetFloat("MotionX", 0f);
-                _animator.SetBool("Crouch", false);
-            }
-            catch { /* param names differ on an unexpected controller — ignore */ }
+            if (_rig == null) return;
+            bool working = Mode is 1 or 2 or 3 or 4 or 9 or 10 or 11 or 12 or 13 or 23;
+            try { _rig.Animate(speed, working, Time.unscaledTime); } catch { }
         }
 
         private void UpdatePrimitive()

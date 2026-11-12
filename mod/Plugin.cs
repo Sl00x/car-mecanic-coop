@@ -110,6 +110,48 @@ namespace CarMecaSim.Mp
                 s.StartFromConfig();
                 _autoStarted = true;
             }
+
+            // --- character model: headless build-validation (once) + F7 visual test spawn ---
+            _charClock += Time.unscaledDeltaTime;
+            if (!_charValidated && _charClock > 3f)
+            {
+                _charValidated = true;
+                try
+                {
+                    var test = CarMecaSim.Mp.Core.CharacterModel.Instantiate(1, out _);
+                    if (test != null)
+                    {
+                        CarMecaPlugin.Logger?.LogInfo("[char] build-validation OK (mesh/skeleton/material constructed).");
+                        GameObject.Destroy(test);
+                    }
+                    else CarMecaPlugin.Logger?.LogInfo("[char] build-validation: no model (mechanic.cmch absent → primitives).");
+                }
+                catch (Exception e) { CarMecaPlugin.Logger?.LogError("[char] build-validation FAILED: " + e); }
+            }
+            // F7 (in-session): spawn/despawn a mechanic in front of you to eyeball the model.
+            if (GameRefs.InGameSession && Input.GetKeyDown(KeyCode.F7)) ToggleTestMechanic();
+            if (_testMech != null && _testRig != null) { try { _testRig.Animate(0f, true, Time.unscaledTime); } catch { } }
+        }
+
+        private bool _charValidated;
+        private float _charClock;
+        private GameObject _testMech;
+        private CarMecaSim.Mp.Core.CharacterRig _testRig;
+
+        /// <summary>Debug: spawn/despawn a mechanic 2.5 m in front of the player to eyeball the model.</summary>
+        private void ToggleTestMechanic()
+        {
+            if (_testMech != null) { GameObject.Destroy(_testMech); _testMech = null; _testRig = null; return; }
+            var eye = GameRefs.Eye;
+            _testMech = CarMecaSim.Mp.Core.CharacterModel.Instantiate(1, out _testRig);
+            if (_testMech == null) { CarMecaPlugin.Logger?.LogWarning("[char] F7: no model to spawn."); return; }
+            if (eye != null)
+            {
+                var fwd = eye.forward; fwd.y = 0f; fwd = fwd.sqrMagnitude > 0.001f ? fwd.normalized : Vector3.forward;
+                _testMech.transform.position = eye.position + fwd * 2.5f + Vector3.down * 1.65f;
+                _testMech.transform.rotation = Quaternion.LookRotation(-fwd);
+            }
+            CarMecaPlugin.Logger?.LogInfo($"[char] F7 test mechanic spawned at {_testMech.transform.position}.");
         }
 
         /// <summary>Freeze/unfreeze the local game while the co-op panel is open (F6), freeing the cursor.</summary>

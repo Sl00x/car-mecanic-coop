@@ -36,3 +36,11 @@ desktop.ini
 # Secrets
 .env
 .env.local
+
+# Character pipeline — huge extracted assets + tooling (not source; model ships via GitHub release)
+assets/ripped-2027/
+assets/char-bundle-project/
+assets/char-runtime/
+tools/AssetRipper/
+tools/unity-installer/
+tools/unity-license/
