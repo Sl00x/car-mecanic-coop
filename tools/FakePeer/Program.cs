@@ -29,6 +29,13 @@ namespace CarMecaSim.FakePeer
         static volatile bool _gotSnapshot, _gotEconomy, _gotHostPresence, _gotLatencyProbe, _gotHostHello;
         static int _snapshotBytes;
 
+        // --- real-time part-action sync (the actual co-op) ---
+        // PartSync actions: 0=mount(install) 1=unmount(remove) 2=bolt 3=release-lock
+        const byte ActMount = 0, ActUnmount = 1, ActBolt = 2, ActRelease = 3;
+        static volatile bool _gotPartAction, _replayedPart;
+        static string _lastPartKey; static byte _lastPartAction; static int _lastBolt;
+        static readonly object _partLock = new object();
+
         static int Main(string[] args)
         {
             if (args.Length > 0 && args[0] == "selftest") return SelfTest.Run();
@@ -81,6 +88,22 @@ namespace CarMecaSim.FakePeer
                 if (!chatted && t >= 2.0) { chatted = true; SendChat(name, "Salut depuis FakePeer, je repare avec toi"); Console.WriteLine("[fakepeer] -> Chat"); }
                 if (!bumped && t >= 4.0) { bumped = true; SendEconomyDelta(5000, 100, 25); Console.WriteLine("[fakepeer] -> Economy delta (+5000$ / +100xp / +25 scraps)"); }
 
+                // REAL-TIME part co-op: once the host does a part action (you unbolt/remove something), we
+                // learn its stable path, wait a beat, then send the INVERSE action back — so you SEE the
+                // part toggle on YOUR car, live. This is the true same-car co-op round-trip.
+                if (_gotPartAction && !_replayedPart)
+                {
+                    string key; byte act; int bolt;
+                    lock (_partLock) { key = _lastPartKey; act = _lastPartAction; bolt = _lastBolt; }
+                    if (!string.IsNullOrEmpty(key))
+                    {
+                        _replayedPart = true;
+                        byte inv = act == ActUnmount ? ActMount : act == ActMount ? ActUnmount : ActBolt; // toggle; bolt->bolt
+                        SendPartAction(inv, key, bolt);
+                        Console.WriteLine($"[fakepeer] -> PART action {ActName(inv)} sur \"{key}\" (regarde ta voiture !)");
+                    }
+                }
+
                 Thread.Sleep(10);
             }
 
@@ -94,6 +117,8 @@ namespace CarMecaSim.FakePeer
             Check("Économie absolue reçue (argent partagé)",     _gotEconomy);
             Check("Présence de l'hôte reçue (avatar hôte)",      _gotHostPresence);
             Check("Sonde de latence de l'hôte renvoyée (ping)",  _gotLatencyProbe);
+            Check("Action pièce de l'hôte reçue (TEMPS RÉEL)",   _gotPartAction);
+            Check("Action pièce renvoyée (tu l'as vue ?)",       _replayedPart);
             Console.WriteLine("=======================================================");
             bool ok = _gotSnapshot && _gotEconomy && _gotHostPresence;
             Console.WriteLine(ok ? "[fakepeer] RÉUSSI — l'hôte a bien servi le garage + l'économie + la présence."
@@ -129,6 +154,11 @@ namespace CarMecaSim.FakePeer
 
         static void SendEconomyDelta(int dMoney, int dExp, int dScraps)
         { using var w = new PacketWriter(PacketType.Economy); w.Byte(1).Int(dMoney).Int(dExp).Int(dScraps); Frame(w.ToArray(), Channels.Reliable); }
+
+        static void SendPartAction(byte action, string key, int boltIdx)
+        { using var w = new PacketWriter(PacketType.PartAction); w.Byte(action).Str(key).Int(boltIdx); Frame(w.ToArray(), Channels.Reliable); }
+
+        static string ActName(byte a) => a == ActMount ? "MONTER" : a == ActUnmount ? "DÉMONTER" : a == ActBolt ? "BOULON" : "RELEASE";
 
         static void SendPresence(float x, float y, float z, float yaw, float pitch, byte tool, byte mode)
         { using var w = new PacketWriter(PacketType.Presence); w.Vec3(x, y, z).Float(yaw).Float(pitch).Byte(tool).Byte(mode); Frame(w.ToArray(), Channels.Unreliable); }
@@ -183,6 +213,15 @@ namespace CarMecaSim.FakePeer
 
                     case PacketType.Chat:
                     { var n = r.Str(); var txt = r.Str(); Console.WriteLine($"[fakepeer] <- CHAT {n}: {txt}"); break; }
+
+                    case PacketType.PartAction:
+                    {
+                        byte act = r.Byte(); string key = r.Str(); int bolt = r.Int();
+                        lock (_partLock) { _lastPartKey = key; _lastPartAction = act; _lastBolt = bolt; }
+                        _gotPartAction = true;
+                        Console.WriteLine($"[fakepeer] <- PART TEMPS RÉEL: hôte a fait {ActName(act)} sur \"{key}\"" + (act == ActBolt ? $" (boulon #{bolt})" : ""));
+                        break;
+                    }
 
                     case PacketType.Economy:
                     {

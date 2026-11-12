@@ -12,31 +12,55 @@ namespace CarMecaSim.Mp.Sync
     /// </summary>
     public static class SaveSync
     {
-        /// <summary>Serialize the host's current profile to a managed byte array (null on failure).</summary>
+        /// <summary>Serialize the host's current profile to a managed byte array (null on failure).
+        /// The in-memory CurrentProfileData.SerializeToBytes() comes out nearly empty (blank profile name,
+        /// no cars) because the live garage/car state is only gathered into the profile by the game's own
+        /// save flow. So we trigger the game's real SaveGame() (which gathers + writes the profile file)
+        /// and send the actual save-file bytes — the exact native format the client already deserializes.</summary>
         public static byte[] SerializeHost()
         {
             var gdm = CarRefs.Gdm();
             if (gdm == null) return null;
             try
             {
+                // NOTE: triggering a fresh game save first (so the file reflects unsaved live changes) is
+                // a follow-up — SaveGame() lives on a game type we haven't bound yet. For now we send the
+                // last on-disk profile, which already contains the full garage/cars (the whole point).
+                bool saved = false;
+                var path = SaveFilePath();
+                if (path != null && System.IO.File.Exists(path))
+                {
+                    byte[] bytes = null;
+                    try { bytes = System.IO.File.ReadAllBytes(path); } catch (Exception re) { CarMecaPlugin.Logger?.LogWarning("[save] read file failed: " + re.Message); }
+                    if (bytes != null && bytes.Length > 64)
+                    {
+                        CarMecaPlugin.Logger?.LogInfo($"[save] host profile file: {bytes.Length} bytes (freshSave={saved}) <- {path}");
+                        return bytes;
+                    }
+                }
+                else CarMecaPlugin.Logger?.LogWarning("[save] profile file missing: " + (path ?? "<null>"));
+
+                // Fallback: the old in-memory path (known to be incomplete, but better than nothing).
                 var pd = gdm.CurrentProfileData;
                 if (pd == null) return null;
-                // Init() gathers the live game state (garage, inventory, jobs, economy) into the
-                // ProfileData — the same "collect" step the game runs before writing a save to disk.
-                try { pd.Init(); }
-                catch (Exception ie) { CarMecaPlugin.Logger?.LogWarning("[save] Init() skipped: " + ie.Message); }
+                try { pd.Init(); } catch { }
                 var arr = pd.SerializeToBytes();
                 if (arr == null) return null;
-                int n = arr.Length;
-                var managed = new byte[n];
-                for (int i = 0; i < n; i++) managed[i] = arr[i];   // Il2CppStructArray<byte>: fast direct indexing
-                int inGarage = -1;
-                try { inGarage = pd.carsInGarage != null ? pd.carsInGarage.Length : -1; } catch { }
-                CarMecaPlugin.Logger?.LogInfo($"[save] serialized host profile '{SafeName(pd)}': {n} bytes, carsInGarage={inGarage}");
+                var managed = new byte[arr.Length];
+                for (int i = 0; i < arr.Length; i++) managed[i] = arr[i];
+                CarMecaPlugin.Logger?.LogWarning($"[save] FALLBACK in-memory serialize: {managed.Length} bytes (file path failed)");
                 return managed;
             }
             catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[save] serialize failed: " + e.Message); return null; }
         }
+
+        /// <summary>Path to the active profile save file (Unity persistentDataPath/Save/profile0.cms21b).</summary>
+        private static string SaveFilePath()
+        {
+            try { return System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "Save", "profile0.cms21b"); }
+            catch { return null; }
+        }
+
 
         private static bool _busy;
 

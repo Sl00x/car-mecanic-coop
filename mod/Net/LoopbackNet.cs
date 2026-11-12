@@ -39,10 +39,11 @@ namespace CarMecaSim.Mp.Net
 
         private readonly int _port;
         private TcpListener _listener;
-        private TcpClient _client;
-        private NetworkStream _stream;
+        private volatile TcpClient _client;     // volatile: written by the accept thread, read by the Unity
+        private volatile NetworkStream _stream;  // main (Pump) thread — without this a stale null hides writes.
         private readonly object _writeLock = new object();
         private volatile bool _guestConnected;
+        private int _wrote;
 
         // Background threads enqueue; Pump() drains on the Unity main thread (OnData touches game state).
         private enum EvKind { Joined, Data, Left }
@@ -107,7 +108,9 @@ namespace CarMecaSim.Mp.Net
             catch { }
             finally
             {
-                _guestConnected = false;
+                // Only tear down shared state if this is still the live connection (a newer guest may have
+                // replaced us), so a stale ReadLoop exit can't clobber a fresh connection.
+                if (_client == c) { _guestConnected = false; _stream = null; _client = null; }
                 try { c.Close(); } catch { }
                 _inbox.Enqueue(new Ev(EvKind.Left, null, 0));
             }
@@ -159,7 +162,7 @@ namespace CarMecaSim.Mp.Net
         private EResult WriteFrame(byte[] payload, int channel)
         {
             var s = _stream;
-            if (s == null) return EResult.k_EResultOK;
+            if (s == null) { if (_guestConnected) OnStatus?.Invoke("write skipped: stream null while connected"); return EResult.k_EResultOK; }
             var head = new byte[5];
             int len = payload.Length;
             head[0] = (byte)(len & 0xFF); head[1] = (byte)((len >> 8) & 0xFF);
@@ -168,6 +171,7 @@ namespace CarMecaSim.Mp.Net
             try
             {
                 lock (_writeLock) { s.Write(head, 0, 5); s.Write(payload, 0, len); s.Flush(); }
+                if (_wrote++ < 3) OnStatus?.Invoke($"wrote frame ch{channel} {len}B to guest");
                 return EResult.k_EResultOK;
             }
             catch (Exception e) { OnStatus?.Invoke("Loopback send failed: " + e.Message); return EResult.k_EResultFail; }
