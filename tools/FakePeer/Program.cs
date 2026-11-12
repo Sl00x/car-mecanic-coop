@@ -37,6 +37,7 @@ namespace CarMecaSim.FakePeer
         static readonly object _partLock = new object();
         // every removed-part key the host tells us about (join catch-up + live) = our reconstructed mechanical state
         static readonly System.Collections.Generic.HashSet<string> _removedParts = new();
+        static volatile bool _gotHashReport; static volatile bool _lastSyncOk;
 
         static int Main(string[] args)
         {
@@ -121,6 +122,8 @@ namespace CarMecaSim.FakePeer
             Check("Sonde de latence de l'hôte renvoyée (ping)",  _gotLatencyProbe);
             Check("Action pièce de l'hôte reçue (TEMPS RÉEL)",   _gotPartAction);
             Check("Action pièce renvoyée (tu l'as vue ?)",       _replayedPart);
+            Check("Hash de l'hôte reçu (détection désync §14.3)", _gotHashReport);
+            if (_gotHashReport) Check("État mécanique EN SYNC avec l'hôte (hash identique)", _lastSyncOk);
             lock (_partLock)
             {
                 Console.WriteLine($"  >>> ÉTAT MÉCANIQUE reconstruit : {_removedParts.Count} pièce(s) retirée(s) sur la voiture partagée :");
@@ -255,6 +258,19 @@ namespace CarMecaSim.FakePeer
                     {
                         var op = r.Byte();
                         if (op == 0 /*OpList*/) { int n = r.Int(); Console.WriteLine($"[fakepeer] <- MISSIONS {n} job(s)"); }
+                        break;
+                    }
+
+                    case PacketType.EntityHash:
+                    {
+                        // Rebuild the host's canonical state from the keys WE received, then compare hashes
+                        // (§14.3). Same inputs → same deterministic hash if we're in sync.
+                        var cfg = r.Str(); var place = r.Int(); var rev = r.Int(); var hostHash = r.ULong();
+                        var st = new CarMecaSim.Shared.Coop.VehiclePartState(new CarMecaSim.Shared.Coop.VehicleKey(cfg, place));
+                        lock (_partLock) { foreach (var k in _removedParts) st.SetRemoved(k); }
+                        ulong mine = st.CanonicalHash();
+                        _gotHashReport = true; _lastSyncOk = mine == hostHash;
+                        Console.WriteLine($"[fakepeer] <- HASH hôte {cfg}@{place} rev={rev} {(mine == hostHash ? "=> SYNC OK" : $"=> DÉSYNC (moi {mine:X} vs hôte {hostHash:X})")}");
                         break;
                     }
 

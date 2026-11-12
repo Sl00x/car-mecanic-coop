@@ -19,6 +19,7 @@ namespace CarMecaSim.Mp.Net
         Ping = 13,
         Bye = 14,
         Latency = 15,   // RTT probe/echo for the player-list ping display
+        EntityHash = 16, // host broadcasts the current vehicle's canonical state hash → peers detect desync (§14.3)
     }
 
     public static class Channels

@@ -36,9 +36,11 @@ Honest status against the master-prompt spec. Updated as work lands.
 
 - **Entity identity (§5):** `VehicleKey`/`PartSlot` built, unit-tested, and `PartSync` keys its canonical
   state by `VehicleKey`. Holds for one car on the lift; garage *move* re-keys (host registry TODO).
-- **Canonical state + revisions + hash (§6/§14):** `VehiclePartState` is now the authoritative store in
-  `PartSync` (revision bumps per mutation, hash exposed on the F9 overlay). NOT yet wired: networked hash
-  *reporting* between peers (EntityHashReport) and automatic targeted *repair*.
+- **Canonical state + revisions + hash (§6/§14):** `VehiclePartState` is the authoritative store in
+  `PartSync` (revision bumps per mutation, hash on F9). **Networked desync DETECTION is wired:** the host
+  broadcasts an `EntityHash` (vehicle + revision + canonical hash) every ~5 s; a client compares it to its
+  local hash and, on mismatch, re-requests the snapshot + catch-up. NOT yet done: *targeted* repair
+  (re-sync currently re-pulls the whole snapshot, §14.4) and per-subsystem granularity.
 - **Concurrency locks (§10):** `InteractionLockManager` is wired (a remover claims the part; `Tick`
   prunes leases; F9 shows active locks). It is **advisory** — it does not yet BLOCK a conflicting removal,
   because that needs an interaction-START hook (we only have the post-removal hook). Model is unit-tested.

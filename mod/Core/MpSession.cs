@@ -336,6 +336,20 @@ namespace CarMecaSim.Mp.Core
                         }
                         break;
                     }
+                    case PacketType.EntityHash:
+                    {
+                        var cfg = r.Str(); var place = r.Int(); var rev = r.Int(); var hash = r.ULong();
+                        if (!IsHost)
+                        {
+                            ulong local = Sync.PartSync.Hash;
+                            if (local != hash)
+                            {
+                                _log?.Invoke($"[sync] DESYNC {cfg}@{place}: host rev={rev} hash={hash:X} vs local {local:X} — re-syncing");
+                                _snapshotApplied = false; _lastSnapReq = -999f;   // re-request the host snapshot + catch-up
+                            }
+                        }
+                        break;
+                    }
                     case PacketType.Bye:
                         OnPeerLeft(sender);
                         break;
@@ -348,6 +362,19 @@ namespace CarMecaSim.Mp.Core
         private bool _snapshotApplied;
         private bool _autoHostTried;
         private float _lastLatencyTick;
+        private float _lastHashTick;
+
+        /// <summary>Host: broadcast the current vehicle's canonical state hash so peers can detect a
+        /// divergence (§14.3). Cheap (one small reliable packet); peers compare against their local hash.</summary>
+        public void SendHashReport()
+        {
+            if (!InLobby || !IsHost) return;
+            var st = Sync.PartSync.State;
+            if (st == null) return;
+            using var w = new PacketWriter(PacketType.EntityHash);
+            w.Str(st.Vehicle.Config).Int(st.Vehicle.Place).Int(st.Revision).ULong(st.CanonicalHash());
+            Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
 
         /// <summary>Friends currently hosting a joinable CMS co-op lobby (for the main-menu join list).</summary>
         public System.Collections.Generic.IEnumerable<SteamNet.JoinableFriend> JoinableFriends() => Net.JoinableFriends();
@@ -407,6 +434,13 @@ namespace CarMecaSim.Mp.Core
                     Net.Send(p.Id, w.ToArray(), SendFlags.UnreliableNoDelay, Channels.Unreliable);
                     p.LastPingSent = Time.unscaledTime;
                 }
+            }
+
+            // Host: periodically publish the current vehicle's canonical state hash so clients detect desync.
+            if (IsHost && InLobby && GameRefs.InGameSession && Time.unscaledTime - _lastHashTick > 5f)
+            {
+                _lastHashTick = Time.unscaledTime;
+                SendHashReport();
             }
 
             // Host: when its garage changed (a car loaded/removed), push a delta snapshot to all guests,
