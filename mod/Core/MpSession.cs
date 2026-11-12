@@ -79,7 +79,7 @@ namespace CarMecaSim.Mp.Core
             }
             _curLobby = lobby;
             InLobby = true;
-            _stateRequested = false;   // request a fresh snapshot for the lobby we just entered
+            _snapshotApplied = false; _lastSnapReq = -999f;   // request a fresh snapshot for this lobby
             AddChat($"* joined lobby {lobby.m_SteamID}  (host: {Net.NameOf(Net.LobbyOwner)})");
             // Greet everyone already present.
             Hello();
@@ -312,8 +312,13 @@ namespace CarMecaSim.Mp.Core
             catch (Exception e) { _log?.Invoke("packet error: " + e.Message); }
         }
 
-        private bool _stateRequested;
+        private float _lastSnapReq = -999f;
+        private bool _snapshotApplied;
         private bool _autoHostTried;
+
+        /// <summary>Called by SaveSync once the host's snapshot has actually been applied, so the
+        /// client stops re-requesting it (and a scene-transition dip won't re-tear-down the garage).</summary>
+        public void MarkSnapshotApplied() { _snapshotApplied = true; }
 
         // ---- per-frame ----
         public void Update(float dt)
@@ -321,19 +326,18 @@ namespace CarMecaSim.Mp.Core
             Net.Pump();
             bool show = GameRefs.InGameSession;
 
-            // A client asks the host for its full save snapshot once BOTH conditions hold: we're in a
-            // lobby as a guest AND we're in a game session. This fires whichever order they happen in
-            // (load-then-join via Steam overlay, OR join-then-load) — the old "session-entry edge" missed
-            // the overlay-join case because we were already in-session when we joined.
-            bool wantState = InLobby && !IsHost && show;
-            if (wantState && !_stateRequested)
+            // A client (guest, in a game session) asks the host for its full save snapshot, RETRYING
+            // every few seconds until one is actually applied — the host may not be ready the instant we
+            // join (ProfileData/GameManager still spinning up). We stop once applied, so a scene-transition
+            // dip in `show` does NOT re-tear-down the garage. Entering a new lobby re-arms it.
+            if (InLobby && !IsHost && show && !_snapshotApplied
+                && Time.unscaledTime - _lastSnapReq > 3f)
             {
                 using var w = new PacketWriter(PacketType.Ping);
                 Net.Send(Net.LobbyOwner, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
-                _stateRequested = true;
+                _lastSnapReq = Time.unscaledTime;
                 _log?.Invoke("[save] requested host snapshot");
             }
-            else if (!wantState) _stateRequested = false;   // reset so re-entering re-syncs
 
             // Native hosting: load your save through the game's own menu and you're automatically
             // hosting a lobby friends can drop into via Steam's "Join Game" — no custom menu UI.

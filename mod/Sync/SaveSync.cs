@@ -65,6 +65,7 @@ namespace CarMecaSim.Mp.Sync
                 catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[save] LoadInstant threw: " + e.Message); }
 
                 RespawnGarage(gdm, pd);                 // re-spawn the cars themselves (with full config)
+                s.MarkSnapshotApplied();                // stop re-requesting; don't re-tear-down on scene dips
             }
             catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[save] apply failed: " + e); }
             finally { _busy = false; }

@@ -34,6 +34,7 @@ namespace CarMecaSim.Mp.Net
 
         private readonly IntPtr[] _recvBuf = new IntPtr[64];
         private bool _initTried;
+        private bool _wantGuest;   // true once we've chosen to join a friend's lobby (stand down auto-host)
 
         public bool TryInit()
         {
@@ -83,6 +84,7 @@ namespace CarMecaSim.Mp.Net
         public void JoinLobby(CSteamID lobby)
         {
             if (!Ready) return;
+            _wantGuest = true;   // we chose to join someone — a still-pending auto-host must stand down
             // If we were auto-hosting (or in another lobby), leave it before joining the target.
             if (LobbyId.IsValid() && LobbyId != lobby)
             {
@@ -101,6 +103,7 @@ namespace CarMecaSim.Mp.Net
                 SteamMatchmaking.LeaveLobby(LobbyId);
                 LobbyId = CSteamID.Nil;
             }
+            _wantGuest = false;
             try { if (Ready) SteamFriends.ClearRichPresence(); } catch { }
         }
 
@@ -185,7 +188,16 @@ namespace CarMecaSim.Mp.Net
         {
             if (ioFail || cb.m_eResult != EResult.k_EResultOK)
             { OnStatus?.Invoke("Lobby create failed: " + cb.m_eResult); return; }
-            LobbyId = new CSteamID(cb.m_ulSteamIDLobby);
+            var created = new CSteamID(cb.m_ulSteamIDLobby);
+            if (_wantGuest)
+            {
+                // We decided to join a friend while this auto-host create was still in flight — abandon it,
+                // so we don't end up owner of an orphan lobby (and never request the host's snapshot).
+                SteamMatchmaking.LeaveLobby(created);
+                OnStatus?.Invoke("Auto-host lobby abandoned (joining a friend instead).");
+                return;
+            }
+            LobbyId = created;
             LobbyOwner = LocalId;
             SetLobbyData("cms_mp", Protocol.Version.ToString());
             PublishJoinable();
