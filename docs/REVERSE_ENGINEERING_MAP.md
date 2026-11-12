@@ -76,6 +76,44 @@ signatures for proper part-data (condition/props) capture (section 15 of the spe
 | `GameScript.GetLastCarLoader()` | Current car on the lift — **can return null** even when a car is loaded; fall back to scanning `CarLoadersInScene` for `IsCarLoaded()` (see `CarRefs.LoadedCar()`). | V |
 | Car config names observed | `car_vallsen2040`, `car_hinatamoonmk1`, `car_emdenjager`; `car_wash` = the wash station (not a vehicle). | V |
 
+## Full part-sync API (from CMS21-Together, Fozkais, MIT — IL2CPP / MelonLoader 0.5.7, same game)
+
+The abandoned-but-proven [CMS21-Together](https://github.com/Fozkais/CMS21-Together) solved the part sync.
+Its API is confirmed present in our interop. Adopt this instead of fragile string names.
+
+**Positional identity (stable across machines — same car prefab → same child order):** build reference
+dictionaries once the car is loaded, keyed by (partType, key, index):
+- Engine: `carLoader.e_engine_h.GetComponentsInChildren<PartScript>()` → `Engine[key=i]`.
+- Driveshaft: `carLoader.ds_h.…` → `Driveshaft[key=i]`.
+- Suspension: 6 fixed roots `s_frontCenter_h, s_frontLeft_h, s_frontRight_h, s_rearCenter_h, s_rearLeft_h,
+  s_rearRight_h` → `Suspension[key=0..5][index=j]`.
+- Other: `carLoader.Parts[i].p_handle.GetComponentsInChildren<PartScript>()` → `Other[key=i][index=j]`.
+- Body: `carLoader.carParts[i]` (CarPart[]) → `Body[key=i]`.
+- Get the CarLoader from a part: `partScript.GetComponentInParent<CarLoaderOnCar>().CarLoader`.
+- CarLoaders: `GameData.Instance.carLoaders[carLoaderID]`; carLoaderID = `CarLoader.gameObject.name[10]-'0'-1`.
+
+**Capture hooks (postfix):**
+- Mechanical **mount**: `PartScript.DoMount()` (IEnumerator). Wait until `MountObjects` all `!unmounted`
+  (bolts tight) unless `partScript.oneClickUnmount`.
+- Mechanical **unmount**: `PartScript.Hide()` (the author's "best way to detect unmount").
+- Body **mount/unmount**: `CarLoader.TakeOffCarPart(string name, bool off)` — the `off` bool = mount vs unmount.
+- Fluids: `FluidData.SetLevel` / `FluidsData.SetLevel`.
+
+**Apply (visual) — this is what we were missing:**
+- Mechanical **mount**: `reference.ShowBySaveGame(); reference.Show(); reference.ShowMountAnimation();`
+  (+ `SetCondition`). 
+- Mechanical **unmount**: `reference.HideBySavegame(false, carLoader)` (1-arg `HideBySavegame(false)` for the
+  engine stand).
+- Body **mount**: `carLoader.TakeOnCarPartFromSave(name)` **then `carLoader.UpdateCarBodyPart(CarPart)`**
+  (the refresh call — without it the panel does not reappear). Unmount: `TakeOffCarPartFromSave(name)` +
+  `UpdateCarBodyPart`. Also `SwitchCarPart(CarPart, false, switched)`.
+- Part data to copy exactly: `IsExamined, Quality, SetCondition, SetConditionNormal, UpdateDust, tunedID`
+  (via `carLoader.TunePart(id, tunedID)`), paint (`IsPainted, CurrentPaintType/Data, SetColor`), wheels
+  (`SetWheelSize, SetET, SetWheelSizes`), body (`SetDent, EnableDust, SetCarLivery, SetCarColor, SetCarPaintType`).
+
+**Ready gate (§7.3):** `GameLoadHook.IsGameReady()` — don't apply before it. CMS21-Together also waits a
+few `WaitForEndOfFrame` + its own `car.isReady` flag before touching parts.
+
 ## Open items (needed for the full engine)
 
 - Runtime **visual mount** method (install a part with rebuild) — `TakeOnCarPartFromSave` is state-only.

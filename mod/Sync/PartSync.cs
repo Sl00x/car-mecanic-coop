@@ -114,10 +114,19 @@ namespace CarMecaSim.Mp.Sync
                     }
                     else if (action == ActMount)
                     {
-                        cl.TakeOnCarPartFromSave(key);   // visual mount method still TBD; state-only for now
+                        // Body-part mount (per CMS21-Together, MIT): put it back on, then UpdateCarBodyPart
+                        // to actually REBUILD the visual — this is the refresh call we were missing before
+                        // (TakeOnCarPartFromSave alone is state-only; the hood never reappeared).
+                        try
+                        {
+                            cl.TakeOnCarPartFromSave(key);
+                            var cp = cl.GetCarPart(key);
+                            if (cp != null) cl.UpdateCarBodyPart(cp);
+                        }
+                        catch (Exception me) { CarMecaPlugin.Logger?.LogWarning("[part] mount refresh failed: " + me.Message); }
                         st.SetInstalled(key, new CoopPartData { TypeId = key });
                         _locks.Release(key, fromPlayer);
-                        CarMecaPlugin.Logger?.LogInfo($"[part] applied remote PUT-ON '{key}' (state-only, rev={st.Revision})");
+                        CarMecaPlugin.Logger?.LogInfo($"[part] applied remote PUT-ON '{key}' (+UpdateCarBodyPart, rev={st.Revision})");
                     }
                     else if (action == ActRelease) _locks.Release(key, fromPlayer);
                 }
