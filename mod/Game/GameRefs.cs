@@ -81,6 +81,23 @@ namespace CarMecaSim.Mp.Game
             }
         }
 
-        public static void InvalidateSceneRefs() { _cam = null; _eye = null; }
+        private static CMS.MainMenu.MainMenuManager _mm;
+
+        /// <summary>True when the game's main menu is on screen (before/between game sessions).</summary>
+        public static bool OnMainMenu
+        {
+            get
+            {
+                try
+                {
+                    if (CurrentScene == SceneType.Menu) return true;
+                    if (_mm == null) _mm = UnityEngine.Object.FindObjectOfType<CMS.MainMenu.MainMenuManager>();
+                    return _mm != null;   // Unity's overridden == re-finds after a scene change destroys it
+                }
+                catch { return false; }
+            }
+        }
+
+        public static void InvalidateSceneRefs() { _cam = null; _eye = null; _mm = null; }
     }
 }

@@ -124,6 +124,42 @@ namespace CarMecaSim.Mp.Net
 
         public string NameOf(CSteamID id) => Ready ? SteamFriends.GetFriendPersonaName(id) : id.ToString();
 
+        /// <summary>A friend currently hosting a joinable CMS co-op lobby (from their "connect" rich presence).</summary>
+        public readonly struct JoinableFriend
+        {
+            public readonly CSteamID Id; public readonly string Name; public readonly ulong Lobby;
+            public JoinableFriend(CSteamID id, string name, ulong lobby) { Id = id; Name = name; Lobby = lobby; }
+        }
+
+        /// <summary>Enumerate friends who are in THIS game and advertising a joinable lobby via rich presence.</summary>
+        public IEnumerable<JoinableFriend> JoinableFriends()
+        {
+            if (!Ready) yield break;
+            uint myApp = SteamUtils.GetAppID().m_AppId;
+            int n = SteamFriends.GetFriendCount(EFriendFlags.k_EFriendFlagImmediate);
+            for (int i = 0; i < n; i++)
+            {
+                CSteamID fid;
+                string connect;
+                try
+                {
+                    fid = SteamFriends.GetFriendByIndex(i, EFriendFlags.k_EFriendFlagImmediate);
+                    // must be playing the same game
+                    if (!SteamFriends.GetFriendGamePlayed(fid, out var fgi) || fgi.m_gameID.AppID().m_AppId != myApp) continue;
+                    connect = SteamFriends.GetFriendRichPresence(fid, "connect");
+                }
+                catch { continue; }
+                if (string.IsNullOrEmpty(connect)) continue;
+                // format: "+connect_lobby <id>"
+                var idx = connect.IndexOf("+connect_lobby", StringComparison.OrdinalIgnoreCase);
+                if (idx < 0) continue;
+                var rest = connect.Substring(idx + "+connect_lobby".Length).Trim();
+                var tok = rest.Split(' ');
+                if (tok.Length == 0 || !ulong.TryParse(tok[0], out var lobby) || lobby == 0) continue;
+                yield return new JoinableFriend(fid, SteamFriends.GetFriendPersonaName(fid), lobby);
+            }
+        }
+
         public void SetLobbyData(string key, string val)
         {
             if (Ready && LobbyId.IsValid()) SteamMatchmaking.SetLobbyData(LobbyId, key, val);

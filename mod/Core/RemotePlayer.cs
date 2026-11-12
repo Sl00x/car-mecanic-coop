@@ -21,6 +21,8 @@ namespace CarMecaSim.Mp.Core
         public byte Tool;
         public byte Mode;
         public float LastUpdate;
+        public int PingMs = -1;      // round-trip latency to this peer (-1 = unknown)
+        public float LastPingSent;
 
         private GameObject _root, _head, _torso, _armL, _armR;
         private GameObject _body;          // ripped mechanic model (when mechanic.cmch is present)

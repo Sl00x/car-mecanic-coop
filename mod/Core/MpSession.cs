@@ -305,6 +305,25 @@ namespace CarMecaSim.Mp.Core
                             Sync.OrderSync.OnPeerJoined();
                         }
                         break;
+                    case PacketType.Latency:
+                    {
+                        var kind = r.Byte(); var stamp = r.UInt();
+                        if (kind == 0) // probe -> echo it straight back
+                        {
+                            using var w = new PacketWriter(PacketType.Latency);
+                            w.Byte(1).UInt(stamp);
+                            Net.Send(sender, w.ToArray(), SendFlags.UnreliableNoDelay, Channels.Unreliable);
+                        }
+                        else // echo of our probe -> compute RTT against our own clock
+                        {
+                            uint now = (uint)(Time.unscaledTime * 1000f);
+                            int rtt = (int)(now - stamp);
+                            var p = GetOrAdd(sender);
+                            if (rtt >= 0 && rtt < 10000) p.PingMs = rtt;
+                            p.LastUpdate = Time.unscaledTime;
+                        }
+                        break;
+                    }
                     case PacketType.Bye:
                         OnPeerLeft(sender);
                         break;
@@ -316,6 +335,10 @@ namespace CarMecaSim.Mp.Core
         private float _lastSnapReq = -999f;
         private bool _snapshotApplied;
         private bool _autoHostTried;
+        private float _lastLatencyTick;
+
+        /// <summary>Friends currently hosting a joinable CMS co-op lobby (for the main-menu join list).</summary>
+        public System.Collections.Generic.IEnumerable<SteamNet.JoinableFriend> JoinableFriends() => Net.JoinableFriends();
 
         /// <summary>Called by SaveSync once the host's snapshot has actually been applied, so the
         /// client stops re-requesting it (and a scene-transition dip won't re-tear-down the garage).</summary>
@@ -359,6 +382,20 @@ namespace CarMecaSim.Mp.Core
             // economy sync, ~3 Hz
             _ecoAccum += dt;
             if (_ecoAccum >= 0.33f) { _ecoAccum = 0f; EconomyTick(); }
+
+            // latency probes (~1 Hz) so the player list can show ping
+            if (InLobby && Time.unscaledTime - _lastLatencyTick > 1f)
+            {
+                _lastLatencyTick = Time.unscaledTime;
+                uint stamp = (uint)(Time.unscaledTime * 1000f);
+                foreach (var p in _peers.Values)
+                {
+                    using var w = new PacketWriter(PacketType.Latency);
+                    w.Byte(0).UInt(stamp);                 // 0 = probe
+                    Net.Send(p.Id, w.ToArray(), SendFlags.UnreliableNoDelay, Channels.Unreliable);
+                    p.LastPingSent = Time.unscaledTime;
+                }
+            }
 
             // Host: when its garage changed (a car loaded/removed), push a delta snapshot to all guests,
             // coalesced — a single job-take can fire several LoadCar calls; wait for them to settle.

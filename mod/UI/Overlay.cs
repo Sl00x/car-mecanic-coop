@@ -96,11 +96,12 @@ namespace CarMecaSim.Mp.UI
 
                 GUILayout.Space(8);
                 GUILayout.Label("JOUEURS  —  " + (1 + _s.Peers.Count), Theme.SectionLabel);
-                PlayerRow(_s.Config.DisplayName + "  (toi)", Theme.Orange);
+                PlayerRow(_s.Config.DisplayName, Theme.Orange, _s.IsHost ? "HÔTE" : "TOI", -1);
                 foreach (var p in _s.Peers)
                 {
-                    bool fresh = UnityEngine.Time.unscaledTime - p.LastUpdate < 2f;
-                    PlayerRow(fresh ? p.Name : p.Name + "  (pas de position)", fresh ? Theme.Green : Theme.Muted);
+                    bool fresh = UnityEngine.Time.unscaledTime - p.LastUpdate < 3f;
+                    PlayerRow(p.Name, fresh ? Theme.Green : new Color(0.85f, 0.4f, 0.35f),
+                              fresh ? (_s.IsHost ? "CLIENT" : "JOUEUR") : "hors ligne", fresh ? p.PingMs : -1);
                 }
 
                 // --- MISSIONS (host's job board) ---
@@ -146,12 +147,15 @@ namespace CarMecaSim.Mp.UI
                 : GUILayout.Button(text, style, GUILayout.Height(34));
         }
 
-        private static void PlayerRow(string name, Color dot)
+        private static void PlayerRow(string name, Color dot, string badge, int ping)
         {
-            GUILayout.BeginHorizontal(GUILayout.Height(22));
-            var rect = GUILayoutUtility.GetRect(12, 22, GUILayout.Width(16));
-            GUI.color = dot; GUI.Label(new Rect(rect.x, rect.y + 5, 12, 12), "●", Theme.Dot); GUI.color = Color.white;
+            GUILayout.BeginHorizontal(GUILayout.Height(24));
+            var rect = GUILayoutUtility.GetRect(12, 24, GUILayout.Width(16));
+            GUI.color = dot; GUI.Label(new Rect(rect.x, rect.y + 6, 12, 12), "●", Theme.Dot); GUI.color = Color.white;
             GUILayout.Label(name, Theme.Label);
+            GUILayout.FlexibleSpace();
+            if (ping >= 0) GUILayout.Label(ping + " ms", Theme.SectionLabel, GUILayout.Width(56));
+            if (!string.IsNullOrEmpty(badge)) GUILayout.Label(badge, Theme.Tag, GUILayout.Width(62));
             GUILayout.EndHorizontal();
         }
 

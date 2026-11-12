@@ -18,6 +18,7 @@ namespace CarMecaSim.Mp.Net
         Chat = 12,
         Ping = 13,
         Bye = 14,
+        Latency = 15,   // RTT probe/echo for the player-list ping display
     }
 
     public static class Channels
