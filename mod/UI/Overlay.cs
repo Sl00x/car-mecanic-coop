@@ -31,10 +31,8 @@ namespace CarMecaSim.Mp.UI
         {
             if (!GameRefs.InGameSession) return;      // hard gate: nothing in menus/loading
             Theme.EnsureInit();
-            GUI.Label(new Rect(Screen.width - 190, 6, 184, 20), Ver, Theme.KeyHint);   // version, top-right
-            DrawNametags();
-            if (Visible) DrawPanel();
-            else DrawTab();
+            DrawNametags();                            // floating names above peers (only while connected)
+            if (Visible) DrawPanel();                  // full co-op panel, opt-in via F6 — nothing always-on
         }
 
         private void DrawTab()
