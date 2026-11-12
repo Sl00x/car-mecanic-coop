@@ -11,38 +11,72 @@ using MainMenuButton = CMS.MainMenu.Controls.MainMenuButton;
 namespace CarMecaSim.Mp.UI
 {
     /// <summary>
-    /// Adds a NATIVE main-menu button ("MULTIJOUEUR" / "REJOINDRE &lt;ami&gt;") by cloning one of the
-    /// game's own menu buttons — so it matches the native style exactly, no custom IMGUI panels.
-    /// Clicking joins a hosting friend directly (or opens Steam's friends list to pick).
+    /// Native main-menu refactor: clones a real MainMenuButton into a "MULTIJOUEUR" entry, then
+    /// re-lays-out the whole button stack as a CENTERED card over the car (per the chosen design),
+    /// holding the layout each frame against the native menu. No custom IMGUI — all native uGUI.
     /// </summary>
     public static class NativeCoopMenu
     {
-        private static GameObject _btn;
+        private static GameObject _btn;          // our cloned MULTIJOUEUR button
         private static Text _label;
         private static float _lastRefresh;
+
+        private static readonly List<RectTransform> _managed = new();  // all buttons we position
+        private static readonly List<Vector2> _targets = new();
+        private static bool _laidOut;
+        private static GameObject _card;
+        private static RectTransform _cardRt;
+        private static readonly Color Accent = new Color(1f, 0.68f, 0.18f, 1f);
+
+        private static Sprite _solid;
+        private static Sprite Solid()
+        {
+            if (_solid == null)
+            {
+                var t = new Texture2D(4, 4, TextureFormat.RGBA32, false) { hideFlags = HideFlags.HideAndDontSave };
+                for (int y = 0; y < 4; y++) for (int x = 0; x < 4; x++) t.SetPixel(x, y, Color.white);
+                t.Apply();
+                _solid = Sprite.Create(t, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f));
+                _solid.hideFlags = HideFlags.HideAndDontSave;
+            }
+            return _solid;
+        }
 
         public static void Tick(MpSession s)
         {
             try
             {
-                if (!GameRefs.OnMainMenu) { _btn = null; _label = null; return; }
-                if (_btn == null) TryCreate(s);     // Unity's overridden == is true after a scene rebuild
+                if (!GameRefs.OnMainMenu) { _btn = null; _label = null; _laidOut = false; _managed.Clear(); _targets.Clear(); _card = null; _cardRt = null; return; }
+                if (_btn == null) TryCreate(s);
+                HoldLayout();
                 if (_btn != null) RefreshLabel(s);
             }
             catch { }
         }
 
+        /// <summary>Re-assert our centered positions every frame so the native menu can't snap them back.</summary>
+        private static void HoldLayout()
+        {
+            if (!_laidOut) return;
+            for (int i = 0; i < _managed.Count; i++)
+            {
+                var rt = _managed[i];
+                if (rt == null) continue;
+                rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition = _targets[i];
+            }
+        }
+
         private static void TryCreate(MpSession s)
         {
-            // Avoid duplicates if our reference was cleared but the object still lives.
             var existing = GameObject.Find("CMS_CoopButton");
             if (existing != null) { _btn = existing; _label = existing.GetComponentInChildren<Text>(true); return; }
 
-            // Gather the native menu buttons (fixed anchored positions, no layout group). The column is
-            // already full, so to fit a 7th cleanly we TIGHTEN the existing rows a bit and place ours at
-            // the bottom of that compacted stack — all above the footer.
+            // collect native buttons sharing a parent
+            var buttons = new List<MainMenuButton>();
             var rts = new List<RectTransform>();
-            MainMenuButton bottom = null; RectTransform bottomRt = null; float spacing = 0f, topY = float.MinValue;
+            MainMenuButton bottom = null; RectTransform bottomRt = null; float spacing = 0f;
             try
             {
                 var all = UnityEngine.Object.FindObjectsOfType<MainMenuButton>();
@@ -55,9 +89,8 @@ namespace CarMecaSim.Mp.UI
                     if (rt == null) continue;
                     if (parent == null) parent = b.transform.parent;
                     if (b.transform.parent != parent) continue;
-                    rts.Add(rt);
+                    buttons.Add(b); rts.Add(rt);
                     if (bottom == null || rt.anchoredPosition.y < bottomRt.anchoredPosition.y) { bottom = b; bottomRt = rt; }
-                    if (rt.anchoredPosition.y > topY) topY = rt.anchoredPosition.y;
                 }
                 if (bottom == null || rts.Count == 0) return;
                 for (int i = 0; i < rts.Count; i++)
@@ -66,32 +99,21 @@ namespace CarMecaSim.Mp.UI
                         float dy = Mathf.Abs(rts[i].anchoredPosition.y - rts[j].anchoredPosition.y);
                         if (dy > 1f && (spacing == 0f || dy < spacing)) spacing = dy;
                     }
-                if (spacing <= 1f) spacing = bottomRt.rect.height > 1f ? bottomRt.rect.height * 1.1f : 90f;
+                if (spacing <= 1f) spacing = bottomRt.rect.height > 1f ? bottomRt.rect.height * 1.05f : 90f;
             }
             catch { return; }
-            if (bottom == null || bottomRt == null) return;
+            if (bottom == null) return;
 
             try
             {
-                int n = rts.Count;                       // native buttons
-                float tight = spacing * (float)n / (n + 1);   // squeeze n+1 rows into the n-row span
-                // re-space the native buttons from the top using the tighter gap
-                rts.Sort((a, b) => b.anchoredPosition.y.CompareTo(a.anchoredPosition.y));   // top -> bottom
-                for (int i = 0; i < n; i++)
-                    rts[i].anchoredPosition = new Vector2(rts[i].anchoredPosition.x, topY - i * tight);
-
+                // clone the MULTIJOUEUR button from a native one
                 var clone = UnityEngine.Object.Instantiate(bottom.gameObject, bottom.transform.parent);
                 clone.name = "CMS_CoopButton";
                 var crt = clone.GetComponent<RectTransform>();
-                if (crt != null)
-                {
-                    crt.anchorMin = bottomRt.anchorMin; crt.anchorMax = bottomRt.anchorMax;
-                    crt.pivot = bottomRt.pivot; crt.sizeDelta = bottomRt.sizeDelta;
-                    crt.anchoredPosition = new Vector2(bottomRt.anchoredPosition.x, topY - n * tight);  // last row of the compacted stack
-                }
+                if (crt != null) { crt.sizeDelta = bottomRt.sizeDelta; }
 
                 _label = clone.GetComponentInChildren<Text>(true);
-                if (_label != null) _label.text = "MULTIJOUEUR";
+                if (_label != null) { _label.text = "MULTIJOUEUR"; _label.color = Accent; _label.fontStyle = FontStyle.Bold; }
 
                 var mmb = clone.GetComponent<MainMenuButton>();
                 if (mmb != null && mmb.OnClick != null)
@@ -100,9 +122,54 @@ namespace CarMecaSim.Mp.UI
                     mmb.OnClick.AddListener((UnityAction)(() => OnClick(s)));
                 }
                 _btn = clone;
-                CarMecaPlugin.Logger?.LogInfo("[menu] native MULTIJOUEUR button added");
+
+                // ---- centered CARD layout over the car ----
+                // Reparent every button to the ROOT CANVAS so (0,0) center-anchored == screen centre
+                // (their native parent is left-anchored, which is why x=0 stayed on the left).
+                var rootCanvas = bottom.GetComponentInParent<Canvas>();
+                Transform root = rootCanvas != null ? rootCanvas.rootCanvas.transform : bottom.transform.parent.parent;
+
+                var ordered = new List<RectTransform>(rts);
+                ordered.Sort((a, b) => b.anchoredPosition.y.CompareTo(a.anchoredPosition.y));  // top -> bottom
+                if (crt != null) ordered.Add(crt);                                             // ours at the bottom
+                int m = ordered.Count;
+
+                float btnW = bottomRt.rect.width > 10f ? bottomRt.rect.width : 460f;
+                float btnH = bottomRt.rect.height > 10f ? bottomRt.rect.height : 64f;
+                float step = Mathf.Max(spacing, btnH + 14f);
+                float top = (m - 1) * 0.5f * step;
+
+                // backdrop card (behind the buttons)
+                _card = new GameObject("CMS_CoopCard");
+                _card.transform.SetParent(root, false);
+                var img = _card.AddComponent<Image>();
+                img.sprite = Solid();
+                img.color = new Color(0.05f, 0.06f, 0.08f, 0.80f);
+                img.raycastTarget = false;
+                _cardRt = _card.GetComponent<RectTransform>();
+                _cardRt.anchorMin = _cardRt.anchorMax = _cardRt.pivot = new Vector2(0.5f, 0.5f);
+                _cardRt.sizeDelta = new Vector2(btnW + 70f, m * step + 60f);
+                _cardRt.anchoredPosition = Vector2.zero;
+                // a slim accent bar on the card's left edge
+                var bar = new GameObject("CMS_CoopCardBar");
+                bar.transform.SetParent(_card.transform, false);
+                var barImg = bar.AddComponent<Image>(); barImg.sprite = Solid(); barImg.color = Accent; barImg.raycastTarget = false;
+                var barRt = bar.GetComponent<RectTransform>();
+                barRt.anchorMin = new Vector2(0f, 0f); barRt.anchorMax = new Vector2(0f, 1f);
+                barRt.pivot = new Vector2(0f, 0.5f); barRt.sizeDelta = new Vector2(5f, 0f); barRt.anchoredPosition = Vector2.zero;
+
+                _managed.Clear(); _targets.Clear();
+                for (int i = 0; i < m; i++)
+                {
+                    ordered[i].SetParent(root, false);   // onto the root canvas (render on top of the card)
+                    _managed.Add(ordered[i]);
+                    _targets.Add(new Vector2(0f, top - i * step));
+                }
+                _laidOut = true;
+                HoldLayout();
+                CarMecaPlugin.Logger?.LogInfo($"[menu] centered card: {m} buttons, btn {btnW}x{btnH}, step {step}");
             }
-            catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[menu] native button failed: " + e.Message); }
+            catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[menu] layout failed: " + e.Message); }
         }
 
         private static void RefreshLabel(MpSession s)
@@ -114,6 +181,7 @@ namespace CarMecaSim.Mp.UI
             _label.text = n == 1 ? ("REJOINDRE " + (name ?? "").ToUpper())
                         : n > 1 ? ("MULTIJOUEUR (" + n + ")")
                         : "MULTIJOUEUR";
+            _label.color = Accent;
         }
 
         private static void OnClick(MpSession s)
@@ -123,7 +191,7 @@ namespace CarMecaSim.Mp.UI
                 var hosts = new List<Net.SteamNet.JoinableFriend>();
                 foreach (var f in s.JoinableFriends()) hosts.Add(f);
                 if (hosts.Count == 1) { s.JoinLobby(hosts[0].Lobby); CarMecaPlugin.Logger?.LogInfo("[menu] joining " + hosts[0].Name); }
-                else { try { SteamFriends.ActivateGameOverlay("friends"); } catch { } }   // pick among several / none yet
+                else { try { SteamFriends.ActivateGameOverlay("friends"); } catch { } }
             }
             catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[menu] join click failed: " + e.Message); }
         }
