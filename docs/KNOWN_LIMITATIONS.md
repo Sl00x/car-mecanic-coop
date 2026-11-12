@@ -81,6 +81,11 @@ Honest status against the master-prompt spec. Updated as work lands.
 ## ⛔ Environment constraints (not bugs)
 
 - Installing the mod DLL needs the game CLOSED (DLL locked) → each change is a restart cycle.
+- The plugin is split across **two** managed assemblies — `CarMecaSim.Mp.dll` (plugin) and
+  `CarMecaSim.Shared.dll` (canonical Coop model: `VehiclePartState`, `InteractionLockManager`, …), which
+  IL2CPP loads at runtime. Deploying only `Mp.dll` after changing a Shared type leaves a stale `Shared.dll`
+  → `TypeLoadException` on load → game hangs at ~80%. **Always deploy via `tools/Install-Plugin.ps1`**,
+  which builds, copies BOTH DLLs, and verifies the referenced types are present in the deployed `Shared.dll`.
 - The WinForms launcher (old build) rewrites `mp_config.json` on launch, wiping `LoopbackPort`
   → during loopback tests, launch the game from Steam directly, not via the launcher.
 - Testing two *rendered* clients needs two game instances / two Steam accounts — FakePeer validates the

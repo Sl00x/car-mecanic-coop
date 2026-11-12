@@ -12,6 +12,14 @@ drop the others; failures are logged, the game still starts.
 | `PartScript.DoMount()` | Postfix | mechanical part MOUNTED → `CarPartSync.OnDoMount` → positional id (type,key,index) (CMS21-Together) | coroutine: fires at enumerator creation, not completion | S (needs in-game) |
 | `PartScript.Hide()` (empty `Type[0]`) | Postfix | mechanical part UNMOUNTED (the reliable unmount signal) → `CarPartSync.OnHide` | many `Hide` overloads — `Type[0]` selects the no-arg one | S (needs in-game) |
 
+## Exception safety (mandatory)
+Every postfix body runs through `HookDiag.Safe(tag, …)` — a `try/catch` that logs (rate-limited) and
+swallows. A Harmony postfix executes **inside** the patched game method, so an unguarded throw propagates
+into the game: a throw in the `CarLoader.LoadCar` postfix during save-load kills the load coroutine and
+hangs the game at ~80% (observed when a stale `CarMecaSim.Shared.dll` made `PartSync` fail to load → the
+postfix touched `PartSync` → `TypeLoadException` inside `LoadCar`). With `Safe`, a mod bug degrades to a log
+line, never a broken game. The per-frame `MpBehaviour.Update`/`OnGUI` hooks use the same pattern (`SafeFrame`).
+
 ## Capture vs apply (§11.1)
 We hook **after** the real operation (postfix) so we replicate a genuine, succeeded removal — not a UI
 click. Applying a remote action calls the same native `TakeOffCarPart`, so to avoid a replication loop

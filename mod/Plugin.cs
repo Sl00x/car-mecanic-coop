@@ -103,9 +103,11 @@ namespace CarMecaSim.Mp
 
             s.EnsureSteam();
             // Use UNSCALED time so networking/chat keep running even while the game is frozen (timeScale 0).
-            s.Update(Time.unscaledDeltaTime);
-            s.SendPresenceTick(Time.unscaledTime);
-            UI.NativeCoopMenu.Tick(s);   // native "MULTIJOUEUR" button on the base main menu
+            // Guarded: a per-frame throw is swallowed by the IL2CPP trampoline anyway, but without this it
+            // spams thousands of identical stack traces (as seen when the stale Shared.dll threw TypeLoadException).
+            SafeFrame("session.Update", () => s.Update(Time.unscaledDeltaTime));
+            SafeFrame("presence", () => s.SendPresenceTick(Time.unscaledTime));
+            SafeFrame("coopMenu", () => UI.NativeCoopMenu.Tick(s));   // native "MULTIJOUEUR" button on the base main menu
 
             var cfg = CarMecaPlugin.Cfg;
             if (!_autoStarted && cfg.AutoStart && cfg.Role != MpRole.Menu && s.EnsureSteam())
@@ -183,8 +185,21 @@ namespace CarMecaSim.Mp
 
         private void OnGUI()
         {
-            CarMecaPlugin.Overlay?.Draw();        // in-game co-op panel (F6)
-            UI.NetDebugOverlay.Draw(CarMecaPlugin.Session);   // network/state debug (F9)
+            SafeFrame("overlay", () => CarMecaPlugin.Overlay?.Draw());        // in-game co-op panel (F6)
+            SafeFrame("netdebug", () => UI.NetDebugOverlay.Draw(CarMecaPlugin.Session));   // network/state debug (F9)
+        }
+
+        // Rate-limited guard for per-frame hooks: keeps one bad frame from flooding the log (and makes any
+        // such regression visible without the game appearing to freeze).
+        private static int _frameErr;
+        private static void SafeFrame(string tag, Action body)
+        {
+            try { body(); }
+            catch (Exception e)
+            {
+                if (_frameErr++ < 30)
+                    CarMecaPlugin.Logger?.LogWarning($"[frame] {tag} threw (swallowed): {e.Message}");
+            }
         }
     }
 }

@@ -12,6 +12,21 @@ namespace CarMecaSim.Mp.Sync
         {
             if (_n++ < 40) CarMecaPlugin.Logger?.LogInfo($"[hook] {what}");
         }
+
+        // CRITICAL: a Harmony postfix runs INSIDE the patched game method. If it throws, the exception
+        // propagates into the game — e.g. a throw inside the CarLoader.LoadCar postfix kills the save-load
+        // coroutine (the "stuck at 80%" hang). Every postfix body MUST go through Safe() so a mod bug can
+        // never break the game; we just log (rate-limited) and carry on.
+        private static int _err;
+        public static void Safe(string tag, Action body)
+        {
+            try { body(); }
+            catch (Exception e)
+            {
+                if (_err++ < 20)
+                    CarMecaPlugin.Logger?.LogWarning($"[hook] {tag} threw (swallowed; game continues): {e.Message}");
+            }
+        }
     }
 
     // Player takes a part OFF the car. This — not PartScript.ActionUnMount — is the real removal entry
@@ -20,34 +35,34 @@ namespace CarMecaSim.Mp.Sync
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.TakeOffCarPart), new Type[] { typeof(string) })]
     internal static class Patch_TakeOff
     {
-        private static void Postfix(CarLoader __instance, string __0) { HookDiag.Log("TakeOffCarPart(str) " + __0); PartSync.OnLocalTakeOff(__instance, __0); }
+        private static void Postfix(CarLoader __instance, string __0) => HookDiag.Safe("TakeOffCarPart(str)", () => { HookDiag.Log("TakeOffCarPart(str) " + __0); PartSync.OnLocalTakeOff(__instance, __0); });
     }
 
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.TakeOffCarPart), new Type[] { typeof(string), typeof(bool) })]
     internal static class Patch_TakeOffCo
     {
-        private static void Postfix(CarLoader __instance, string __0) { HookDiag.Log("TakeOffCarPart(str,bool) " + __0); PartSync.OnLocalTakeOff(__instance, __0); }
+        private static void Postfix(CarLoader __instance, string __0) => HookDiag.Safe("TakeOffCarPart(str,bool)", () => { HookDiag.Log("TakeOffCarPart(str,bool) " + __0); PartSync.OnLocalTakeOff(__instance, __0); });
     }
 
     // Mechanical part MOUNTED (engine/suspension/other/driveshaft) — positional identity (CMS21-Together).
     [HarmonyPatch(typeof(PartScript), nameof(PartScript.DoMount))]
     internal static class Patch_DoMount
     {
-        private static void Postfix(PartScript __instance) { HookDiag.Log("PartScript.DoMount"); CarPartSync.OnDoMount(__instance); }
+        private static void Postfix(PartScript __instance) => HookDiag.Safe("PartScript.DoMount", () => { HookDiag.Log("PartScript.DoMount"); CarPartSync.OnDoMount(__instance); });
     }
 
     // Mechanical part UNMOUNTED — the no-arg Hide() is the reliable unmount signal (CMS21-Together).
     [HarmonyPatch(typeof(PartScript), nameof(PartScript.Hide), new Type[0])]
     internal static class Patch_PartHide
     {
-        private static void Postfix(PartScript __instance) { CarPartSync.OnHide(__instance); }
+        private static void Postfix(PartScript __instance) => HookDiag.Safe("PartScript.Hide", () => CarPartSync.OnHide(__instance));
     }
 
     // A car is loaded -> replicate it so everyone sees the same vehicle on the lift.
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
     internal static class Patch_LoadCar
     {
-        private static void Postfix(CarLoader __instance, string name) => CarSync.OnLocalLoadCar(__instance, name);
+        private static void Postfix(CarLoader __instance, string name) => HookDiag.Safe("LoadCar", () => CarSync.OnLocalLoadCar(__instance, name));
     }
 
     // A car is removed (sold / job finished) -> propagate the garage change to guests.
@@ -56,6 +71,6 @@ namespace CarMecaSim.Mp.Sync
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[0])]
     internal static class Patch_DeleteCar
     {
-        private static void Postfix(CarLoader __instance) => CarSync.OnLocalLoadCar(__instance, null);
+        private static void Postfix(CarLoader __instance) => HookDiag.Safe("DeleteCar", () => CarSync.OnLocalLoadCar(__instance, null));
     }
 }
