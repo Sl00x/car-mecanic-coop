@@ -158,6 +158,15 @@ namespace CarMecaSim.Mp.Core
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
+        /// <summary>Send one part action to a SINGLE peer (used for late-join mechanical catch-up).</summary>
+        public void SendPartActionTo(CSteamID target, byte action, string key, int boltIdx)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.PartAction);
+            w.Byte(action).Str(key).Int(boltIdx);
+            Net.Send(target, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
         public void SendGarage(System.Collections.Generic.List<(int, string)> entries)
         {
             if (!InLobby) return;
@@ -301,10 +310,11 @@ namespace CarMecaSim.Mp.Core
                         // A client reached the garage and wants the current state.
                         if (IsHost)
                         {
-                            SendSaveSnapshot(sender);      // client adopts host's full garage/jobs/money (native)
-                            BroadcastEcoAbsolute();        // then set live money on top (ordered after the save)
-                            Sync.CarSync.OnPeerJoined();   // keep incremental garage/job sync going afterwards
+                            SendSaveSnapshot(sender);          // client adopts host's full garage/jobs/money (native)
+                            BroadcastEcoAbsolute();            // then set live money on top (ordered after the save)
+                            Sync.CarSync.OnPeerJoined();       // keep incremental garage/job sync going afterwards
                             Sync.OrderSync.OnPeerJoined();
+                            Sync.PartSync.SendCatchUp(sender); // replay this-session part removals (live mechanical state)
                         }
                         break;
                     case PacketType.Latency:

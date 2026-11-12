@@ -22,7 +22,9 @@ namespace CarMecaSim.Mp.Sync
         /// <summary>Harmony postfix on CarLoader.LoadCar: host's garage changed → flag a delta snapshot.</summary>
         public static void OnLocalLoadCar(CarLoader cl, string name)
         {
-            if (Applying || !Active || !S.IsHost) return;
+            if (Applying) return;              // snapshot application, not a user action
+            PartSync.ClearRemoved();           // a different car is on the lift → the session part-delta is void
+            if (!Active || !S.IsHost) return;
             S.MarkGarageChanged();
         }
 

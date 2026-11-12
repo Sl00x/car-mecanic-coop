@@ -35,6 +35,8 @@ namespace CarMecaSim.FakePeer
         static volatile bool _gotPartAction, _replayedPart;
         static string _lastPartKey; static byte _lastPartAction; static int _lastBolt;
         static readonly object _partLock = new object();
+        // every removed-part key the host tells us about (join catch-up + live) = our reconstructed mechanical state
+        static readonly System.Collections.Generic.HashSet<string> _removedParts = new();
 
         static int Main(string[] args)
         {
@@ -88,20 +90,19 @@ namespace CarMecaSim.FakePeer
                 if (!chatted && t >= 2.0) { chatted = true; SendChat(name, "Salut depuis FakePeer, je repare avec toi"); Console.WriteLine("[fakepeer] -> Chat"); }
                 if (!bumped && t >= 4.0) { bumped = true; SendEconomyDelta(5000, 100, 25); Console.WriteLine("[fakepeer] -> Economy delta (+5000$ / +100xp / +25 scraps)"); }
 
-                // REAL-TIME part co-op: once the host does a part action (you unbolt/remove something), we
-                // learn its stable path, wait a beat, then send the INVERSE action back — so you SEE the
-                // part toggle on YOUR car, live. This is the true same-car co-op round-trip.
+                // REAL-TIME part co-op (the ghost test): once the host does ANY part action, we send back a
+                // batch of TAKE-OFF commands for parts that are usually still attached (right side + bumpers)
+                // so the player SEES parts come off their own car without touching anything — proof that a
+                // peer's actions apply live on the shared car.
                 if (_gotPartAction && !_replayedPart)
                 {
-                    string key; byte act; int bolt;
-                    lock (_partLock) { key = _lastPartKey; act = _lastPartAction; bolt = _lastBolt; }
-                    if (!string.IsNullOrEmpty(key))
+                    _replayedPart = true;
+                    foreach (var pk in new[] { "bumper_front", "fender_front_right", "door_front_right", "mirror_right", "headlight_right", "bumper_rear", "fender_front_left" })
                     {
-                        _replayedPart = true;
-                        byte inv = act == ActUnmount ? ActMount : act == ActMount ? ActUnmount : ActBolt; // toggle; bolt->bolt
-                        SendPartAction(inv, key, bolt);
-                        Console.WriteLine($"[fakepeer] -> PART action {ActName(inv)} sur \"{key}\" (regarde ta voiture !)");
+                        SendPartAction(ActUnmount, pk, -1);
+                        Console.WriteLine($"[fakepeer] -> DÉMONTER \"{pk}\"");
                     }
+                    Console.WriteLine("[fakepeer] >>> REGARDE TA VOITURE : des pièces vont se démonter toutes seules <<<");
                 }
 
                 Thread.Sleep(10);
@@ -119,6 +120,11 @@ namespace CarMecaSim.FakePeer
             Check("Sonde de latence de l'hôte renvoyée (ping)",  _gotLatencyProbe);
             Check("Action pièce de l'hôte reçue (TEMPS RÉEL)",   _gotPartAction);
             Check("Action pièce renvoyée (tu l'as vue ?)",       _replayedPart);
+            lock (_partLock)
+            {
+                Console.WriteLine($"  >>> ÉTAT MÉCANIQUE reconstruit : {_removedParts.Count} pièce(s) retirée(s) sur la voiture partagée :");
+                foreach (var k in _removedParts) Console.WriteLine($"        - {k} (absente)");
+            }
             Console.WriteLine("=======================================================");
             bool ok = _gotSnapshot && _gotEconomy && _gotHostPresence;
             Console.WriteLine(ok ? "[fakepeer] RÉUSSI — l'hôte a bien servi le garage + l'économie + la présence."
@@ -219,6 +225,8 @@ namespace CarMecaSim.FakePeer
                         byte act = r.Byte(); string key = r.Str(); int bolt = r.Int();
                         lock (_partLock) { _lastPartKey = key; _lastPartAction = act; _lastBolt = bolt; }
                         _gotPartAction = true;
+                        if (act == ActUnmount) lock (_partLock) { _removedParts.Add(key); }
+                        else if (act == ActMount) lock (_partLock) { _removedParts.Remove(key); }
                         Console.WriteLine($"[fakepeer] <- PART TEMPS RÉEL: hôte a fait {ActName(act)} sur \"{key}\"" + (act == ActBolt ? $" (boulon #{bolt})" : ""));
                         break;
                     }
