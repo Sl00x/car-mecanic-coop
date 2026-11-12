@@ -17,16 +17,19 @@ namespace CarMecaSim.Mp.Net
     /// </summary>
     public sealed class LoopbackNet : INet
     {
-        // Synthetic, stable ids (CSteamIDs just used as opaque handles here).
-        private static readonly CSteamID Host  = new CSteamID(1UL);
-        private static readonly CSteamID Guest = new CSteamID(2UL);
-        private static readonly CSteamID Lobby = new CSteamID(1000UL);
+        // Synthetic but *valid* ids — a raw small integer fails CSteamID.IsValid() (it has no universe/
+        // account-type bits), which would make IsLobbyOwner false. Build proper individual/chat ids so the
+        // host actually registers as the lobby owner.
+        private static readonly CSteamID Host  = new CSteamID(new AccountID_t(1u), EUniverse.k_EUniversePublic, EAccountType.k_EAccountTypeIndividual);
+        private static readonly CSteamID Guest = new CSteamID(new AccountID_t(2u), EUniverse.k_EUniversePublic, EAccountType.k_EAccountTypeIndividual);
+        private static readonly CSteamID Lobby = new CSteamID(new AccountID_t(1000u), 0x40000u, EUniverse.k_EUniversePublic, EAccountType.k_EAccountTypeChat);
 
         public bool Ready { get; private set; }
         public CSteamID LocalId => Host;
         public CSteamID LobbyId { get; private set; }
         public CSteamID LobbyOwner { get; private set; }
-        public bool IsLobbyOwner => Ready && LobbyId.IsValid() && LobbyOwner == LocalId;
+        private bool _lobbyUp;
+        public bool IsLobbyOwner => Ready && _lobbyUp;   // loopback: we are always the host once the lobby is up
 
         public Action<CSteamID> OnLobbyEntered { get; set; }
         public Action<CSteamID> OnPeerJoined { get; set; }
@@ -124,14 +127,14 @@ namespace CarMecaSim.Mp.Net
 
         public void CreateLobby(ELobbyType type, int maxMembers)
         {
-            LobbyId = Lobby; LobbyOwner = Host;
+            LobbyId = Lobby; LobbyOwner = Host; _lobbyUp = true;
             OnStatus?.Invoke("Loopback lobby ready (host).");
             OnLobbyEntered?.Invoke(LobbyId);
         }
 
         public void JoinLobby(CSteamID lobby) { /* loopback host never joins */ }
 
-        public void LeaveLobby() { LobbyId = CSteamID.Nil; }
+        public void LeaveLobby() { LobbyId = CSteamID.Nil; _lobbyUp = false; }
 
         public IEnumerable<CSteamID> LobbyMembers()
         {
