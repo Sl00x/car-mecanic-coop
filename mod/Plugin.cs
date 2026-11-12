@@ -37,12 +37,19 @@ namespace CarMecaSim.Mp
             GameObject.DontDestroyOnLoad(go);
             go.AddComponent<MpBehaviour>();
 
-            // Harmony patches for car/part sync + per-part locking.
+            // Harmony patches for car/part sync + per-part locking. Patch each class INDIVIDUALLY so one
+            // bad patch (e.g. an ambiguous method match) can't drop every other patch like PatchAll would.
             try
             {
                 var harmony = new HarmonyLib.Harmony("com.alexu.carmecasim.mp");
-                harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
-                Log.LogInfo("Harmony patches applied (part sync).");
+                int ok = 0, fail = 0;
+                foreach (var type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes())
+                {
+                    if (type.GetCustomAttributes(typeof(HarmonyLib.HarmonyPatch), true).Length == 0) continue;
+                    try { new HarmonyLib.PatchClassProcessor(harmony, type).Patch(); ok++; }
+                    catch (Exception pe) { fail++; Log.LogError($"Harmony patch '{type.Name}' failed: {pe.Message}"); }
+                }
+                Log.LogInfo($"Harmony patches applied: {ok} ok, {fail} failed.");
             }
             catch (Exception e) { Log.LogError("Harmony patch failed: " + e); }
 

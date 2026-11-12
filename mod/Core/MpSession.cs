@@ -279,7 +279,8 @@ namespace CarMecaSim.Mp.Core
                     }
                     case PacketType.FullState:
                     {
-                        // Host's full save snapshot, chunked. Reassemble, then adopt it (client only).
+                        // Host's save snapshot, chunked. flags bit0 = delta (garage-only, mid-session).
+                        bool delta = (r.Flags & 1) != 0;
                         int total = r.Int(); int ci = r.Int(); int chunks = r.Int(); int len = r.Int();
                         var chunk = r.BytesRaw(len);
                         if (_saveBuf == null || _saveBuf.Length != total || _saveChunksExpected != chunks)
@@ -289,8 +290,8 @@ namespace CarMecaSim.Mp.Core
                         if (++_saveChunksGot >= _saveChunksExpected)
                         {
                             var full = _saveBuf; _saveBuf = null; _saveChunksExpected = 0; _saveChunksGot = 0;
-                            _log?.Invoke($"[save] received snapshot ({full.Length} bytes); applying");
-                            Sync.SaveSync.ApplyHost(full);
+                            _log?.Invoke($"[save] received {(delta ? "delta" : "initial")} snapshot ({full.Length} bytes); applying");
+                            Sync.SaveSync.ApplyHost(full, delta);
                         }
                         break;
                     }
@@ -359,8 +360,15 @@ namespace CarMecaSim.Mp.Core
             _ecoAccum += dt;
             if (_ecoAccum >= 0.33f) { _ecoAccum = 0f; EconomyTick(); }
 
+            // Host: when its garage changed (a car loaded/removed), push a delta snapshot to all guests,
+            // coalesced — a single job-take can fire several LoadCar calls; wait for them to settle.
+            if (IsHost && _garageDirty && Time.unscaledTime - _lastGarageSnap > 1.5f)
+            {
+                _garageDirty = false; _lastGarageSnap = Time.unscaledTime;
+                SendSaveSnapshot(CSteamID.Nil, delta: true);
+            }
+
             Sync.PartSync.Tick();   // release stale part locks
-            Sync.CarSync.Tick();    // host: periodic garage broadcast
             Sync.OrderSync.Tick();  // host: periodic job-board broadcast
         }
 
@@ -369,24 +377,32 @@ namespace CarMecaSim.Mp.Core
         private byte[] _saveBuf;
         private int _saveChunksExpected, _saveChunksGot;
 
-        /// <summary>Host: serialize the current profile and stream it (chunked) to one client.</summary>
-        public void SendSaveSnapshot(CSteamID target)
+        /// <summary>Host: serialize the current profile and stream it (chunked). target==Nil broadcasts
+        /// to every guest. delta=true marks a mid-session garage change (client applies garage only).</summary>
+        public void SendSaveSnapshot(CSteamID target, bool delta = false)
         {
             if (!InLobby || !IsHost) return;
             var data = Sync.SaveSync.SerializeHost();
             if (data == null || data.Length == 0) { _log?.Invoke("[save] nothing to send"); return; }
+            byte flags = (byte)(delta ? 1 : 0);
             int total = data.Length;
             int chunks = (total + SaveChunk - 1) / SaveChunk;
             for (int c = 0; c < chunks; c++)
             {
                 int off = c * SaveChunk;
                 int len = Math.Min(SaveChunk, total - off);
-                using var w = new PacketWriter(PacketType.FullState);
+                using var w = new PacketWriter(PacketType.FullState, flags);
                 w.Int(total).Int(c).Int(chunks).Int(len).BytesRaw(data, off, len);
-                Net.Send(target, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+                if (target.IsValid()) Net.Send(target, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+                else Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
             }
-            _log?.Invoke($"[save] sent snapshot {total} bytes in {chunks} chunk(s) to {Net.NameOf(target)}");
+            _log?.Invoke($"[save] sent {(delta ? "delta" : "initial")} snapshot {total}B/{chunks}ch to {(target.IsValid() ? Net.NameOf(target) : "all")}");
         }
+
+        /// <summary>Host: the garage changed (a car was loaded/removed) — flag a throttled delta broadcast.</summary>
+        public void MarkGarageChanged() { if (IsHost) _garageDirty = true; }
+        private bool _garageDirty;
+        private float _lastGarageSnap = -999f;
 
         // ---- economy (shared pool, host-authoritative) ----
         private int _lastMoney = -1, _lastExp = -1, _lastScraps = -1;

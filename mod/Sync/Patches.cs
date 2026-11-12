@@ -30,4 +30,13 @@ namespace CarMecaSim.Mp.Sync
     {
         private static void Postfix(CarLoader __instance, string name) => CarSync.OnLocalLoadCar(__instance, name);
     }
+
+    // A car is removed (sold / job finished) -> propagate the garage change to guests.
+    // CarLoader has two DeleteCar overloads — patch the no-arg one explicitly (empty Type[]) so the
+    // match isn't ambiguous (an ambiguous match throws out of PatchAll and drops ALL patches).
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[0])]
+    internal static class Patch_DeleteCar
+    {
+        private static void Postfix(CarLoader __instance) => CarSync.OnLocalLoadCar(__instance, null);
+    }
 }

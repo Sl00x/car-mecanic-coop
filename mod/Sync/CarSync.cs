@@ -1,115 +1,35 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 using CarMecaSim.Mp.Core;
 using CarMecaSim.Mp.Game;
 
 namespace CarMecaSim.Mp.Sync
 {
     /// <summary>
-    /// Host-authoritative SHARED GARAGE: the host broadcasts the full state of its garage (every
-    /// car slot + the car on it). Clients mirror it — unloading their own cars and loading the
-    /// host's, so everyone sees the same vehicles. (v1 — car model per slot; part state syncs via PartSync.)
+    /// Shared garage, host-authoritative. The garage is replicated through the full SAVE SNAPSHOT
+    /// (SaveSync): the whole profile at join, and a throttled delta whenever the host loads/removes a
+    /// car. This module just forwards the host's "garage changed" signal — the old name-only broadcast
+    /// is gone (it couldn't rebuild a car's saved config: "Cannot load config 1 for car ...").
     /// </summary>
     public static class CarSync
     {
-        public const byte OpGarage = 2;
+        public const byte OpGarage = 2;   // legacy wire op; no longer emitted, handler is a no-op
 
-        public static bool Applying;   // true while applying the host's garage (don't re-broadcast)
+        public static bool Applying;      // true while SaveSync is applying the host's garage
 
         private static MpSession S => CarMecaPlugin.Session;
         private static bool Active => S != null && S.InLobby && GameRefs.InGameSession;
-        private static GameManager _gm;
-        private static float _lastBroadcast;
 
-        private static GameManager Mgr()
-        {
-            try { if (_gm == null) _gm = UnityEngine.Object.FindObjectOfType<GameManager>(); } catch { }
-            return _gm;
-        }
-
-        private static Il2CppSystem.Collections.Generic.List<CarLoader> Loaders()
-        {
-            try { var gm = Mgr(); return gm != null ? gm.CarLoadersInScene : null; } catch { return null; }
-        }
-
-        private static string CarOn(CarLoader cl)
-        {
-            try { return (cl != null && cl.IsCarLoaded()) ? (cl.carToLoad ?? "") : ""; } catch { return ""; }
-        }
-
-        // ---- host side ----
-        /// <summary>Harmony postfix on CarLoader.LoadCar: the host re-broadcasts its garage.</summary>
+        /// <summary>Harmony postfix on CarLoader.LoadCar: host's garage changed → flag a delta snapshot.</summary>
         public static void OnLocalLoadCar(CarLoader cl, string name)
         {
             if (Applying || !Active || !S.IsHost) return;
-            BroadcastGarage();
+            S.MarkGarageChanged();
         }
 
-        public static void OnPeerJoined() { if (Active && S.IsHost) BroadcastGarage(); }
+        /// <summary>Initial garage now arrives via the full save snapshot; nothing to do here.</summary>
+        public static void OnPeerJoined() { }
 
-        public static void Tick()
-        {
-            if (Active && S.IsHost && Time.unscaledTime - _lastBroadcast > 3f) BroadcastGarage();
-        }
-
-        public static void BroadcastGarage()
-        {
-            if (!Active || !S.IsHost) return;
-            var loaders = Loaders();
-            if (loaders == null) return;
-            var entries = new List<(int, string)>();
-            for (int i = 0; i < loaders.Count; i++)
-                entries.Add((i, CarOn(loaders[i])));
-            S.SendGarage(entries);
-            _lastBroadcast = Time.unscaledTime;
-        }
-
-        // ---- client side ----
-        /// <summary>
-        /// Disabled: the client's garage is now bootstrapped by the full save snapshot (SaveSync),
-        /// which loads every car NATIVELY with its correct config. The old name-only replication here
-        /// couldn't reconstruct a car's saved config (e.g. "Cannot load config 1 for car ...") and
-        /// retried forever. Keep the method as a no-op so the host's broadcasts are simply ignored.
-        /// </summary>
-        public static void ApplyGarage(List<(int, string)> entries)
-        {
-            return;
-#pragma warning disable CS0162
-            if (!Active || S.IsHost) return;   // only clients mirror the host
-            // Car-load is a coroutine; it stalls while the game is frozen (F6 open). Defer until unfrozen
-            // — the host's 3s garage heartbeat re-applies it then.
-            if (Time.timeScale == 0f) return;
-            var loaders = Loaders();
-            if (loaders == null) { CarMecaPlugin.Logger?.LogWarning("[garage] no CarLoadersInScene"); return; }
-            Applying = true;
-            try
-            {
-                foreach (var (i, name) in entries)
-                {
-                    if (i < 0 || i >= loaders.Count) continue;
-                    var cl = loaders[i];
-                    if (cl == null) continue;
-                    var cur = CarOn(cl);
-                    if (cur == name) continue;             // slot already matches the host
-                    try
-                    {
-                        if (string.IsNullOrEmpty(name))
-                        {
-                            if (cl.IsCarLoaded()) cl.DeleteCar();          // host slot empty -> unload ours
-                        }
-                        else
-                        {
-                            if (cl.IsCarLoaded()) cl.DeleteCar();          // replace our car with the host's
-                            cl.StartCoroutine(cl.LoadCar(name));
-                        }
-                        CarMecaPlugin.Logger?.LogInfo($"[garage] slot {i}: '{cur}' -> '{name}'");
-                    }
-                    catch (Exception e) { CarMecaPlugin.Logger?.LogWarning($"[garage] slot {i} failed: {e.Message}"); }
-                }
-            }
-            finally { Applying = false; }
-#pragma warning restore CS0162
-        }
+        /// <summary>Legacy name-only garage op — superseded by the save snapshot. No-op.</summary>
+        public static void ApplyGarage(List<(int, string)> entries) { }
     }
 }

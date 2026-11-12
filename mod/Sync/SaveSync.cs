@@ -40,10 +40,11 @@ namespace CarMecaSim.Mp.Sync
 
         private static bool _busy;
 
-        /// <summary>Client: overwrite the in-memory profile with the host's, apply its data, and
-        /// explicitly respawn the garage cars (LoadInstant doesn't re-spawn cars when we're already
-        /// standing in the garage — car spawning is normally tied to a scene load).</summary>
-        public static void ApplyHost(byte[] data)
+        /// <summary>Client: overwrite the in-memory profile with the host's and sync the garage.
+        /// On the INITIAL snapshot (delta=false) we also LoadInstant the money/inventory/jobs. On a
+        /// DELTA (host loaded/removed a car mid-session) we only touch the changed slots and leave
+        /// economy + cars-in-progress alone, so working on a car isn't disrupted.</summary>
+        public static void ApplyHost(byte[] data, bool delta)
         {
             var s = CarMecaPlugin.Session;
             if (s == null || s.IsHost || data == null || data.Length == 0 || _busy) return;
@@ -59,21 +60,43 @@ namespace CarMecaSim.Mp.Sync
                 pd.DeserializeFromBytes(ref arr);
                 int inGarage = -1;
                 try { inGarage = pd.carsInGarage != null ? pd.carsInGarage.Length : -1; } catch { }
-                CarMecaPlugin.Logger?.LogInfo($"[save] deserialized host profile '{SafeName(pd)}' ({data.Length} bytes), carsInGarage={inGarage}");
+                CarMecaPlugin.Logger?.LogInfo($"[save] {(delta ? "delta" : "initial")} snapshot: profile '{SafeName(pd)}' ({data.Length} bytes), carsInGarage={inGarage}");
 
-                try { gdm.LoadInstant(true); }          // apply money / inventory / jobs / upgrades
-                catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[save] LoadInstant threw: " + e.Message); }
+                if (!delta)
+                {
+                    try { gdm.LoadInstant(true); }      // apply money / inventory / jobs / upgrades (initial only)
+                    catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[save] LoadInstant threw: " + e.Message); }
+                }
 
-                RespawnGarage(gdm, pd);                 // re-spawn the cars themselves (with full config)
-                s.MarkSnapshotApplied();                // stop re-requesting; don't re-tear-down on scene dips
+                RespawnGarage(pd);                      // reload only the slots whose car changed
+                if (!delta) s.MarkSnapshotApplied();    // stop re-requesting; don't re-tear-down on scene dips
             }
             catch (Exception e) { CarMecaPlugin.Logger?.LogWarning("[save] apply failed: " + e); }
             finally { _busy = false; }
         }
 
-        /// <summary>Delete each in-scene car and reload it from the (now host's) profile by place,
-        /// using LoadCarFromFile — the real loader that restores a car's saved config.</summary>
-        private static void RespawnGarage(GameDataManager gdm, ProfileData pd)
+        private static string CarNameAt(Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<NewCarData> garage, int place)
+        {
+            try
+            {
+                if (garage == null || place < 0 || place >= garage.Length) return "";
+                var cd = garage[place];
+                if (cd == null) return "";
+                var n = cd.carToLoad;
+                return string.IsNullOrEmpty(n) ? "" : n;
+            }
+            catch { return ""; }
+        }
+
+        private static string CurrentCar(CarLoader cl)
+        {
+            try { return (cl != null && cl.IsCarLoaded()) ? (cl.carToLoad ?? "") : ""; } catch { return ""; }
+        }
+
+        /// <summary>Reload ONLY the garage slots whose car differs from the host's profile. Slots that
+        /// already match are left untouched — so a car a player is working on is never torn down.
+        /// Uses LoadCarFromFile(place) — the real loader that restores a car's full saved config.</summary>
+        private static void RespawnGarage(ProfileData pd)
         {
             var gm = CarRefs.Mgr();
             if (gm == null) { CarMecaPlugin.Logger?.LogWarning("[save] respawn: no GameManager"); return; }
@@ -84,24 +107,29 @@ namespace CarMecaSim.Mp.Sync
             Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<NewCarData> garage = null;
             try { garage = pd.carsInGarage; } catch { }
 
-            int placesLoaded = 0;
-            var places = new System.Text.StringBuilder();
+            int changed = 0;
+            var log = new System.Text.StringBuilder();
             for (int i = 0; i < loaders.Count; i++)
             {
                 var cl = loaders[i];
                 if (cl == null) continue;
                 int place = -1;
                 try { place = cl.GetPlaceNo(); } catch { }
-                bool hasCar = garage != null && place >= 0 && place < garage.Length && garage[place] != null;
-                places.Append(place).Append(hasCar ? "* " : " ");
+
+                string want = CarNameAt(garage, place);
+                string cur = CurrentCar(cl);
+                if (want == cur) continue;              // slot already matches — don't disturb it
+
                 try
                 {
-                    if (cl.IsCarLoaded()) cl.DeleteCar();        // clear whatever the client had
-                    if (hasCar) { cl.StartCoroutine(cl.LoadCarFromFile(place, false)); placesLoaded++; }
+                    if (cl.IsCarLoaded()) cl.DeleteCar();
+                    if (want != "") cl.StartCoroutine(cl.LoadCarFromFile(place, false));
+                    changed++;
+                    log.Append($"[{place}:'{cur}'->'{want}'] ");
                 }
                 catch (Exception e) { CarMecaPlugin.Logger?.LogWarning($"[save] respawn place {place}: {e.Message}"); }
             }
-            CarMecaPlugin.Logger?.LogInfo($"[save] respawn issued for {placesLoaded}/{loaders.Count} loaders; places=[{places.ToString().Trim()}]");
+            CarMecaPlugin.Logger?.LogInfo($"[save] garage synced: {changed} slot(s) changed {log.ToString().Trim()}");
         }
 
         private static string SafeName(ProfileData pd) { try { return pd.Name ?? "?"; } catch { return "?"; } }
