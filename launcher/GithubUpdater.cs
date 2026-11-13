@@ -35,8 +35,8 @@ namespace CarMecaSim.Launcher
         private static readonly string[] PluginDlls =
             { "CarMecaSim.Mp.dll", "CarMecaSim.Shared.dll", "Steamworks.NET.dll" };
 
-        // Non-DLL data assets that also live next to the mod (the ripped mechanic model).
-        private static readonly string[] DataAssets = { "mechanic.cmch" };
+        // Non-DLL data assets that also live next to the mod (ripped mechanic model + animated avatar bundle).
+        private static readonly string[] DataAssets = { "mechanic.cmch", "player.assets" };
 
         private static HttpClient Http()
         {
