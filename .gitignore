@@ -37,6 +37,9 @@ desktop.ini
 .env
 .env.local
 
+# Avatar bundles (large; ship via the GitHub release zip, not source)
+mod/assets/*.assets
+
 # Character pipeline — huge extracted assets + tooling (not source; model ships via GitHub release)
 assets/ripped-2027/
 assets/char-bundle-project/

@@ -82,4 +82,12 @@ namespace CarMecaSim.Mp.Sync
     {
         private static void Postfix(CarLoader __instance) => HookDiag.Safe("DeleteCar", () => CarSync.OnLocalLoadCar(__instance, null));
     }
+
+    // Tutorial skip is set up at runtime (Plugin.SkipTutorials) — the declaring type can't be named at
+    // compile time (it lives in the firstpass interop beyond REA's budget), so we find it by reflection.
+    internal static class TutorialSkip
+    {
+        public static bool ShouldShowFalse(ref bool __result) { __result = false; return false; } // never show
+        public static bool SkipVoid() => false;                                                   // no-op the show
+    }
 }

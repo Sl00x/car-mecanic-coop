@@ -50,10 +50,63 @@ namespace CarMecaSim.Mp
                     catch (Exception pe) { fail++; Log.LogError($"Harmony patch '{type.Name}' failed: {pe.Message}"); }
                 }
                 Log.LogInfo($"Harmony patches applied: {ok} ok, {fail} failed.");
+                SkipTutorials(harmony);
             }
             catch (Exception e) { Log.LogError("Harmony patch failed: " + e); }
 
             Log.LogInfo($"Ready. role={Cfg.Role} name={Cfg.DisplayName} lobby={Cfg.LobbyId}");
+        }
+
+        // Skip the game's tutorial (annoying, esp. on a new garage). The declaring type lives in the
+        // firstpass interop (beyond our RE tooling budget), so find it by reflection at runtime — scan the
+        // game assemblies for a Tutorial-named type exposing InstantShowTutorial(), then no-op it (+ force
+        // ShouldShow() false if present). Each patch is guarded so a miss never breaks startup.
+        private void SkipTutorials(HarmonyLib.Harmony harmony)
+        {
+            try
+            {
+                const System.Reflection.BindingFlags BF = System.Reflection.BindingFlags.Public
+                    | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static;
+                System.Reflection.MethodInfo instantShow = null, shouldShow = null, loadNext = null;
+                string typeName = null;
+                foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    var an = asm.GetName().Name;
+                    if (an != "Assembly-CSharp" && an != "Assembly-CSharp-firstpass") continue;
+                    System.Type[] types;
+                    try { types = asm.GetTypes(); }
+                    catch (System.Reflection.ReflectionTypeLoadException rtle) { types = rtle.Types; }
+                    catch { continue; }
+                    foreach (var t in types)
+                    {
+                        if (t == null || t.Name.IndexOf("Tutorial", StringComparison.Ordinal) < 0) continue;
+                        System.Reflection.MethodInfo m;
+                        try { m = t.GetMethod("InstantShowTutorial", BF, null, System.Type.EmptyTypes, null); }
+                        catch { m = null; }
+                        if (m == null) continue;
+                        typeName = t.FullName; instantShow = m;
+                        try { shouldShow = t.GetMethod("ShouldShow", BF, null, System.Type.EmptyTypes, null); } catch { }
+                        try { loadNext = t.GetMethod("LoadNextTutorial", BF, null, System.Type.EmptyTypes, null); } catch { }
+                        break;
+                    }
+                    if (instantShow != null) break;
+                }
+                if (instantShow == null) { Log.LogWarning("[tuto] tutorial type not found — skip not applied"); return; }
+                Log.LogInfo($"[tuto] tutorial type: {typeName} (ShouldShow={(shouldShow != null)}, LoadNext={(loadNext != null)})");
+
+                var skipVoid = new HarmonyLib.HarmonyMethod(typeof(Sync.TutorialSkip).GetMethod(nameof(Sync.TutorialSkip.SkipVoid)));
+                try { harmony.Patch(instantShow, prefix: skipVoid); Log.LogInfo("[tuto] InstantShowTutorial no-op'd"); }
+                catch (Exception e) { Log.LogWarning("[tuto] InstantShowTutorial patch: " + e.Message); }
+                if (loadNext != null)
+                    try { harmony.Patch(loadNext, prefix: skipVoid); Log.LogInfo("[tuto] LoadNextTutorial no-op'd"); } catch { }
+                if (shouldShow != null && shouldShow.ReturnType == typeof(bool))
+                {
+                    var shouldFalse = new HarmonyLib.HarmonyMethod(typeof(Sync.TutorialSkip).GetMethod(nameof(Sync.TutorialSkip.ShouldShowFalse)));
+                    try { harmony.Patch(shouldShow, prefix: shouldFalse); Log.LogInfo("[tuto] ShouldShow forced false"); }
+                    catch (Exception e) { Log.LogWarning("[tuto] ShouldShow patch: " + e.Message); }
+                }
+            }
+            catch (Exception e) { Log.LogWarning("[tuto] skip setup failed: " + e.Message); }
         }
 
         private void LoadConfig()

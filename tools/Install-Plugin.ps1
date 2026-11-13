@@ -46,6 +46,13 @@ foreach ($d in $dlls) {
   Write-Host ("  deployed {0,-26} {1,7} bytes" -f $d, $len) -ForegroundColor Green
 }
 
+# Optional runtime assets (avatar bundle). Deployed next to the DLL so BundleAvatar can load it.
+$asset = Join-Path $Root "mod\assets\player.assets"
+if (Test-Path $asset) {
+  Copy-Item -Force $asset (Join-Path $plugins "player.assets")
+  Write-Host ("  deployed {0,-26} {1,7} bytes" -f "player.assets", (Get-Item $asset).Length) -ForegroundColor Green
+}
+
 # Sanity: the canonical types the plugin references must be present in the deployed Shared.dll.
 $shared = Join-Path $plugins "CarMecaSim.Shared.dll"
 $bytes  = [System.IO.File]::ReadAllBytes($shared)

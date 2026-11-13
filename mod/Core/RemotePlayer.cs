@@ -27,6 +27,8 @@ namespace CarMecaSim.Mp.Core
         private GameObject _root, _head, _torso, _armL, _armR;
         private GameObject _body;          // ripped mechanic model (when mechanic.cmch is present)
         private CharacterRig _rig;         // its skeleton, for procedural posing/animation
+        private Animator _bundleAnim;      // baked Animator when the player.assets bundle avatar is used
+        private bool _isBundle;            // true = player.assets skinned mechanic (drive Animator, not CharacterRig)
         private Transform _tr;
         private Vector3 _pos;
         private float _yaw;
@@ -45,10 +47,24 @@ namespace CarMecaSim.Mp.Core
                 _tr = _root.transform;
                 _pos = TargetPos; _yaw = TargetYaw;
 
-                // Prefer the real mechanic model (mechanic.cmch); fall back to primitives.
+                // Preference order: the user's real CMS mechanic (mechanic.cmch, custom format, no Unity license
+                // needed) -> player.assets animated mechanic (CMS21-Together, real walk animation) -> primitives.
+                // cmch is tried first so an existing real-mechanic avatar is never silently replaced; the bundle
+                // is a drop-in with a baked locomotion Animator when cmch is absent.
                 _body = CharacterModel.Instantiate(PlayerId, out _rig);
                 if (_body != null)
                 {
+                    var bt = _body.transform;
+                    bt.SetParent(_tr, false);
+                    bt.localPosition = new Vector3(0f, -EyeHeight, 0f);  // model rooted at feet; eye is up high
+                    bt.localRotation = Quaternion.identity;
+                    return;
+                }
+
+                _body = BundleAvatar.Instantiate(out _bundleAnim);
+                if (_body != null)
+                {
+                    _isBundle = true;
                     var bt = _body.transform;
                     bt.SetParent(_tr, false);
                     bt.localPosition = new Vector3(0f, -EyeHeight, 0f);  // model rooted at feet; eye is up high
@@ -111,7 +127,7 @@ namespace CarMecaSim.Mp.Core
         public void Despawn()
         {
             try { if (_root != null) UnityEngine.Object.Destroy(_root); } catch { }
-            _root = _head = _torso = _armL = _armR = _body = null; _rig = null; _tr = null;
+            _root = _head = _torso = _armL = _armR = _body = null; _rig = null; _bundleAnim = null; _isBundle = false; _tr = null;
         }
 
         public void Update(float dt)
@@ -122,12 +138,37 @@ namespace CarMecaSim.Mp.Core
             _pos = Vector3.Lerp(_pos, TargetPos, Mathf.Clamp01(dt * 12f));
             _yaw = Mathf.LerpAngle(_yaw, TargetYaw, Mathf.Clamp01(dt * 12f));
 
-            // ground speed (horizontal) from how far the avatar moved this frame
-            float speed = 0f;
-            if (dt > 0f) { var d = _pos - prev; d.y = 0f; speed = d.magnitude / dt; }
+            // ground velocity (horizontal) from how far the avatar moved this frame
+            Vector3 vel = Vector3.zero;
+            if (dt > 0f) { vel = (_pos - prev) / dt; vel.y = 0f; }
+            float speed = vel.magnitude;
 
-            if (_body != null) { UpdateModel(speed); return; }   // real mechanic model → drive its Animator
+            if (_isBundle) { UpdateBundle(dt, vel); return; }    // player.assets → drive baked Animator blend tree
+            if (_body != null) { UpdateModel(speed); return; }   // mechanic.cmch → procedural CharacterRig
             UpdatePrimitive();                                    // fallback capsule avatar
+        }
+
+        // player.assets mechanic: feed its 2D locomotion blend tree the local forward/strafe speed,
+        // exactly like CMS21-Together (clamp ±20, lerp toward the target at dt*10). Working/idle emerges
+        // from the blend tree at rest (both floats lerp to 0 when the peer stops moving).
+        private void UpdateBundle(float dt, Vector3 vel)
+        {
+            _tr.position = _pos;
+            _tr.rotation = Quaternion.Euler(0f, _yaw, 0f);
+            if (_bundleAnim == null) return;
+            float yawRad = _yaw * Mathf.Deg2Rad;
+            var fwd = new Vector3(Mathf.Sin(yawRad), 0f, Mathf.Cos(yawRad));
+            var right = new Vector3(Mathf.Cos(yawRad), 0f, -Mathf.Sin(yawRad));
+            float v = Mathf.Clamp(Vector3.Dot(vel, fwd), -20f, 20f);
+            float h = Mathf.Clamp(Vector3.Dot(vel, right), -20f, 20f);
+            try
+            {
+                float cv = _bundleAnim.GetFloat("Vertical");
+                float ch = _bundleAnim.GetFloat("Horizontal");
+                _bundleAnim.SetFloat("Vertical", Mathf.Lerp(cv, v, Mathf.Clamp01(dt * 10f)));
+                _bundleAnim.SetFloat("Horizontal", Mathf.Lerp(ch, h, Mathf.Clamp01(dt * 10f)));
+            }
+            catch { }
         }
 
         private void UpdateModel(float speed)

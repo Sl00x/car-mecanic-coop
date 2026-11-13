@@ -192,6 +192,38 @@ namespace CarMecaSim.Mp.Core
             Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
         }
 
+        // ---- data-driven car spawn (host -> clients). A car = one serialized NewCarData per garage place. ----
+        private const int MaxCarBytes = 450 * 1024;   // Steam single-message ceiling (< 512KB) — cars are far smaller
+
+        private void SendCarSpawnRaw(CSteamID target, int place, byte[] carBytes)
+        {
+            if (!InLobby || carBytes == null || carBytes.Length == 0) return;
+            if (carBytes.Length > MaxCarBytes) { _log?.Invoke($"[car] place {place} too big to send ({carBytes.Length}B) — skipped"); return; }
+            using var w = new PacketWriter(PacketType.CarData);
+            w.Byte(Sync.CarSync.OpSpawn).Int(place).Bytes(carBytes);
+            if (target.IsValid()) Net.Send(target, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+            else Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
+        public void SendCarSpawn(int place, byte[] carBytes) => SendCarSpawnRaw(CSteamID.Nil, place, carBytes);
+        public void SendCarSpawnTo(CSteamID target, int place, byte[] carBytes) => SendCarSpawnRaw(target, place, carBytes);
+
+        public void SendCarDelete(int place)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.CarData);
+            w.Byte(Sync.CarSync.OpDelete).Int(place);
+            Net.Broadcast(w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
+        public void SendCarClearTo(CSteamID target)
+        {
+            if (!InLobby) return;
+            using var w = new PacketWriter(PacketType.CarData);
+            w.Byte(Sync.CarSync.OpClear);
+            Net.Send(target, w.ToArray(), SendFlags.Reliable, Channels.Reliable);
+        }
+
         public void SendJobs(System.Collections.Generic.List<Sync.OrderSync.JobInfo> jobs)
         {
             if (!InLobby) return;
@@ -282,6 +314,16 @@ namespace CarMecaSim.Mp.Core
                         }
                         break;
                     }
+                    case PacketType.CarData:
+                    {
+                        if (IsHost) break;                 // host is authoritative; ignore inbound car data
+                        var op = r.Byte();
+                        int place = (op == Sync.CarSync.OpClear) ? -1 : r.Int();
+                        byte[] carBytes = (op == Sync.CarSync.OpSpawn) ? r.Bytes() : null;
+                        Sync.CarSync.ApplyRemote(op, place, carBytes);
+                        _snapshotApplied = true;           // got the host's garage catch-up — stop re-pinging
+                        break;
+                    }
                     case PacketType.Order:
                     {
                         var op = r.Byte();
@@ -323,14 +365,15 @@ namespace CarMecaSim.Mp.Core
                         break;
                     }
                     case PacketType.Ping:
-                        // A client reached the garage and wants the current state.
+                        // A client reached the garage and wants the current state. DATA-DRIVEN: stream the host's
+                        // cars as NewCarData (no whole-profile overwrite — that threw "assertion failed" on guests),
+                        // then economy, jobs, and the live mechanical disassembly on top.
                         if (IsHost)
                         {
-                            SendSaveSnapshot(sender);          // client adopts host's full garage/jobs/money (native)
-                            BroadcastEcoAbsolute();            // then set live money on top (ordered after the save)
-                            Sync.CarSync.OnPeerJoined();       // keep incremental garage/job sync going afterwards
-                            Sync.OrderSync.OnPeerJoined();
-                            Sync.PartSync.SendCatchUp(sender); // replay this-session part removals (live mechanical state)
+                            Sync.CarSync.SendCatchUpCars(sender);  // host's garage as per-car data
+                            BroadcastEcoAbsolute();                // shared money/exp
+                            Sync.OrderSync.OnPeerJoined();         // job board
+                            Sync.PartSync.SendCatchUp(sender);     // this-session part removals (live mechanical state)
                         }
                         break;
                     case PacketType.Latency:
@@ -474,14 +517,7 @@ namespace CarMecaSim.Mp.Core
                 SendHashReport();
             }
 
-            // Host: when its garage changed (a car loaded/removed), push a delta snapshot to all guests,
-            // coalesced — a single job-take can fire several LoadCar calls; wait for them to settle.
-            if (IsHost && _garageDirty && Time.unscaledTime - _lastGarageSnap > 1.5f)
-            {
-                _garageDirty = false; _lastGarageSnap = Time.unscaledTime;
-                SendSaveSnapshot(CSteamID.Nil, delta: true);
-            }
-
+            Sync.CarSync.Tick();    // host: capture settled car loads / client: apply queued car ops
             Sync.PartSync.Tick();   // release stale part locks
             Sync.OrderSync.Tick();  // host: periodic job-board broadcast
         }
@@ -513,10 +549,7 @@ namespace CarMecaSim.Mp.Core
             _log?.Invoke($"[save] sent {(delta ? "delta" : "initial")} snapshot {total}B/{chunks}ch to {(target.IsValid() ? Net.NameOf(target) : "all")}");
         }
 
-        /// <summary>Host: the garage changed (a car was loaded/removed) — flag a throttled delta broadcast.</summary>
-        public void MarkGarageChanged() { if (IsHost) _garageDirty = true; }
-        private bool _garageDirty;
-        private float _lastGarageSnap = -999f;
+        // Garage changes are now streamed per-car (data-driven) via Sync.CarSync, not as save-snapshot deltas.
 
         // ---- economy (shared pool, host-authoritative) ----
         private int _lastMoney = -1, _lastExp = -1, _lastScraps = -1;

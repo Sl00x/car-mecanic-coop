@@ -34,6 +34,10 @@ namespace CarMecaSim.Launcher
         private static readonly string[] ShipDlls =
             { "CarMecaSim.Mp.dll", "CarMecaSim.Shared.dll", "Steamworks.NET.dll" };
 
+        // Optional runtime assets shipped next to the plugin (copied only if present in the payload).
+        private static readonly string[] ShipAssets =
+            { "player.assets" };
+
         public InstallStatus GetStatus()
         {
             var s = new InstallStatus { GameDir = _gameDir, GameFound = GameLocator.IsGameDir(_gameDir) };
@@ -99,6 +103,11 @@ namespace CarMecaSim.Launcher
             {
                 var from = Path.Combine(src!, name);
                 if (File.Exists(from)) File.Copy(from, Path.Combine(dst, name), overwrite: true);
+            }
+            foreach (var name in ShipAssets)
+            {
+                var from = Path.Combine(src!, name);
+                if (File.Exists(from)) { File.Copy(from, Path.Combine(dst, name), overwrite: true); log?.Invoke("Installed asset " + name); }
             }
             EnsureAppId(log);
             return File.Exists(Path.Combine(dst, "CarMecaSim.Mp.dll"));

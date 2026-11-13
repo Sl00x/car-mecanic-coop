@@ -7,7 +7,7 @@ param([string]$Root = "C:\Users\alexu\Documents\Projects\CarMecaSim")
 $ErrorActionPreference = "Stop"
 Set-Location $Root
 
-$ver  = "0.1.0"
+$ver  = "0.6.0"
 $dist = Join-Path $Root "dist"
 $app  = Join-Path $dist "CarMecaSim-Coop"
 if (Test-Path $app) { Remove-Item -Recurse -Force $app }
@@ -30,6 +30,9 @@ Copy-Item -Recurse -Force (Join-Path $Root "tools\BepInEx_x64\*") (Join-Path $pa
 foreach ($d in @("CarMecaSim.Mp.dll", "CarMecaSim.Shared.dll", "Steamworks.NET.dll")) {
   Copy-Item -Force (Join-Path $Root "mod\bin\Release\net6.0\$d") (Join-Path $payload "plugins")
 }
+# Avatar bundle (animated mechanic) so a guest sees a real body instead of primitives.
+$avatar = Join-Path $Root "mod\assets\player.assets"
+if (Test-Path $avatar) { Copy-Item -Force $avatar (Join-Path $payload "plugins\player.assets") }
 
 # Friend-facing readme
 @"

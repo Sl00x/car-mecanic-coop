@@ -53,7 +53,7 @@ namespace CarMecaSim.Shared
         public const uint AppId = 1190000;          // Car Mechanic Simulator 2021 (retail)
         public const uint AppIdPrologueDemo = 1585850;
         public const string ModName = "CarMecaSim.Mp";
-        public const string ModVersion = "0.1.0";
+        public const string ModVersion = "0.6.0";
         public const byte SaveVersion = 5;          // ProfileData.CurrentSaveVersion (must match host/client)
 
         public const string GameExeName = "Car Mechanic Simulator 2021.exe";

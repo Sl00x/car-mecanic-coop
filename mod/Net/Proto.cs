@@ -21,6 +21,7 @@ namespace CarMecaSim.Mp.Net
         Latency = 15,   // RTT probe/echo for the player-list ping display
         EntityHash = 16, // host broadcasts the current vehicle's canonical state hash → peers detect desync (§14.3)
         PartState = 17,  // mechanical part mount/unmount by positional identity (type,key,index,mounted)
+        CarData = 18,    // data-driven car spawn: host serializes a NewCarData per garage place; client spawns it
     }
 
     public static class Channels
