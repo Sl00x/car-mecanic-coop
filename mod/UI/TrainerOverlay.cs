@@ -64,6 +64,7 @@ namespace CarMecaSim.Mp.UI
             GUILayout.Label("DÉBLOCAGE", Theme.SectionLabel);
             if (BtnWide("DÉBLOQUER TOUT (améliorations/tuning)")) Trainer.UnlockEverything();
 
+
             GUILayout.Space(10);
             GUILayout.Label("Astuce : certains cheats « debug » (réparer/débloquer) ne sont\ndisponibles que si le jeu embarque ses composants de debug.", Theme.MutedS);
 

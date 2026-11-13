@@ -53,6 +53,9 @@ if (Test-Path $asset) {
   Write-Host ("  deployed {0,-26} {1,7} bytes" -f "player.assets", (Get-Item $asset).Length) -ForegroundColor Green
 }
 
+# (The experimental CMS2027 map reconstruction is disabled — too heavy for CMS2021. The pipeline is kept
+#  in tools/map2027/ + mod/Game/GarageProp.cs if we ever revive it, but its assets are no longer deployed.)
+
 # Sanity: the canonical types the plugin references must be present in the deployed Shared.dll.
 $shared = Join-Path $plugins "CarMecaSim.Shared.dll"
 $bytes  = [System.IO.File]::ReadAllBytes($shared)
