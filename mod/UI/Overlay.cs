@@ -132,6 +132,7 @@ namespace CarMecaSim.Mp.UI
                 if (e != null && e.type == EventType.KeyDown && (e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter))
                 {
                     if (!string.IsNullOrWhiteSpace(_chatInput)) { _s.SendChat(_chatInput.Trim()); _chatInput = ""; _focusChat = true; }
+                    e.Use();   // consume Enter so it doesn't bubble to the game (keybind) or insert a newline
                 }
             }
             GUILayout.EndArea();

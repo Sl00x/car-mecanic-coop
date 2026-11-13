@@ -98,6 +98,21 @@ namespace CarMecaSim.Mp.Game
             }
         }
 
+        /// <summary>Enable/disable the game's FPS controller input (mouse-look + movement + world interaction)
+        /// WITHOUT disabling the camera render. The game toggles this flag itself during its own pause, so it's
+        /// the clean way to free the mouse for our overlay: with it off, the camera stops grabbing the cursor
+        /// and typing in chat no longer leaks into gameplay keybinds.</summary>
+        public static void SetPlayerInputEnabled(bool enabled)
+        {
+            try { var cam = Cam; if (cam != null) cam.readInput = enabled; } catch { }
+        }
+
+        /// <summary>Current FPS-input state (true if unknown / no camera yet).</summary>
+        public static bool PlayerInputEnabled
+        {
+            get { try { var cam = Cam; return cam == null || cam.readInput; } catch { return true; } }
+        }
+
         public static void InvalidateSceneRefs() { _cam = null; _eye = null; _mm = null; }
     }
 }

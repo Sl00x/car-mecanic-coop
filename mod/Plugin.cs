@@ -131,6 +131,7 @@ namespace CarMecaSim.Mp
         private float _savedTime = 1f;
         private CursorLockMode _savedLock;
         private bool _savedCursor;
+        private bool _savedReadInput = true;
 
         private void Update()
         {
@@ -141,17 +142,26 @@ namespace CarMecaSim.Mp
             if (GameRefs.InGameSession && Input.GetKeyDown(KeyCode.F6))
             {
                 var ov = CarMecaPlugin.Overlay;
-                if (ov != null) { ov.Visible = !ov.Visible; SetFrozen(ov.Visible); }
+                if (ov != null) { ov.Visible = !ov.Visible; SetFrozen(AnyPanelOpen()); }
+            }
+            // F8 opens/closes the host mega-trainer (freezes + frees the cursor, same as F6).
+            if (GameRefs.InGameSession && Input.GetKeyDown(KeyCode.F8))
+            {
+                UI.TrainerOverlay.Visible = !UI.TrainerOverlay.Visible;
+                SetFrozen(AnyPanelOpen());
             }
             // F9 toggles the read-only network/state debug overlay (any time).
             if (Input.GetKeyDown(KeyCode.F9)) UI.NetDebugOverlay.Visible = !UI.NetDebugOverlay.Visible;
-            // Safety: never stay frozen if we lose the session or the panel closed another way.
-            if (_frozen && (!GameRefs.InGameSession || CarMecaPlugin.Overlay == null || !CarMecaPlugin.Overlay.Visible))
+            // Safety: never stay frozen if we lose the session or every panel closed another way.
+            if (_frozen && (!GameRefs.InGameSession || !AnyPanelOpen()))
                 SetFrozen(false);
-            // Keep the cursor free each frame while frozen, so the game's FPS controller can't grab it back.
+            // Keep the game frozen + its FPS input OFF each frame while the panel is open, so the camera can't
+            // grab the mouse back and typing in chat can't leak into gameplay keybinds. The cursor itself is
+            // re-asserted in OnGUI (which runs AFTER the game's Update each frame, so we get the last word and
+            // the game can't re-hide it — the old "I had to press Échap" bug).
             if (_frozen)
             {
-                try { Time.timeScale = 0f; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; } catch { }
+                try { Time.timeScale = 0f; GameRefs.SetPlayerInputEnabled(false); } catch { }
             }
 
             s.EnsureSteam();
@@ -212,7 +222,14 @@ namespace CarMecaSim.Mp
             CarMecaPlugin.Logger?.LogInfo($"[char] F7 test mechanic spawned at {_testMech.transform.position}.");
         }
 
-        /// <summary>Freeze/unfreeze the local game while the co-op panel is open (F6), freeing the cursor.</summary>
+        /// <summary>True if any mod panel that needs the cursor is open (F6 co-op or F8 trainer).</summary>
+        private static bool AnyPanelOpen()
+        {
+            var ov = CarMecaPlugin.Overlay;
+            return (ov != null && ov.Visible) || UI.TrainerOverlay.Visible;
+        }
+
+        /// <summary>Freeze/unfreeze the local game while a mod panel is open (F6/F8), freeing the cursor.</summary>
         private void SetFrozen(bool on)
         {
             if (on == _frozen) return;
@@ -222,13 +239,16 @@ namespace CarMecaSim.Mp
                 if (on)
                 {
                     _savedTime = Time.timeScale; _savedLock = Cursor.lockState; _savedCursor = Cursor.visible;
+                    _savedReadInput = GameRefs.PlayerInputEnabled;
                     Time.timeScale = 0f;
+                    GameRefs.SetPlayerInputEnabled(false);   // stop the FPS camera eating the mouse + keybinds
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
                 }
                 else
                 {
                     Time.timeScale = _savedTime <= 0f ? 1f : _savedTime;
+                    GameRefs.SetPlayerInputEnabled(_savedReadInput);
                     Cursor.lockState = _savedLock;
                     Cursor.visible = _savedCursor;
                 }
@@ -238,7 +258,14 @@ namespace CarMecaSim.Mp
 
         private void OnGUI()
         {
+            // Re-assert the free cursor HERE (OnGUI runs after the game's Update each frame) so the game's
+            // FPS controller can't re-hide/re-lock it — this is what fixes "I had to press Échap to use the menu".
+            if (_frozen)
+            {
+                try { if (Cursor.lockState != CursorLockMode.None) Cursor.lockState = CursorLockMode.None; if (!Cursor.visible) Cursor.visible = true; } catch { }
+            }
             SafeFrame("overlay", () => CarMecaPlugin.Overlay?.Draw());        // in-game co-op panel (F6)
+            SafeFrame("trainer", () => UI.TrainerOverlay.Draw(CarMecaPlugin.Session));     // host mega-trainer (F8)
             SafeFrame("netdebug", () => UI.NetDebugOverlay.Draw(CarMecaPlugin.Session));   // network/state debug (F9)
         }
 

@@ -7,7 +7,7 @@ param([string]$Root = "C:\Users\alexu\Documents\Projects\CarMecaSim")
 $ErrorActionPreference = "Stop"
 Set-Location $Root
 
-$ver  = "0.6.0"
+$ver  = "0.6.1"
 $dist = Join-Path $Root "dist"
 $app  = Join-Path $dist "CarMecaSim-Coop"
 if (Test-Path $app) { Remove-Item -Recurse -Force $app }
